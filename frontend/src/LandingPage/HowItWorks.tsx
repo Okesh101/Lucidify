@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/nav/Navbar";
+import ScrollToTop from "../components/ScrollToTop";
 
 interface Props {
   number?: string,
@@ -6,11 +8,10 @@ interface Props {
   desc?: string
 }
 
-export default function HowItWorks() {
-  
+
 function Step({ number, title, desc }: Props) {
   return (
-    <div className="text-center bg-white/5 border border-white/10 p-6 rounded-xl">
+    <div className="text-center shadow-sm shadow-gray-700 p-6 rounded-xl">
       <div className="w-10 h-10 mx-auto rounded-full font-[ClashDisplay] text-xl bg-[#16A34A] flex items-center justify-center font-bold">
         {number}
       </div>
@@ -22,7 +23,7 @@ function Step({ number, title, desc }: Props) {
 
 function FlowBox({ title }: Props) {
   return (
-    <div className="bg-white/10 border font-[Montserrat] border-white/20 px-6 py-4 rounded-lg text-center w-full md:w-auto">
+    <div className="bg-white font-[Montserrat] shadow-sm shadow-green-700 px-6 py-4 rounded-lg text-center w-full md:w-auto">
       {title}
     </div>
   );
@@ -38,16 +39,26 @@ function Arrow() {
 
 function InfoCard({ title, desc } : Props) {
   return (
-    <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
+    <div className="bg-gray-300 border border-white/10 p-6 rounded-xl">
       <h3 className="font-semibold text-lg font-[Montserrat]">{title}</h3>
-      <p className="mt-2 text-gray-300 text-sm font-[Onest]">{desc}</p>
+      <p className="mt-2 text-gray-700 text-sm font-[Onest]">{desc}</p>
     </div>
   );
 }
+
+export default function HowItWorks() {
+
+  // Imported the function from ScrollToTop Component
+  ScrollToTop();
+
+
+  const navigate = useNavigate()
+// bg-[#0B1F3A]
+// text-white
   return (
-    <div className="min-h-screen bg-[#0B1F3A] text-white">
+    <div className="min-h-screen bg-white text-black">
       <Navbar/>
-      <div className="max-w-6xl mx-auto pt-30" data-aos= "zoom-in">
+      <div className="max-w-6xl mx-auto pt-30 " data-aos= "zoom-in">
         {/* HEADER */}
         <div className="text-center">
           <h1 className="text-4xl font-bold font-[Nunito]">How It Works</h1>
@@ -81,12 +92,12 @@ function InfoCard({ title, desc } : Props) {
         </div>
 
         {/* PROCESS FLOW VISUAL */}
-        <section className="mt-20 bg-white/5 border border-white/10 rounded-xl p-10">
+        <section className="mt-20 bg-gray-300 rounded-xl p-10">
           <h2 className="text-2xl font-semibold text-center font-[Nunito]">
             The Simple Flow
           </h2>
 
-          <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="mt-10 flex flex-col md:flex-row items-center justify-center gap-6">
             <FlowBox title="Start" />
             <Arrow />
             <FlowBox title="Data Fetch" />
@@ -118,11 +129,11 @@ function InfoCard({ title, desc } : Props) {
         </section>
 
         {/* CTA */}
-        <section className="mt-18 text-center  bg-white/5 border border-white/10 text-white p-10 rounded-xl">
+        <section className="mt-18 text-center  bg-green-950 border border-white/10 text-white p-10 rounded-xl">
           <h2 className="text-3xl font-bold font-[Nunito]">Ready to Try It?</h2>
           <p className="mt-3 font-[Onest] text-gray-300">Complete your filing in under 4 minutes.</p>
 
-          <button className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider">
+          <button className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider" onClick={() => navigate('/authentication')}>
             Start Filing Now
           </button>
         </section>
