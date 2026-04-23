@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+
+@font-face {
+  font-family: "ClashDisplay";
+  src: url("./assets/fonts/ClashDisplay-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("./assets/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "DMMono";
+  src: url("./assets/fonts/DMMono-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("./assets/fonts/Nunito-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Onest";
+  src: url("./assets/fonts/Onest-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Ubuntu";
+  src: url("./assets/fonts/Ubuntu-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Unbounded";
+  src: url("./assets/fonts/Unbounded-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Urbanist";
+  src: url("./assets/fonts/Urbanist-VariableFont_wght.ttf") format("truetype");
+}
+@font-face {
+  font-family: "TypoHoop";
+  src: url("./assets/fonts/TypoHoop_Regular_Demo.otf") format("opentype");
+}
+
+/* nav{
+  background-image: url("./bg_1.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
+
+html{
+  scroll-behavior: smooth;
+}
