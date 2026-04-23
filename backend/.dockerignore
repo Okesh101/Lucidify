@@ -1,0 +1,11 @@
+.env
+.env-example
+venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.vscode/
+activate
+installpy
+run
