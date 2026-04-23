@@ -1,0 +1,15 @@
+so since we are doing the authentication so we start with the authentication page, no ladning page bcos i don't think landing page is suitable for mobile app
+
+Authentication page
+Login
+on the page the default will be login, then after that we will have the input fields for the log in which is email and password for now we might change it in the future, so after the input fields we should have a text under saying dont have an account?" create on (it will now be the link navigating to signup page)", then after the text we have login button 
+
+Signup for signup we are collecting their first name, lastname, email and password so we create a field for that also, then under the input field we should text also "Account already existed login(it will be a link that navigates to the login page); then after we have the signup button so when we click on the sign up button we navigate to the login page first, so after signing up u have to login before u get navigated to the main page
+
+for the auth page both signup and login are one page ooo not different page but we show on one just like how mobile authentication page use to be and also u can make the tab have like a blur color so let's say the page is color red the main tab can be have a blur like glassmorphism
+
+
+for the color 
+i feel the background color can be like a linear or radial gradient of gray then the brand color should be blue meaning the backgrond color of buttons should be blue then for the main page the text can be a deep blue or if u see a color that is more nice no problem but it should inline with the color of the web it is not neccessary the page background should be blue oo
+
+let's start from her any where u stopp please let me know so i will check it
