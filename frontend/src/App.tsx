@@ -6,6 +6,7 @@ import HowItWorks from './LandingPage/HowItWorks'
 import { useEffect } from 'react'
 // @ts-ignore
 import AOS from 'aos'
+import Auth from './Auth/Auth'
 
 function App() {
   
@@ -23,6 +24,7 @@ function App() {
       <Route path='/' element={<LandingPage/>} />
       <Route path='/about' element={<About/>}/>
       <Route path='/how_it_works' element={<HowItWorks/>}/>
+      <Route path='/authentication' element={<Auth/>}/>
     </Routes>
   )
 }
