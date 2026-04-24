@@ -1,0 +1,62 @@
+{
+  "BN-2345678": {
+    "registration_number": "BN-2345678",
+    "business_name": "Joyce Ventures",
+    "general_nature": "General Trading and Logistics",
+    "principal_place": {
+      "number": "12",
+      "street": "Awolowo Road",
+      "city": "Ikoyi",
+      "lga": "Eti-Osa",
+      "postal_code": "101233",
+      "state": "Lagos"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Okonkwo",
+        "forenames": "Joyce Adanna",
+        "nationality": "Nigerian",
+        "dob": "1987-05-14",
+        "gender": "Female",
+        "phone": "08031234567",
+        "id_number": "NIN-12345678901",
+        "id_type": "National ID",
+        "email": "joyce@joyceventures.com",
+        "occupation": "Business Owner",
+        "residential_address": {
+          "number": "45",
+          "street": "Ikorodu Road",
+          "city": "Yaba",
+          "lga": "Yaba",
+          "postal_code": "100242",
+          "state": "Lagos"
+        },
+        "service_address": {
+          "number": "12",
+          "street": "Awolowo Road",
+          "city": "Ikoyi",
+          "lga": "Eti-Osa",
+          "postal_code": "101233",
+          "state": "Lagos"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Joyce Okonkwo",
+      "email": "joyce@joyceventures.com"
+    },
+    "presented_by": {
+      "name": "Joyce Okonkwo",
+      "address": "12 Awolowo Road, Ikoyi",
+      "phone": "08031234567",
+      "email": "joyce@joyceventures.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 12000000,
+    "total_net_assets": 4500000
+  }
+}
