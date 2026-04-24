@@ -1,0 +1,157 @@
+{
+  "business_names": [
+    {
+      "registration_number": "BN-2345678",
+      "business_name": "Joyce Ventures",
+      "general_nature": "General Trading and Logistics",
+      "principal_place": {
+        "number": "12",
+        "street": "Awolowo Road",
+        "city": "Ikoyi",
+        "lga": "Eti-Osa",
+        "postal_code": "101233",
+        "state": "Lagos"
+      },
+      "branch_address": null,
+      "proprietors": [
+        {
+          "surname": "Okonkwo",
+          "forenames": "Joyce Adanna",
+          "nationality": "Nigerian",
+          "dob": "1987-05-14",
+          "gender": "Female",
+          "phone": "08031234567",
+          "id_number": "NIN-12345678901",
+          "id_type": "National ID",
+          "email": "joyce@joyceventures.com",
+          "occupation": "Business Owner",
+          "residential_address": {
+            "number": "45",
+            "street": "Ikorodu Road",
+            "city": "Yaba",
+            "lga": "Yaba",
+            "postal_code": "100242",
+            "state": "Lagos"
+          },
+          "service_address": {
+            "number": "12",
+            "street": "Awolowo Road",
+            "city": "Ikoyi",
+            "lga": "Eti-Osa",
+            "postal_code": "101233",
+            "state": "Lagos"
+          }
+        }
+      ],
+      "corporate_partner": null,
+      "authentication": {
+        "name": "Joyce Okonkwo",
+        "email": "joyce@joyceventures.com"
+      },
+      "presented_by": {
+        "name": "Joyce Okonkwo",
+        "address": "12 Awolowo Road, Ikoyi",
+        "phone": "08031234567",
+        "email": "joyce@joyceventures.com",
+        "accreditation_number": null
+      },
+      "annual_return_period": "2025-01-01 to 2025-12-31",
+      "financial_year_end": "2025-12-31",
+      "turnover": 12000000,
+      "total_net_assets": 4500000
+    },
+  ],
+  "companies": [
+    {
+      "rc_number": "RC-1234567",
+      "company_name": "TechBridge Solutions Ltd",
+      "company_type": "Private company limited by shares (other than small)",
+      "registration_date": "2020-03-10",
+      "registered_office": {
+        "number": "Plot 42",
+        "street": "Adetokunbo Ademola Crescent",
+        "city": "Wuse 2",
+        "lga": "Municipal",
+        "state": "FCT"
+      },
+      "head_office": null,
+      "register_location": {
+        "number": "Plot 42",
+        "street": "Adetokunbo Ademola Crescent",
+        "city": "Wuse 2",
+        "lga": "Municipal",
+        "state": "FCT"
+      },
+      "principal_activity": "Software Development and IT Consulting",
+      "specific_activity": "Custom Software Development",
+      "activity_description": "Building enterprise web applications",
+      "officers": {
+        "corporate_secretary": null,
+        "individual_secretary": {
+          "title": "Mr",
+          "forenames": "Chidi",
+          "surname": "Okeke",
+          "former_names": "",
+          "nationality": "Nigerian",
+          "service_address": {
+            "number": "Plot 42",
+            "street": "Adetokunbo Ademola Crescent",
+            "city": "Wuse 2",
+            "lga": "Municipal",
+            "state": "FCT"
+          },
+          "phone": "08091234560",
+          "email": "chidi@techbridgenig.com"
+        },
+        "directors": [
+          {
+            "title": "Mr",
+            "forenames": "Emeka",
+            "surname": "Nwosu",
+            "former_names": "",
+            "country_residence": "Nigeria",
+            "nationality": "Nigerian",
+            "dob": "1982-08-22",
+            "business_occupation": "CEO",
+            "phone": "08012345678",
+            "email": "emeka@techbridgenig.com",
+            "service_address": {
+              "number": "Plot 42",
+              "street": "Adetokunbo Ademola Crescent",
+              "city": "Wuse 2",
+              "lga": "Municipal",
+              "state": "FCT"
+            }
+          }
+        ]
+      },
+      "share_capital": {
+        "classes": [
+          {
+            "class": "Ordinary",
+            "number_of_shares": 1000000,
+            "aggregate_nominal_value": 1000000,
+            "total_unpaid": 0
+          }
+        ],
+        "particulars": "Each ordinary share carries one vote. Right to dividends as declared. Right to participate in distribution upon winding up. No redemption rights."
+      },
+      "indebtedness": 0,
+      "past_members": [],
+      "turnover": 55000000,
+      "net_assets": 18000000,
+      "psc_natural": [],
+      "authentication": {
+        "name": "Emeka Nwosu",
+        "description": "Director"
+      },
+      "presented_by": {
+        "name": "Chidi Okeke",
+        "address": "Plot 42 Adetokunbo Ademola Crescent, Wuse 2, Abuja",
+        "phone": "08091234500",
+        "email": "filing@techbridgenig.com",
+        "accreditation_number": "CAC/ACC/009876"
+      }
+    }
+  ]
+}
