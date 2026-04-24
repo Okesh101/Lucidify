@@ -7,6 +7,8 @@ import { useEffect } from 'react'
 // @ts-ignore
 import AOS from 'aos'
 import Auth from './Auth/Auth'
+import { Toaster } from 'react-hot-toast'
+import Registration from './pages/Registration/Registration'
 
 function App() {
   
@@ -20,12 +22,16 @@ function App() {
   
 
   return (
-    <Routes>
-      <Route path='/' element={<LandingPage/>} />
-      <Route path='/about' element={<About/>}/>
-      <Route path='/how_it_works' element={<HowItWorks/>}/>
-      <Route path='/authentication' element={<Auth/>}/>
-    </Routes>
+    <>
+      <Toaster toastOptions={{duration: 2000}}/>
+      <Routes>
+        <Route path='/' element={<LandingPage/>} />
+        <Route path='/about' element={<About/>}/>
+        <Route path='/how_it_works' element={<HowItWorks/>}/>
+        <Route path='/authentication' element={<Auth/>}/>
+        <Route path='/registration' element={<Registration/>}/>
+      </Routes>
+    </>
   )
 }
 
