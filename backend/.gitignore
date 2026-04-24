@@ -5,5 +5,7 @@ __pycache__/
 env/
 venv/
 
+.db
+
 # Environment variables file
 .env
