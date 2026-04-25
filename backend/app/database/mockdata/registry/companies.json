@@ -1,0 +1,352 @@
+{
+  "RC-1234567": { 
+    "rc_number": "RC-1234567",
+    "company_name": "TechBridge Solutions Ltd",
+    "company_type": "Private company limited by shares (other than small)",
+    "registration_date": "2020-03-10",
+    "registered_office": {
+      "number": "Plot 42",
+      "street": "Adetokunbo Ademola Crescent",
+      "city": "Wuse 2",
+      "lga": "Municipal",
+      "state": "FCT"
+    },
+    "head_office": null,
+    "register_location": {
+      "number": "Plot 42",
+      "street": "Adetokunbo Ademola Crescent",
+      "city": "Wuse 2",
+      "lga": "Municipal",
+      "state": "FCT"
+    },
+    "principal_activity": "Software Development and IT Consulting",
+    "specific_activity": "Custom Software Development",
+    "activity_description": "Building enterprise web applications",
+    "officers": {
+      "corporate_secretary": null,
+      "individual_secretary": {
+        "title": "Mr",
+        "forenames": "Chidi",
+        "surname": "Okeke",
+        "former_names": "",
+        "nationality": "Nigerian",
+        "service_address": {
+          "number": "Plot 42",
+          "street": "Adetokunbo Ademola Crescent",
+          "city": "Wuse 2",
+          "lga": "Municipal",
+          "state": "FCT"
+        },
+        "phone": "08091234560",
+        "email": "chidi@techbridgenig.com"
+      },
+      "directors": [
+        {
+          "title": "Mr",
+          "forenames": "Emeka",
+          "surname": "Nwosu",
+          "former_names": "",
+          "country_residence": "Nigeria",
+          "nationality": "Nigerian",
+          "dob": "1982-08-22",
+          "business_occupation": "CEO",
+          "phone": "08012345678",
+          "email": "emeka@techbridgenig.com",
+          "service_address": {
+            "number": "Plot 42",
+            "street": "Adetokunbo Ademola Crescent",
+            "city": "Wuse 2",
+            "lga": "Municipal",
+            "state": "FCT"
+          }
+        }
+      ]
+    },
+    "share_capital": {
+      "classes": [
+        {
+          "class": "Ordinary",
+          "number_of_shares": 1000000,
+          "aggregate_nominal_value": 1000000,
+          "total_unpaid": 0
+        }
+      ],
+      "particulars": "Each ordinary share carries one vote. Right to dividends as declared. Right to participate in distribution upon winding up. No redemption rights."
+    },
+    "indebtedness": 0,
+    "past_members": [],
+    "turnover": 55000000,
+    "net_assets": 18000000,
+    "psc_natural": [],
+    "authentication": {
+      "name": "Emeka Nwosu",
+      "description": "Director"
+    },
+    "presented_by": {
+      "name": "Chidi Okeke",
+      "address": "Plot 42 Adetokunbo Ademola Crescent, Wuse 2, Abuja",
+      "phone": "08091234500",
+      "email": "filing@techbridgenig.com",
+      "accreditation_number": "CAC/ACC/009876"
+    }
+  },
+  "RC-2345678": {
+    "rc_number": "RC-2345678",
+    "company_name": "GreenFarm Agro Ltd",
+    "company_type": "Private company limited by shares (other than small)",
+    "registration_date": "2019-06-12",
+    "registered_office": {
+      "number": "Plot 8",
+      "street": "Old Abeokuta Road",
+      "city": "Abeokuta",
+      "lga": "Abeokuta South",
+      "state": "Ogun"
+    },
+    "head_office": null,
+    "register_location": {
+      "number": "Plot 8",
+      "street": "Old Abeokuta Road",
+      "city": "Abeokuta",
+      "lga": "Abeokuta South",
+      "state": "Ogun"
+    },
+    "principal_activity": "Agriculture",
+    "specific_activity": "Crop Farming",
+    "activity_description": "Cassava and maize farming",
+    "officers": {
+      "corporate_secretary": null,
+      "individual_secretary": {
+        "title": "Mrs",
+        "forenames": "Ngozi",
+        "surname": "Umeh",
+        "former_names": "",
+        "nationality": "Nigerian",
+        "service_address": {
+          "number": "Plot 8",
+          "street": "Old Abeokuta Road",
+          "city": "Abeokuta",
+          "lga": "Abeokuta South",
+          "state": "Ogun"
+        },
+        "phone": "08022334455",
+        "email": "ngozi@greenfarm.com"
+      },
+      "directors": [
+        {
+          "title": "Mr",
+          "forenames": "Tunde",
+          "surname": "Balogun",
+          "former_names": "",
+          "country_residence": "Nigeria",
+          "nationality": "Nigerian",
+          "dob": "1980-04-15",
+          "business_occupation": "Farmer",
+          "phone": "08011223344",
+          "email": "tunde@greenfarm.com",
+          "service_address": {
+            "number": "Plot 8",
+            "street": "Old Abeokuta Road",
+            "city": "Abeokuta",
+            "lga": "Abeokuta South",
+            "state": "Ogun"
+          }
+        }
+      ]
+    },
+    "share_capital": {
+      "classes": [
+        {
+          "class": "Ordinary",
+          "number_of_shares": 500000,
+          "aggregate_nominal_value": 500000,
+          "total_unpaid": 0
+        }
+      ],
+      "particulars": "Standard voting rights and dividend rights."
+    },
+    "indebtedness": 2000000,
+    "past_members": [],
+    "turnover": 30000000,
+    "net_assets": 12000000,
+    "psc_natural": [],
+    "authentication": {
+      "name": "Tunde Balogun",
+      "description": "Director"
+    },
+    "presented_by": {
+      "name": "Ngozi Umeh",
+      "address": "Plot 8 Old Abeokuta Road, Abeokuta",
+      "phone": "08022334455",
+      "email": "ngozi@greenfarm.com",
+      "accreditation_number": "CAC/ACC/002211"
+    }
+  },
+  "RC-3456789": {
+    "rc_number": "RC-3456789",
+    "company_name": "Skyline Construction Ltd",
+    "company_type": "Private company limited by shares (other than small)",
+    "registration_date": "2018-09-21",
+    "registered_office": {
+      "number": "22",
+      "street": "Ahmadu Bello Way",
+      "city": "Kaduna",
+      "lga": "Kaduna North",
+      "state": "Kaduna"
+    },
+    "head_office": null,
+    "register_location": {
+      "number": "22",
+      "street": "Ahmadu Bello Way",
+      "city": "Kaduna",
+      "lga": "Kaduna North",
+      "state": "Kaduna"
+    },
+    "principal_activity": "Construction",
+    "specific_activity": "Building Construction",
+    "activity_description": "Residential and commercial building projects",
+    "officers": {
+      "corporate_secretary": null,
+      "individual_secretary": null,
+      "directors": []
+    },
+    "share_capital": {
+      "classes": [
+        {
+          "class": "Ordinary",
+          "number_of_shares": 2000000,
+          "aggregate_nominal_value": 2000000,
+          "total_unpaid": 0
+        }
+      ],
+      "particulars": "Standard shareholder rights."
+    },
+    "indebtedness": 5000000,
+    "past_members": [],
+    "turnover": 80000000,
+    "net_assets": 25000000,
+    "psc_natural": [],
+    "authentication": {
+      "name": "Ahmed Musa",
+      "description": "Director"
+    },
+    "presented_by": {
+      "name": "Ahmed Musa",
+      "address": "22 Ahmadu Bello Way, Kaduna",
+      "phone": "08033445566",
+      "email": "admin@skyline.com",
+      "accreditation_number": "CAC/ACC/004455"
+    }
+  },
+  "RC-4567890": {
+    "rc_number": "RC-4567890",
+    "company_name": "OceanBlue Energy Ltd",
+    "company_type": "Private company limited by shares (other than small)",
+    "registration_date": "2021-01-18",
+    "registered_office": {
+      "number": "15",
+      "street": "Trans Amadi Industrial Layout",
+      "city": "Port Harcourt",
+      "lga": "Obio-Akpor",
+      "state": "Rivers"
+    },
+    "head_office": null,
+    "register_location": {
+      "number": "15",
+      "street": "Trans Amadi Industrial Layout",
+      "city": "Port Harcourt",
+      "lga": "Obio-Akpor",
+      "state": "Rivers"
+    },
+    "principal_activity": "Energy",
+    "specific_activity": "Oil Services",
+    "activity_description": "Offshore oil servicing",
+    "officers": {
+      "corporate_secretary": null,
+      "individual_secretary": null,
+      "directors": []
+    },
+    "share_capital": {
+      "classes": [
+        {
+          "class": "Ordinary",
+          "number_of_shares": 1500000,
+          "aggregate_nominal_value": 1500000,
+          "total_unpaid": 0
+        }
+      ],
+      "particulars": "Voting rights attached to shares."
+    },
+    "indebtedness": 10000000,
+    "past_members": [],
+    "turnover": 120000000,
+    "net_assets": 60000000,
+    "psc_natural": [],
+    "authentication": {
+      "name": "Henry Okafor",
+      "description": "Director"
+    },
+    "presented_by": {
+      "name": "Henry Okafor",
+      "address": "15 Trans Amadi, Port Harcourt",
+      "phone": "08099887711",
+      "email": "contact@oceanblue.com",
+      "accreditation_number": "CAC/ACC/007788"
+    }
+  },
+  "RC-5678901": {
+    "rc_number": "RC-5678901",
+    "company_name": "EduCore Learning Ltd",
+    "company_type": "Private company limited by shares (small company)",
+    "registration_date": "2022-05-05",
+    "registered_office": {
+      "number": "9",
+      "street": "University Road",
+      "city": "Nsukka",
+      "lga": "Nsukka",
+      "state": "Enugu"
+    },
+    "head_office": null,
+    "register_location": {
+      "number": "9",
+      "street": "University Road",
+      "city": "Nsukka",
+      "lga": "Nsukka",
+      "state": "Enugu"
+    },
+    "principal_activity": "Education",
+    "specific_activity": "E-learning",
+    "activity_description": "Online courses and tutorials",
+    "officers": {
+      "corporate_secretary": null,
+      "individual_secretary": null,
+      "directors": []
+    },
+    "share_capital": {
+      "classes": [
+        {
+          "class": "Ordinary",
+          "number_of_shares": 300000,
+          "aggregate_nominal_value": 300000,
+          "total_unpaid": 0
+        }
+      ],
+      "particulars": "Equal voting rights."
+    },
+    "indebtedness": 500000,
+    "past_members": [],
+    "turnover": 9000000,
+    "net_assets": 4000000,
+    "psc_natural": [],
+    "authentication": {
+      "name": "Grace Nnamdi",
+      "description": "Director"
+    },
+    "presented_by": {
+      "name": "Grace Nnamdi",
+      "address": "9 University Road, Nsukka",
+      "phone": "08066554433",
+      "email": "grace@educore.com",
+      "accreditation_number": "CAC/ACC/009911"
+    }
+  }
+}

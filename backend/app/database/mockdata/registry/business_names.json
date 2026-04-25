@@ -1,0 +1,302 @@
+{
+  "BN-2345678": {
+    "registration_number": "BN-2345678",
+    "business_name": "Joyce Ventures",
+    "general_nature": "General Trading and Logistics",
+    "principal_place": {
+      "number": "12",
+      "street": "Awolowo Road",
+      "city": "Ikoyi",
+      "lga": "Eti-Osa",
+      "postal_code": "101233",
+      "state": "Lagos"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Okonkwo",
+        "forenames": "Joyce Adanna",
+        "nationality": "Nigerian",
+        "dob": "1987-05-14",
+        "gender": "Female",
+        "phone": "08031234567",
+        "id_number": "NIN-12345678901",
+        "id_type": "National ID",
+        "email": "joyce@joyceventures.com",
+        "occupation": "Business Owner",
+        "residential_address": {
+          "number": "45",
+          "street": "Ikorodu Road",
+          "city": "Yaba",
+          "lga": "Yaba",
+          "postal_code": "100242",
+          "state": "Lagos"
+        },
+        "service_address": {
+          "number": "12",
+          "street": "Awolowo Road",
+          "city": "Ikoyi",
+          "lga": "Eti-Osa",
+          "postal_code": "101233",
+          "state": "Lagos"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Joyce Okonkwo",
+      "email": "joyce@joyceventures.com"
+    },
+    "presented_by": {
+      "name": "Joyce Okonkwo",
+      "address": "12 Awolowo Road, Ikoyi",
+      "phone": "08031234567",
+      "email": "joyce@joyceventures.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 12000000,
+    "total_net_assets": 4500000
+  },
+  "BN-3456789": {
+    "registration_number": "BN-3456789",
+    "business_name": "Kemi Foods and Catering",
+    "general_nature": "Catering Services and Food Supply",
+    "principal_place": {
+      "number": "18",
+      "street": "Opebi Road",
+      "city": "Ikeja",
+      "lga": "Ikeja",
+      "postal_code": "100271",
+      "state": "Lagos"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Adebayo",
+        "forenames": "Kemi Oluwatoyin",
+        "nationality": "Nigerian",
+        "dob": "1990-02-11",
+        "gender": "Female",
+        "phone": "08034561234",
+        "id_number": "NIN-22345678901",
+        "id_type": "National ID",
+        "email": "kemi@kemifoods.com",
+        "occupation": "Caterer",
+        "residential_address": {
+          "number": "22",
+          "street": "Allen Avenue",
+          "city": "Ikeja",
+          "lga": "Ikeja",
+          "postal_code": "100281",
+          "state": "Lagos"
+        },
+        "service_address": {
+          "number": "18",
+          "street": "Opebi Road",
+          "city": "Ikeja",
+          "lga": "Ikeja",
+          "postal_code": "100271",
+          "state": "Lagos"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Kemi Adebayo",
+      "email": "kemi@kemifoods.com"
+    },
+    "presented_by": {
+      "name": "Kemi Adebayo",
+      "address": "18 Opebi Road, Ikeja",
+      "phone": "08034561234",
+      "email": "kemi@kemifoods.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 8500000,
+    "total_net_assets": 3200000
+  },
+  "BN-4567890": {
+    "registration_number": "BN-4567890",
+    "business_name": "BrightTech Repairs",
+    "general_nature": "Phone and Laptop Repairs",
+    "principal_place": {
+      "number": "7",
+      "street": "Mission Road",
+      "city": "Benin City",
+      "lga": "Oredo",
+      "postal_code": "300001",
+      "state": "Edo"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Eze",
+        "forenames": "Samuel Chukwudi",
+        "nationality": "Nigerian",
+        "dob": "1995-07-09",
+        "gender": "Male",
+        "phone": "08055667788",
+        "id_number": "NIN-32345678901",
+        "id_type": "National ID",
+        "email": "samuel@brighttech.com",
+        "occupation": "Technician",
+        "residential_address": {
+          "number": "3",
+          "street": "Ugbowo Street",
+          "city": "Benin City",
+          "lga": "Oredo",
+          "postal_code": "300002",
+          "state": "Edo"
+        },
+        "service_address": {
+          "number": "7",
+          "street": "Mission Road",
+          "city": "Benin City",
+          "lga": "Oredo",
+          "postal_code": "300001",
+          "state": "Edo"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Samuel Eze",
+      "email": "samuel@brighttech.com"
+    },
+    "presented_by": {
+      "name": "Samuel Eze",
+      "address": "7 Mission Road, Benin City",
+      "phone": "08055667788",
+      "email": "samuel@brighttech.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 4200000,
+    "total_net_assets": 1500000
+  },
+  "BN-5678901": {
+    "registration_number": "BN-5678901",
+    "business_name": "Zainab Fashion House",
+    "general_nature": "Tailoring and Fashion Design",
+    "principal_place": {
+      "number": "10",
+      "street": "Ahmadu Bello Way",
+      "city": "Kaduna",
+      "lga": "Kaduna North",
+      "postal_code": "800211",
+      "state": "Kaduna"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Sule",
+        "forenames": "Zainab Musa",
+        "nationality": "Nigerian",
+        "dob": "1992-11-03",
+        "gender": "Female",
+        "phone": "08099887766",
+        "id_number": "NIN-42345678901",
+        "id_type": "National ID",
+        "email": "zainab@fashionhouse.com",
+        "occupation": "Fashion Designer",
+        "residential_address": {
+          "number": "25",
+          "street": "Kawo Road",
+          "city": "Kaduna",
+          "lga": "Kaduna North",
+          "postal_code": "800212",
+          "state": "Kaduna"
+        },
+        "service_address": {
+          "number": "10",
+          "street": "Ahmadu Bello Way",
+          "city": "Kaduna",
+          "lga": "Kaduna North",
+          "postal_code": "800211",
+          "state": "Kaduna"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Zainab Sule",
+      "email": "zainab@fashionhouse.com"
+    },
+    "presented_by": {
+      "name": "Zainab Sule",
+      "address": "10 Ahmadu Bello Way, Kaduna",
+      "phone": "08099887766",
+      "email": "zainab@fashionhouse.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 6700000,
+    "total_net_assets": 2100000
+  },
+  "BN-6789012": {
+    "registration_number": "BN-6789012",
+    "business_name": "NorthGate Logistics",
+    "general_nature": "Delivery and Logistics Services",
+    "principal_place": {
+      "number": "5",
+      "street": "Zoo Road",
+      "city": "Kano",
+      "lga": "Nassarawa",
+      "postal_code": "700211",
+      "state": "Kano"
+    },
+    "branch_address": null,
+    "proprietors": [
+      {
+        "surname": "Abdullahi",
+        "forenames": "Ibrahim Sadiq",
+        "nationality": "Nigerian",
+        "dob": "1988-06-18",
+        "gender": "Male",
+        "phone": "08077665544",
+        "id_number": "NIN-52345678901",
+        "id_type": "National ID",
+        "email": "ibrahim@northgate.com",
+        "occupation": "Logistics Manager",
+        "residential_address": {
+          "number": "14",
+          "street": "Sabon Gari",
+          "city": "Kano",
+          "lga": "Nassarawa",
+          "postal_code": "700212",
+          "state": "Kano"
+        },
+        "service_address": {
+          "number": "5",
+          "street": "Zoo Road",
+          "city": "Kano",
+          "lga": "Nassarawa",
+          "postal_code": "700211",
+          "state": "Kano"
+        }
+      }
+    ],
+    "corporate_partner": null,
+    "authentication": {
+      "name": "Ibrahim Abdullahi",
+      "email": "ibrahim@northgate.com"
+    },
+    "presented_by": {
+      "name": "Ibrahim Abdullahi",
+      "address": "5 Zoo Road, Kano",
+      "phone": "08077665544",
+      "email": "ibrahim@northgate.com",
+      "accreditation_number": null
+    },
+    "annual_return_period": "2025-01-01 to 2025-12-31",
+    "financial_year_end": "2025-12-31",
+    "turnover": 15000000,
+    "total_net_assets": 5000000
+  }
+}
