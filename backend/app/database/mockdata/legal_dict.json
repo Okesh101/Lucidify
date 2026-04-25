@@ -1,22 +1,18 @@
 {
   "company_types": [
-    "Small company",
-    "Private company limited by shares (other than small)",
-    "Company limited by guarantee",
-    "Public company"
+    "Private Company Limited by Shares",
+    "Public Company Limited by Shares",
+    "Company Limited by Guarantee",
+    "Unlimited Company",
+    "Business Name",
+    "Incorporated Trustees"
   ],
-  "states": [
-    "Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno",
-    "Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","Gombe","Imo","Jigawa",
-    "Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa","Niger",
-    "Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara","FCT"
+  "valid_states": [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
+    "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu",
+    "FCT", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi",
+    "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo", "Osun",
+    "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT"
   ],
-  "lga_by_state": {
-    "Lagos": ["Agege","Ajeromi-Ifelodun","Alimosho","Amuwo-Odofin","Apapa","Badagry","Epe","Eti-Osa","Ibeju-Lekki","Ifako-Ijaiye","Ikeja","Ikorodu","Kosofe","Lagos Island","Lagos Mainland","Mushin","Ojo","Oshodi-Isolo","Shomolu","Surulere"],
-    "FCT": ["Abaji","Bwari","Gwagwalada","Kuje","Kwali","Municipal"]
-  }, 
-  "gender_options": ["Male","Female","Non-binary","Prefer not to say"],
-  "id_types": ["National ID","International Passport","Driver's License","Voter's Card"],
-  "share_classes": ["Ordinary","Preference","Redeemable Preference"],
-  "psc_interest_types": ["Shares","Voting rights","Appoint/remove majority directors","Significant influence or control","Control over trust or firm"]
+  "filing_purposes": ["Annual Return", "Change of Directors", "Change of Address", "Increase in Share Capital"]
 }
