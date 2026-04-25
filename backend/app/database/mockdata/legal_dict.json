@@ -14,7 +14,7 @@
   "lga_by_state": {
     "Lagos": ["Agege","Ajeromi-Ifelodun","Alimosho","Amuwo-Odofin","Apapa","Badagry","Epe","Eti-Osa","Ibeju-Lekki","Ifako-Ijaiye","Ikeja","Ikorodu","Kosofe","Lagos Island","Lagos Mainland","Mushin","Ojo","Oshodi-Isolo","Shomolu","Surulere"],
     "FCT": ["Abaji","Bwari","Gwagwalada","Kuje","Kwali","Municipal"]
-  },
+  }, 
   "gender_options": ["Male","Female","Non-binary","Prefer not to say"],
   "id_types": ["National ID","International Passport","Driver's License","Voter's Card"],
   "share_classes": ["Ordinary","Preference","Redeemable Preference"],
