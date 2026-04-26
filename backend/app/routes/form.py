@@ -3,6 +3,7 @@ from app.wrappers.user_required import user_required
 from app.services.prompts import build_prompt
 from app.services.aiService import ai_extract
 from app.services.validator import validate_output
+from app.database.mockdata.helpers import loadRegistryJSON
 
 form_bp = Blueprint("form_bp", __name__, url_prefix="/api/v1")
 
@@ -17,9 +18,26 @@ def extract_endpoint(user_id):
         return jsonify({"status": "ERROR",
                         "code": 400,
                         "message": "Missing entity type or answers"}), 400
+    
+    # Look up the stored data using the appropriate ID
+    stored_data = {}
+    try:
+        if entity_type == "business_name":
+            BMOCK_DATA = loadRegistryJSON("business_names.json")
+            bn = answers.get("bn_number", "")
+            if bn and bn in BMOCK_DATA:
+                stored_data = BMOCK_DATA[bn]
+        elif entity_type == "ltd_company":
+            CMOCK_DATA = loadRegistryJSON("companies.json")
+            rc = answers.get("rc_number", "")
+            if rc and rc in CMOCK_DATA:
+                stored_data = CMOCK_DATA[rc]
+    except Exception:
+        print(f"Error loading data: {e}")
+        stored_data = {}   # fallback if mock data not found
 
     # Build prompt
-    system_prompt, user_prompt = build_prompt(entity_type, answers)
+    system_prompt, user_prompt = build_prompt(entity_type, answers, stored_data)
 
     # Call AI service (choose Gemini or Groq)
     try:

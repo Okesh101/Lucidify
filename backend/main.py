@@ -12,10 +12,12 @@ def create_app():
 	from app.routes.health import health_bp
 	from app.routes.auth import auth_bp
 	from app.routes.registration import registration_bp
+	from app.routes.form import form_bp
 
 	app.register_blueprint(health_bp)
 	app.register_blueprint(auth_bp)
 	app.register_blueprint(registration_bp)
+	app.register_blueprint(form_bp)
 
 	return app
 
