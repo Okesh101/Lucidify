@@ -11,16 +11,13 @@ export default function CurrentTabNumber() {
 
   const location = useLocation()
   const currentStep = 1;
-// ${index + 1 <= currentStep 
-//                 ? "bg-green-600 text-white" 
-//                 : "bg-gray-200 text-gray-500"}
   return (
     <header className="flex mx-auto">
       {steps.map((step, index) => (
         <div key={index} className=" w-full">
 
           {/* STEP */}
-          <div className="flex items-center">
+          <div className="flex items-center w-50 mx-auto">
             <div
               className={`w-10 h-10 flex font-[Onest] items-center justify-center rounded-full text-lg font-medium
               ${location.pathname === step.pathname

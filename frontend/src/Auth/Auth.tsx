@@ -151,10 +151,10 @@ export default function Auth() {
     });
   }
   return (
-    <div className="min-h-screen bg-radial from-[#e2dede85] to-[#cecccc8c] flex items-center justify-center px-6">
+    <div className="min-h-screen bg-radial from-[#e2dede85] to-[#cecccc8c] flex items-center justify-center px-3 md:px-6">
       <AnimatePresence mode="wait">
         <motion.div 
-          className="w-full max-w-md bg-white rounded-2xl p-8 shadow-xl mt-3 mb-3"
+          className="w-full max-w-md bg-white rounded-2xl p-4 md:p-8 shadow-xl mt-3 mb-3"
           key={mode}
           initial={{ opacity: 0, y: 30, }}
           animate={{ opacity: 1, y: 0,}}
