@@ -3,11 +3,10 @@ import Navbar from "../components/nav/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 
 interface Props {
-  number?: string,
-  title: string,
-  desc?: string
+  number?: string;
+  title: string;
+  desc?: string;
 }
-
 
 function Step({ number, title, desc }: Props) {
   return (
@@ -16,7 +15,7 @@ function Step({ number, title, desc }: Props) {
         {number}
       </div>
       <h3 className="mt-4 font-semibold text-lg font-[Montserrat]">{title}</h3>
-      <p className="mt-2 text-xs text-gray-300 font-[Onest]">{desc}</p>
+      <p className="mt-2 text-xs text-gray-600 font-[Onest]">{desc}</p>
     </div>
   );
 }
@@ -31,13 +30,11 @@ function FlowBox({ title }: Props) {
 
 function Arrow() {
   return (
-    <div className="text-[#16A34A] text-2xl font-bold hidden md:block">
-      →
-    </div>
+    <div className="text-[#16A34A] text-2xl font-bold hidden md:block">→</div>
   );
 }
 
-function InfoCard({ title, desc } : Props) {
+function InfoCard({ title, desc }: Props) {
   return (
     <div className="bg-gray-300 border border-white/10 p-6 rounded-xl">
       <h3 className="font-semibold text-lg font-[Montserrat]">{title}</h3>
@@ -47,23 +44,21 @@ function InfoCard({ title, desc } : Props) {
 }
 
 export default function HowItWorks() {
-
   // Imported the function from ScrollToTop Component
   ScrollToTop();
 
-
-  const navigate = useNavigate()
-// bg-[#0B1F3A]
-// text-white
+  const navigate = useNavigate();
+  // bg-[#0B1F3A]
+  // text-white
   return (
     <div className="min-h-screen bg-white text-black">
-      <Navbar/>
-      <div className="max-w-6xl mx-auto pt-30 " data-aos= "zoom-in">
+      <Navbar />
+      <div className="max-w-6xl mx-auto pt-30 " data-aos="zoom-in">
         {/* HEADER */}
         <div className="text-center">
           <h1 className="text-4xl font-bold font-[Nunito]">How It Works</h1>
-          <p className="mt-4 text-gray-300 font-[Unbounded] text-sm">
-            From RC number to ready-to-submit CAC filing in under 4 minutes.
+          <p className="mt-4 text-gray-700 font-[Unbounded] text-sm">
+            From BN number to ready-to-submit CAC filing in under 4 minutes.
           </p>
         </div>
 
@@ -110,7 +105,9 @@ export default function HowItWorks() {
 
         {/* WHY IT WORKS */}
         <section className="mt-20 text-center">
-          <h2 className="text-2xl font-semibold font-[Nunito]">Why This Works</h2>
+          <h2 className="text-2xl font-semibold font-[Nunito]">
+            Why This Works
+          </h2>
 
           <div className="grid md:grid-cols-3 gap-6 mt-10">
             <InfoCard
@@ -131,9 +128,14 @@ export default function HowItWorks() {
         {/* CTA */}
         <section className="mt-18 text-center  bg-green-950 border border-white/10 text-white p-10 rounded-xl">
           <h2 className="text-3xl font-bold font-[Nunito]">Ready to Try It?</h2>
-          <p className="mt-3 font-[Onest] text-gray-300">Complete your filing in under 4 minutes.</p>
+          <p className="mt-3 font-[Onest] text-gray-300">
+            Complete your filing in under 4 minutes.
+          </p>
 
-          <button className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider" onClick={() => navigate('/authentication')}>
+          <button
+            className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider"
+            onClick={() => navigate("/authentication")}
+          >
             Start Filing Now
           </button>
         </section>
@@ -146,4 +148,3 @@ export default function HowItWorks() {
     </div>
   );
 }
-

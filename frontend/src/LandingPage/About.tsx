@@ -15,7 +15,7 @@ function Card({ title, children }: CardProps) {
   return (
     <div className="border border-green-900 p-6 rounded-xl">
       <h3 className="font-semibold text-lg font-[Montserrat]">{title}</h3>
-      <p className="mt-2 text-gray-300 text-sm font-[Onest]">{children}</p>
+      <p className="mt-2 text-gray-600 text-sm font-[Onest]">{children}</p>
     </div>
   );
 }
@@ -95,7 +95,7 @@ export default function About() {
 
           <div className="grid md:grid-cols-3 gap-6 mt-6">
             <Card title="Auto Fetch">
-              Enter your RC number and we pre-fill your company details instantly.
+              Enter your BN number and we pre-fill your company details instantly.
             </Card>
             <Card title="Guided Questions">
               Answer simple questions in plain English — no legal jargon.
@@ -117,7 +117,7 @@ export default function About() {
           <div className="border-b border-gray-800">
             <div className="p-6">
               <h2 className="text-2xl font-semibold font-[Nunito]">Why This Matters</h2>
-              <p className="mt-4 text-gray-300 leading-relaxed font-[Onest]">
+              <p className="mt-4 text-gray-600 leading-relaxed font-[Onest]">
                 Compliance is not optional — but it shouldn’t slow down your business.
                 By removing complexity, we help SMEs stay compliant, avoid penalties,
                 and focus on growth instead of paperwork.
@@ -127,7 +127,7 @@ export default function About() {
 
           <div className="flex flex-col md:flex-row gap-8">
             <section className="flex-1 p-6">
-              <div className=" text-gray-300">
+              <div className=" text-gray-600">
               <h3 className="text-lg font-semibold mb-3 font-[Nunito]">
                 Anti-Hallucination Guarantee
               </h3>
@@ -148,7 +148,7 @@ export default function About() {
             <div className="hidden md:block w-px bg-gray-800"></div>
 
             <section className="flex-1 p-6">
-            <div className=" text-gray-300">
+            <div className=" text-gray-600">
               <h3 className="text-lg font-semibold mb-3 font-[Nunito]">Disclaimer</h3>
 
               <p className="font-[Onest]">

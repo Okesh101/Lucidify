@@ -77,7 +77,7 @@ export default function Auth() {
       if (isValid) {
         setErrors({ firstName: "", lastName: "", email: "", password: "" });
         try {
-          const res = await fetch(`/api/v1/${tab}`, {
+          const res = await fetch(`/api/v1/auth/${tab}`, {
             method: 'POST',
             headers: {"Content-Type" : "application/json"},
             body: JSON.stringify({"AuthDetails": form})

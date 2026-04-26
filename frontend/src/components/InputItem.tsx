@@ -2,10 +2,10 @@ interface ItemProp{
     name: string,
     type: string,
     placeholder: string,
-    title: string,
-    errorMssg: string
-    value: string
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    title?: string,
+    errorMssg?: string
+    value?: string
+    handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     labelStyle? :string
     fieldsetStyle?: string
 }

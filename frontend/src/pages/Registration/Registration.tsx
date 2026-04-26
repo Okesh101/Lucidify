@@ -36,7 +36,7 @@ export default function Registration() {
                     <RegistrationItem 
                         type="miniBusiness"
                         title=" Small Business / Business Name"
-                        desc=" Sole proprietorships and registered business names."
+                        pb-5 desc=" Sole proprietorships and registered business names."
                         icon={<Store className="text-green-700" size={40} />}
                         selectedCard={cardSelected}
                         setSelectedCard={setCardSelected}
