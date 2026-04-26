@@ -2,10 +2,19 @@ import { TextInput, StyleSheet} from "react-native";
 
 
 
-const Input = ({title, type, value,onChangeText, security}) => {
+const Input = ({title, type, value,onChangeText, security, style}) => {
     return(
         
-        <TextInput secureTextEntry={security} keyboardType={type} placeholder={title} placeholderTextColor="#0000006d" value={value} onChangeText={onChangeText} style={styles.TextInput}></TextInput>
+        <TextInput 
+        secureTextEntry={security} 
+        keyboardType={type} 
+        placeholder={title} 
+        placeholderTextColor="#0000006d" 
+        value={value} 
+        onChangeText={onChangeText} 
+        style={[styles.TextInput, style]}>
+
+        </TextInput>
     )
 }
 
