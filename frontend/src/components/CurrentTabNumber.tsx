@@ -1,8 +1,19 @@
-const steps = ["Type", "Questions", "Verification", "Review"];
+import { useLocation } from "react-router-dom";
+
+const steps = [
+  {title: "Type", pathname: "/registration"},
+  {title: "Verification", pathname: "/verification"},
+  {title: "Questions", pathname: "/question"},
+  {title: "Review", pathname: "/review"}
+];
 
 export default function CurrentTabNumber() {
-  const currentStep = 1;
 
+  const location = useLocation()
+  const currentStep = 1;
+// ${index + 1 <= currentStep 
+//                 ? "bg-green-600 text-white" 
+//                 : "bg-gray-200 text-gray-500"}
   return (
     <header className="flex mx-auto">
       {steps.map((step, index) => (
@@ -12,9 +23,10 @@ export default function CurrentTabNumber() {
           <div className="flex items-center">
             <div
               className={`w-10 h-10 flex font-[Onest] items-center justify-center rounded-full text-lg font-medium
-              ${index + 1 <= currentStep 
+              ${location.pathname === step.pathname
                 ? "bg-green-600 text-white" 
-                : "bg-gray-200 text-gray-500"}`}
+                : "bg-gray-200 text-gray-500"}
+                `}
             >
               {index + 1}
             </div>
@@ -33,7 +45,7 @@ export default function CurrentTabNumber() {
             
            
           </div>
-           <p className="text-sm mt-2 ml-1 font-[Nunito] font-semibold text-gray-600">{step}</p>
+           <p className="text-sm mt-2 ml-1 font-[Nunito] font-semibold text-gray-600">{step.title}</p>
         </div>
       ))}
     </header>

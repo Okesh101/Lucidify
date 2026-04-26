@@ -12,15 +12,25 @@ interface CardProps{
     setSelectedCard: (type:string) => void
 }
 export default function RegistrationItem({type, title, desc, icon, selectedCard, setSelectedCard}: CardProps) {
-    const[rcNumber, setRcNumber] = useState<string>("")
+    const[bnNumber, setBnNumber] = useState<string>("")
     const [error, setError] = useState<string>("")
 
     const isActive = selectedCard === type
 
-    const handleNext = () => {
-        if(!rcNumber) {
+    const handleNext = async() => {
+        if(!bnNumber) {
             setError("This Field is Required")
         }
+        try {
+            const res = await fetch("/api/v1/verify-registration", {
+                method: "POST",
+                headers: {"Content-Type" : "application/json"},
+                body: JSON.stringify({"BN_Number": bnNumber})
+            })
+        } catch (error) {
+            
+        }
+        // /api/v1/verify-registration
     }
     return(
         <motion.div 
@@ -58,11 +68,11 @@ export default function RegistrationItem({type, title, desc, icon, selectedCard,
                     <InputItem 
                         name='rc_number' 
                         type='text' 
-                        placeholder='Please input a valid RC Number' 
-                        title='RC Number' 
+                        placeholder='Please input a valid BN Number' 
+                        title='BN Number' 
                         errorMssg={error}
-                        value={rcNumber}
-                        handleChange={(e:React.ChangeEvent<HTMLInputElement>) => setRcNumber(e.target.value)}
+                        value={bnNumber}
+                        handleChange={(e:React.ChangeEvent<HTMLInputElement>) => setBnNumber(e.target.value)}
                         fieldsetStyle="bg-white p-4 w-full"
                         labelStyle="w-40 text-gray-600"
                     />
