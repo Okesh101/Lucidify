@@ -2,9 +2,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Input from "../components/input";
 import Button from "../components/button";
-import { act, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "expo-router";
 
 const HomeLayout = () => {
+  const router = useRouter();
   // State to track the active tab
   const [activeTab, setActiveTab] = useState("login");
   return (
@@ -60,7 +62,7 @@ const HomeLayout = () => {
               activeTab === "login" ? styles.activeTab : styles.inactiveTab
             }
             // Function to set the active tab to be login when clicked on it 
-            onPress={() => setActiveTab("login")}
+            onPress={() => setActiveTab("login") }
           >
             {/* Conditionally rendered the text style  */}
             <Text
@@ -175,7 +177,16 @@ const HomeLayout = () => {
         </View>
 
           {/* Conditionally rendered the text content based on the tab  */}
-        <Button title={activeTab === 'login' ? "Login" : "Sign Up"} />
+        <Button
+          title={activeTab === 'login' ? "Login" : "Sign Up"}
+          onPress={() => {
+            if (activeTab === 'login') {
+              router.push('/dashboard');
+            } else {
+              setActiveTab('login');
+            }
+          }}
+        />
       </View>
     </SafeAreaView>
   );
