@@ -8,7 +8,7 @@ import { useState } from "react"
 export default function Registration() {
     const [cardSelected, setCardSelected]= useState<string>('')
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 min-h-screen">
         <div className="max-w-5xl mx-auto py-10 px-4">
 
             <CurrentTabNumber />

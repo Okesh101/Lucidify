@@ -53,7 +53,7 @@ export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
-      <div className="max-w-6xl mx-auto pt-30 " data-aos="zoom-in">
+      <div className="max-w-6xl mx-auto pt-20 md:pt-30 p-6 md:p-4" data-aos="zoom-in">
         {/* HEADER */}
         <div className="text-center">
           <h1 className="text-4xl font-bold font-[Nunito]">How It Works</h1>
