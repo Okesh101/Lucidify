@@ -73,7 +73,7 @@ Important rules:
 def build_prompt(entity_type: str, answers: dict, stored_data: dict = None) -> tuple:
     if stored_data is None:
         stored_data = {}
-    print(stored_data)
+    # print(stored_data)
 
     if entity_type == "business_name":
         system_prompt = BN07_SYSTEM_PROMPT

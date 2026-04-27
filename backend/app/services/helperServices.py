@@ -155,3 +155,33 @@ def _validate_company(data: dict) -> list:
         e.append("'warnings' must be a list.")
 
     return e
+
+
+def build_company_info(stored: dict, entity_type: str) -> dict:
+    """Construct frontend‑ready company info from the stored mock data."""
+    if not stored:
+        return {}
+
+    if entity_type == "business_name":
+        pp = stored.get("principal_place", {})
+        return {
+            "business_name": stored.get("business_name", ""),
+            "bn_number": stored.get("registration_number", ""),
+            "business_type": stored.get("general_nature", ""),
+            "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "status": "Active",   # mocked – all our records are active
+            "entity_type": "business_name"
+        }
+    elif entity_type == "ltd_company":
+        pp = stored.get("registered_office", {})   # if available in company JSON
+        return {
+            "company_name": stored.get("company_name", ""),
+            "rc_number": stored.get("rc_number", ""),
+            "company_type": stored.get("company_type", "Private Company Limited by Shares"),
+            "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "status": "Active",
+            "financial_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "entity_type": "ltd_company"
+        }
+    else:
+        return {}
