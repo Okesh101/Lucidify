@@ -97,7 +97,7 @@ const HomeLayout = () => {
 
         <Text style={styles.welcomeText}>
           {/* Conditionally rendered the text content based on the tab  */}
-          {activeTab === "login" ? "Welcome back" : "Welcome"}
+          {activeTab === "login" ? "Welcome back" : "Create an Account"}
         </Text>
         <Text
           style={{ fontSize: 13, marginVertical: 10, fontFamily: "regular" }}
