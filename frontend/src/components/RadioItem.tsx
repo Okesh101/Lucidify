@@ -8,7 +8,7 @@ interface ItemProp {
   errorMssg?: string;
   value?: string;
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  // questionNo: string,
+  onRadioChange?: (value: string) => void;
   questionTitle: string;
   note?: string;
   inputNote?: string;
@@ -22,7 +22,7 @@ const RadioItem = ({
   errorMssg,
   handleChange,
   value,
-  //    questionNo,
+  onRadioChange,
   questionTitle,
   note,
   inputNote,
@@ -33,11 +33,15 @@ const RadioItem = ({
   const [selected, setSelected] = useState<string>("");
 
 const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
+  const radioValue = e.target.value;
 
-  setSelected(value);
-  setShowMessage(value === "yes");
-  setShowInput(value === "yes" && Boolean(inputNote));
+  setSelected(radioValue);
+  setShowMessage(radioValue === "yes");
+  setShowInput(radioValue === "yes" && Boolean(inputNote));
+  
+  if(onRadioChange) {
+    onRadioChange(radioValue);
+  }
 };
   return (
     <div className="space-y-2">
@@ -82,7 +86,11 @@ const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           <input
             type={inputNoteType || "text"}
             className="mt-1 p-3 border text-gray-800 border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#16A34A] font-[Onest]"
+            value={value || ""}
+            onChange={handleChange}
           />
+
+          {errorMssg && <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">{errorMssg}</p> }
         </div>
       ) : null}
     </div>

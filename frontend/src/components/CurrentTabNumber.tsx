@@ -12,9 +12,9 @@ export default function CurrentTabNumber() {
   const location = useLocation()
   const currentStep = 1;
   return (
-  <header className="flex mx-auto w-full max-w-3xl px-4">
+  <header className="flex max-w-3xl">
   {steps.map((step, index) => (
-    <div key={index} className="flex flex-col items-center flex-1">
+    <div key={index} className="flex flex-col items-start flex-1">
 
       {/* STEP */}
       <div className="flex items-center w-full">
@@ -30,7 +30,7 @@ export default function CurrentTabNumber() {
 
         {/* LINE */}
         {index < steps.length - 1 && (
-          <div className="flex-1 h-0.5 mx-2 md:mx-3">
+          <div className="flex-1 w-10 md:w-30 h-0.5 mx-2 md:mx-3">
             <div
               className={`h-full bg-gray-200 transition-all ${
                 index + 1 < currentStep ? "w-full" : "w-full"

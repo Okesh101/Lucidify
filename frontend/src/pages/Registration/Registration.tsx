@@ -9,7 +9,7 @@ export default function Registration() {
     const [cardSelected, setCardSelected]= useState<string>('')
   return (
     <div className="bg-gray-50 min-h-screen">
-        <div className="max-w-5xl mx-auto py-10 px-4">
+        <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
 
             <CurrentTabNumber />
 

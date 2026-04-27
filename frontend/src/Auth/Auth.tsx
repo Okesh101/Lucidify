@@ -58,6 +58,8 @@ export default function Auth() {
       if (!name.trim()) {
         setErrors(prev => ({ ...prev, [fieldName]: "This field is required" }));
         isValid = false;
+      } else {
+        setErrors(prev => ({ ...prev, [fieldName]: "" }));
       }
       return isValid;
     }
@@ -120,13 +122,12 @@ export default function Auth() {
             // Function showing the toast(notification) at the top of the page if an error occurs
             toast("Please try again later", {
               style: {
-                backgroundColor: "#fff",
+                 backgroundColor: "red",
                 boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                color: "#000",
-                padding: "12px 16px",
+                color: "#fff",
+                padding: "6px 10px",
                 borderRadius: "10px",
                 fontFamily: "DMMono",
-                letterSpacing: 0.8
               },
             });
           }
