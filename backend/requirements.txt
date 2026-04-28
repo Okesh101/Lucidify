@@ -6,3 +6,4 @@ gunicorn
 google-genai
 flask_apscheduler
 groq
+pypdf

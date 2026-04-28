@@ -4,6 +4,7 @@ type ItemProp = {
   pathname: string;
 };
 
+// JSX component for the navigation of the back button
 export const NavigateBack = ({ pathname }: ItemProp) => {
   const navigate = useNavigate();
 
@@ -19,6 +20,7 @@ export const NavigateBack = ({ pathname }: ItemProp) => {
   );
 };
 
+// JSX component for the navigation of the next button
 export const NavigateNext = ({ pathname }: ItemProp) => {
   const navigate = useNavigate();
 
@@ -32,6 +34,14 @@ export const NavigateNext = ({ pathname }: ItemProp) => {
       <span>&rarr;</span>
     </button>
   );
+};
+
+// Function to handle navigation for the next button without JSX
+export function HandleNavigateNext({ pathname }: ItemProp) {
+  // Using the useNavigate hook to programmatically navigate to the specified pathname
+  const navigate = useNavigate();
+  
+  navigate(`/${pathname}`)
 };
 
 // export default [{"NavigateBack":NavigateBack}, NavigateNext]

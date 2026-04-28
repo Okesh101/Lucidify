@@ -39,7 +39,7 @@ export default function About() {
     <div className="min-h-screen bg-white ">
 
       <Navbar/>
-      <div className="max-w-5xl mx-auto pt-30" data-aos="zoom-in">
+      <div className="max-w-5xl mx-auto pt-20 md:pt-30 p-6 md:p-4" data-aos="zoom-in">
         {/* HEADER */}
         <div className="text-center">
           <h1 className="text-4xl font-bold font-[Nunito]">About SME Compliance Fast-Track</h1>
@@ -50,7 +50,7 @@ export default function About() {
 
         {/* MISSION */}
         <motion.section className="mt-16" 
-          initial={{ x: 120, opacity: 0 }}
+          initial={{ x: 10, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
           viewport={{ once: false }}
@@ -65,7 +65,7 @@ export default function About() {
 
         {/* PROBLEM */}
         <motion.section className="mt-12"  
-          initial={{ x: -200, opacity: 0 }}
+          initial={{ x: -20, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3  }}
           viewport={{ once: false }}
@@ -83,7 +83,7 @@ export default function About() {
 
         {/* SOLUTION */}
         <motion.section className="mt-12" 
-          initial={{ x: 120, opacity: 0 }}
+          initial={{ x: 10, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3  }}
           viewport={{ once: false }}
@@ -109,7 +109,7 @@ export default function About() {
         {/* WHY US */}
        <motion.section 
           className="rounded-xl shadow-sm shadow-green-950 mt-12 overflow-hidden" 
-          initial={{ x: -200, opacity: 0 }}
+          initial={{ x: -20, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3  }}
           viewport={{ once: false }}
@@ -166,7 +166,7 @@ export default function About() {
 
         {/* CTA */}
         <motion.section className="mt-16 text-center p-10" 
-          initial={{ x: 120, opacity: 0 }}
+          initial={{ x: 10, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
           viewport={{ once: false }}

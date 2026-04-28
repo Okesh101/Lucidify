@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CurrentTabNumber from "../../components/CurrentTabNumber";
 import { FiCheck } from "react-icons/fi";
-import { NavigateBack } from "../../components/NavigateItem";
 import { useNavigate } from "react-router-dom";
-import { PiFilePdfDuotone } from "react-icons/pi";
+import toast from "react-hot-toast";
 
 interface DetailsProp {
   title: string;
@@ -14,10 +13,10 @@ type Page = "review" | "download";
 
 function Details({ title, desc }: DetailsProp) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 items-center">
-      <h1 className="font-[Nunito] text-lg text-gray-800">{title}</h1>
+    <div className="grid grid-cols-2 gap-10 items-center">
+      <h1 className="font-[Nunito] text-lg md:text-xl text-gray-800">{title}</h1>
 
-      <span className="font-[Onest] text-gray-700">{desc}</span>
+      <span className="font-[Onest] text-sm md:text-lg text-gray-700">{desc}</span>
     </div>
   );
 }
@@ -25,17 +24,39 @@ function Details({ title, desc }: DetailsProp) {
 const Review = () => {
   const navigate = useNavigate();
   function navigateBack() {
-    navigate(`/question`);
+    navigate(`/registration`);
   }
 
   const [currentPage, setCurrentPage] = useState<Page>("review");
   
-  const handleGeneratePdf = () => {
+  const handleGeneratePdf = async() => {
+    try {
+      const res = await fetch("/api/v1/generate-pdf",{
+        method: "GET",
+        credentials: 'include'
+      })
+      const data = await res.json()
+      console.log(data)
+      
     setCurrentPage("download")
+    } catch (error) {
+      if(error instanceof Error){
+        toast("There was an error trying to generate your pdf. Please try again later", {
+          style: {
+              backgroundColor: "red",
+            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "10px",
+            fontFamily: "DMMono",
+          },
+        });
+      }
+    }
   }
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-5xl mx-auto py-10 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
         <CurrentTabNumber />
         <main className="pt-10">
           <h1
@@ -60,7 +81,7 @@ const Review = () => {
 
           <div className="max-w-3xl mx-auto ">
             {currentPage === "review" ? (
-              <div className=" gap-10 flex items-start justify-between mt-12">
+              <div className=" gap-10 flex flex-col md:flex-row items-start justify-between mt-12">
                 <div className="space-y-4 w-full">
                   <section className="space-y-5 bg-white shadow-sm p-4 rounded-xl">
                     <header className="flex items-center justify-between">
@@ -102,7 +123,7 @@ const Review = () => {
                   </section>
                 </div>
 
-                <section className="space-y-5 max-w-55 w-full bg-white shadow-sm p-4 rounded-xl">
+                <section className="space-y-5 md:max-w-55 w-full bg-white shadow-sm p-4 rounded-xl">
                   <h1 className="text-xl tracking-wide font-bold font-[ClashDisplay]">
                     Validation Status
                   </h1>
@@ -141,13 +162,13 @@ const Review = () => {
                 <button
                   type="button"
                   className="flex gap-2 items-center outline outline-gray-500 rounded-sm px-4 py-1 cursor-pointer font-[Nunito] font-semibold"
-                  onClick={navigateBack}
+                  onClick={() => navigate(`/question`)}
                 >
                   <span>&larr;</span>
                   Back
                 </button>
 
-                <button className="bg-green-600 text-white  flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold">
+                <button className="bg-green-600 text-white  flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold" onClick={handleGeneratePdf}>
                   Generate PDF <span>&rarr;</span>
                 </button>
               </div>

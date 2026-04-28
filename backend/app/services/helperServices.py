@@ -29,6 +29,21 @@ def validate_output(data: dict, entity_type: str) -> tuple:
     return len(errors) == 0, errors
 
 
+def _validate_bn07_against_stored(data, stored):
+    e = []
+    if not stored:
+        return e
+    # If the AI says residence_changed = false, but the stored residential address is different from principal_place? No, just trust AI.
+    # More useful: check that bn_number matches
+    if data.get("bn_number") != stored.get("registration_number"):
+        e.append("BN Number mismatch between extracted and stored data.")
+    # If user claimed no change to residence, proprietors_residential_address MUST be null
+    if data.get("proprietor_residential_address") is not None and not data.get("proprietor_residential_address"):
+        # treated as empty string?
+        pass  # already handled by AI setting null
+    return e
+
+
 def _validate_business_name(data: dict) -> list:
     e = []
     # Required fields
@@ -36,14 +51,26 @@ def _validate_business_name(data: dict) -> list:
         if not data.get(field):
             e.append(f"Missing required field: {field}")
 
-    # BN number format (BN-XXXXXX)
+    # BN number format (BN-XXXXXX or BN-XXXXXXX)
     bn = data.get("bn_number", "")
-    if bn and not (bn.startswith("BN-") and len(bn) == 9):
-        e.append("Invalid BN Number format. Expected BN-XXXXXX.")
+    if bn:
+        # 9 chars = BN- (3) + 6 digits | 10 chars = BN- (3) + 7 digits
+        if not (bn.startswith("BN-") and len(bn) in [9, 10] and bn[3:].isdigit()):
+            e.append("Invalid BN Number format. Expected BN-XXXXXX or BN-XXXXXXX.")
 
-    # If address changed, new address must not be empty
-    if data.get("proprietor_residential_address") is not None and data.get("proprietor_residential_address") == "":
-        e.append("Proprietor residential address required when changed.")
+
+    # # If address changed, new address must not be empty
+    # if data.get("proprietor_residential_address") is not None and data.get("proprietor_residential_address") == "":
+    #     e.append("Proprietor residential address required when changed.")
+    
+    # If residence changed true, then new address must be non-null and non-empty
+    # but we don't have that field in our BN07 schema; we only have proprietor_residential_address
+    if data.get("residence_changed") is True:
+        # Instead, check: if proprietor_residential_address is provided (not None and not empty), then it's a change; we just need it to be non-empty.
+        # So if it's set and is empty string -> error.
+        addr = data.get("proprietor_residential_address")
+        if addr is not None and addr == "":
+            e.append("Proprietor residential address must not be empty if changed.")
 
     # Validate warnings list if present
     if "warnings" in data and not isinstance(data["warnings"], list):
@@ -61,8 +88,10 @@ def _validate_company(data: dict) -> list:
 
     # RC number format (RC-XXXXXX or RC-XXXXXXX)
     rc = data.get("rc_number", "")
-    if rc and not (rc.startswith("RC-") and len(rc) >= 8 and len(rc) <= 10):
-        e.append("Invalid RC Number format. Expected RC-XXXXXX.")
+    if rc:
+        # 9 chars = RC- (3) + 6 digits | 10 chars = RC- (3) + 7 digits
+        if not (rc.startswith("RC-") and len(rc) in [9, 10] and rc[3:].isdigit()):
+            e.append("Invalid RC Number format. Expected RC-XXXXXX or RC-XXXXXXX.")
 
     # small_company must be boolean
     if not isinstance(data.get("small_company"), bool):
@@ -126,3 +155,33 @@ def _validate_company(data: dict) -> list:
         e.append("'warnings' must be a list.")
 
     return e
+
+
+def build_company_info(stored: dict, entity_type: str) -> dict:
+    """Construct frontend‑ready company info from the stored mock data."""
+    if not stored:
+        return {}
+
+    if entity_type == "business_name":
+        pp = stored.get("principal_place", {})
+        return {
+            "business_name": stored.get("business_name", ""),
+            "bn_number": stored.get("registration_number", ""),
+            "business_type": stored.get("general_nature", ""),
+            "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "status": "Active",   # mocked – all our records are active
+            "entity_type": "business_name"
+        }
+    elif entity_type == "ltd_company":
+        pp = stored.get("registered_office", {})   # if available in company JSON
+        return {
+            "company_name": stored.get("company_name", ""),
+            "rc_number": stored.get("rc_number", ""),
+            "company_type": stored.get("company_type", "Private Company Limited by Shares"),
+            "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "status": "Active",
+            "financial_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
+            "entity_type": "ltd_company"
+        }
+    else:
+        return {}
