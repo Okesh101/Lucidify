@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import InputItem from '../../components/InputItem'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
 
 interface CardProps{
@@ -15,6 +16,7 @@ interface CardProps{
 export default function RegistrationItem({type, title, desc, icon, selectedCard, setSelectedCard}: CardProps) {
     const[bnNumber, setBnNumber] = useState<string>("")
     const [error, setError] = useState<string>("")
+    const navigate = useNavigate()
 
     const isActive = selectedCard === type 
 
@@ -36,6 +38,7 @@ export default function RegistrationItem({type, title, desc, icon, selectedCard,
             })
             const data = await res.json()
             console.log(data)
+            navigate('/verification')
         } catch (error) {
             if(error instanceof Error){
                 toast("Failed to verify registration. Please try again later.", {
@@ -92,7 +95,7 @@ export default function RegistrationItem({type, title, desc, icon, selectedCard,
                         name='rc_number' 
                         type='text' 
                         placeholder='Please input a valid BN Number' 
-                        title='BN Number' 
+                        title={type === "company" ? "RC Number" : "BN Number"} 
                         errorMssg={error}
                         value={bnNumber}
                         handleChange={(e:React.ChangeEvent<HTMLInputElement>) => setBnNumber(e.target.value)}

@@ -4,11 +4,13 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Input from "../components/input";
 import Button from "../components/button";
+import { useRouter } from "expo-router";
 
 const DashBoard = () => {
   const [rcNumber, setRcNumber] = useState("");
   const [bnNumber, setBnNumber] = useState("");
   const [selectedTab, setSelectedTab] = useState(null); // 'rc' or 'bn'
+  const router = useRouter()
 
   const handleActiveTab = (tab) => {
     setSelectedTab(tab)
@@ -166,6 +168,7 @@ const DashBoard = () => {
             <View style={{ marginHorizontal: 20, marginTop: 8 }}>
               <Button
                 title="Get Started"
+                onPress={() => router.push('/verification')}
                 style={{ width: "100%", backgroundColor: "#22A84A" }}
               />
             </View>
