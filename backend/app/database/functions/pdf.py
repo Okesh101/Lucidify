@@ -1,28 +1,39 @@
 from app.database.db import get_db_connection
 from datetime import date
-import sqlite3, uuid
+import sqlite3
+import uuid
 
 
-def next_filling_deadline(user_id, business_name, rc_bn_number, entity_type, next_deadline, last_reminder_sent_days):
+def next_filling_deadline(user_id, business_name, rc_bn_number, entity_type):
     db = get_db_connection()
     try:
-        cursor = db.cursor()
         next_deadline = date.today().replace(year=date.today().year + 1, month=6, day=30)
+        cur = db.cursor()
+        # Check if exists
+        cur.execute(
+            "SELECT id FROM business_entities WHERE user_id = ? AND rc_bn_number = ?", (user_id, rc_bn_number))
+        existing = cur.fetchone()
 
-        cursor.execute("UPDATE business_entities SET next_filing_deadline = ? WHERE user_id = ? AND rc_bn_number = ?",
-                       (next_deadline, user_id, rc_bn_number))
+        if existing:
+            cur.execute("UPDATE business_entities SET next_filing_deadline = ?, last_reminder_sent_days = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+                        (next_deadline, existing['id']))
+        else:
+            cur.execute("""
+                INSERT INTO business_entities (id, user_id, business_name, rc_bn_number, entity_type, next_filing_deadline)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (str(uuid.uuid4()), user_id, business_name, rc_bn_number, entity_type, next_deadline))
+
         db.commit()
-        db.close()
-    except sqlite3.IntegrityError:
-        db.rollback()
-        return {"status": "ERROR",
-                "code": 400,
-                "message": "User already filled now."}
+        return {"status": "SUCCESS", 
+                "code": 200, 
+                "message": "Next filing deadline updated."
+                }
     except sqlite3.Error as e:
         db.rollback()
-        return {"status": "ERROR",
-            "code": 500,
-            "message": f"Error occurred while filling next deadline: {e}."}
+        return {"status": "ERROR", 
+                "code": 500, 
+                "message": f"DB error filling deadline: {e}."
+                }
     finally:
         if db:
             db.close()

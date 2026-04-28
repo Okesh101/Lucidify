@@ -1,12 +1,17 @@
+from datetime import datetime, timedelta, date
+from pypdf.generic import NameObject, create_string_object
+from pypdf import PdfReader, PdfWriter
 import json
 import os
-from datetime import datetime, timedelta
+import re
+import io
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 # Load the legal dictionary once at module level
-_path1 = os.path.abspath(os.path.join(BASE_DIR, '..', 'database', 'mockdata', 'legal_dict.json'))
+_path1 = os.path.abspath(os.path.join(
+    BASE_DIR, '..', 'database', 'mockdata', 'legal_dict.json'))
 with open(_path1, "r") as f:
     LEGAL_DICT = json.load(f)
 
@@ -58,11 +63,10 @@ def _validate_business_name(data: dict) -> list:
         if not (bn.startswith("BN-") and len(bn) in [9, 10] and bn[3:].isdigit()):
             e.append("Invalid BN Number format. Expected BN-XXXXXX or BN-XXXXXXX.")
 
-
     # # If address changed, new address must not be empty
     # if data.get("proprietor_residential_address") is not None and data.get("proprietor_residential_address") == "":
     #     e.append("Proprietor residential address required when changed.")
-    
+
     # If residence changed true, then new address must be non-null and non-empty
     # but we don't have that field in our BN07 schema; we only have proprietor_residential_address
     if data.get("residence_changed") is True:
@@ -169,19 +173,55 @@ def build_company_info(stored: dict, entity_type: str) -> dict:
             "bn_number": stored.get("registration_number", ""),
             "business_type": stored.get("general_nature", ""),
             "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
-            "status": "Active",   # mocked – all our records are active
-            "entity_type": "business_name"
+            "status": "Active"   # mocked – all our records are active
+            # "entity_type": "business_name"
         }
     elif entity_type == "ltd_company":
-        pp = stored.get("registered_office", {})   # if available in company JSON
+        # if available in company JSON
+        pp = stored.get("registered_office", {})
         return {
             "company_name": stored.get("company_name", ""),
             "rc_number": stored.get("rc_number", ""),
             "company_type": stored.get("company_type", "Private Company Limited by Shares"),
             "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
             "status": "Active",
-            "financial_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
-            "entity_type": "ltd_company"
+            "financial_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", ")
+            # "entity_type": "ltd_company"
         }
     else:
         return {}
+
+
+def split_date_into_digits(date_str):
+    """Convert 'YYYY-MM-DD' to individual digit fields for the PDF."""
+    if not date_str or date_str == "":
+        return {}, {}, {}
+    try:
+        dt = datetime.strptime(date_str, '%Y-%m-%d')
+        y = dt.strftime('%Y')
+        m = dt.strftime('%m')
+        d = dt.strftime('%d')
+    except:
+        # maybe just a year
+        y, m, d = date_str, '', ''
+
+    year_parts = {f"y{i+1}": y[i] for i in range(4) if i < len(y)}
+    month_parts = {f"m{i+1}": m[i] for i in range(2) if i < len(m)}
+    day_parts = {f"d{i+1}": d[i] for i in range(2) if i < len(d)}
+    return year_parts, month_parts, day_parts
+
+
+def universal_fill_pdf(template_path, field_values):
+    reader = PdfReader(template_path)
+    writer = PdfWriter()
+    writer.append(reader)
+    for page in writer.pages:
+        for annot in page.annotations:
+            field_name = annot.get('/T')
+            if field_name in field_values:
+                annot.update(
+                    {NameObject('/V'): create_string_object(str(field_values[field_name]))})
+    buf = io.BytesIO()
+    writer.write(buf)
+    buf.seek(0)
+    return buf
