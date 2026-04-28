@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.wrappers.user_required import user_required
-from app.services.prompts import build_prompt
-from app.services.aiService import ai_extract
+from app.services.ai_service.prompts import build_prompt
+from app.services.ai_service.aiService import ai_extract
 from app.services.helperServices import validate_output, build_company_info
 from app.database.mockdata.helpers import loadRegistryJSON
 
@@ -18,7 +18,14 @@ def extract_endpoint(user_id):
     if not all([entity_type, answers]):
         return jsonify({"status": "ERROR",
                         "code": 400,
-                        "message": "Missing entity type or answers"}), 400
+                        "message": "Missing entity type or answers"
+                        }), 400
+    
+    if entity_type not in ["business_name", "ltd_company"]:
+        return jsonify({"status": "ERROR",
+                        "code": 400,
+                        "message": "Error with entity_type field. Must be either 'business_name' or 'ltd_company'."
+                        }), 400
     
     # 1. Load stored data
     STORED = {}
@@ -67,10 +74,16 @@ def extract_endpoint(user_id):
     # 4. Build company_info from stored_data
     company_info = build_company_info(STORED, entity_type)
 
+    if entity_type == "business_name":
+        info = "business_info"
+    else:
+        info = "company_info"
+
     return jsonify({"status": "SUCCESS",
                     "code": 200,
+                    "entity_type": entity_type,
                     "data": {
-                        "company_info": company_info,
+                        info: company_info,
                         "extracted": extracted_json,
                         "validation": {
                             "is_valid": is_valid,
