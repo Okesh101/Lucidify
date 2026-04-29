@@ -81,7 +81,7 @@ export default function Verification() {
                 Not my Company
               </span>
               <span>Can't find your company?</span>
-              <span>Check your BN number and try again.</span>
+              <span>Check your BN/RC number and try again.</span>
             </div>
           </div>
         </main>
