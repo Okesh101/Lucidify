@@ -30,7 +30,10 @@ def create_app():
     # Start scheduler only once (avoid duplicate in Flask reloader)
     if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
         init_scheduler(app)
-
+        
+    # from app.services.pdfManeuvers import run_pdf
+    # run_pdf()
+    
     return app
 
 

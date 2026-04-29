@@ -11,7 +11,9 @@ form_bp = Blueprint("form_bp", __name__, url_prefix="/api/v1")
 @form_bp.route("/extract", methods=['POST'])
 @user_required
 def extract_endpoint(user_id):
-    data = request.get_json()
+    raw_data = request.get_json()
+    data = raw_data.get("BusinessDetails", "")
+
     entity_type = data.get("entity_type")
     answers = data.get("answers")
 

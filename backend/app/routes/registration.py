@@ -8,7 +8,7 @@ registration_bp = Blueprint("registration_bp", __name__, url_prefix="/api/v1")
 @user_required
 def verify_registration_endpoint(user_id):
     data = request.get_json()
-    registration_number = data.get("registration_number")
+    registration_number = data.get("RegistrationNumber", "")
 
     if not registration_number:
         return jsonify({"status": "ERROR",

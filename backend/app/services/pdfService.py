@@ -1,6 +1,6 @@
 from pypdf import PdfReader, PdfWriter
 from app.cacdata.mappings.mappings import BN07_FIELD_MAP, BN06_FIELD_MAP
-from app.services.helperServices import split_date_into_digits, universal_fill_pdf
+from app.services.helperServices import split_date_into_digits, universal_fill_pdf, split_address, format_date
 from datetime import datetime, date
 import io
 
@@ -17,7 +17,11 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
     res2 = prop2.get("residential_address", {}) if prop2 else {}
     serv2 = prop2.get("service_address", {}) if prop2 else {}
     auth = stored.get("authentication", {})
+    # Splitting address
     presented = stored.get("presented_by", {})
+    presented_address = presented.get("address", "") if presented else ""
+    presented_number, presented_street, presented_city = split_address(presented_address)
+    fy_end = stored.get("financial_year_end", "")
 
     # Use extracted changes where applicable
     principal_place_changed = extracted.get("principal_place_of_business")
@@ -44,15 +48,15 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
         "branch_postal": "", 
         "branch_state": "",
         # Annual return details
-        "year_ended": stored.get("annual_return_period", "").split(" ")[0] if stored.get("annual_return_period") else "",
-        "financial_year_end": stored.get("financial_year_end", ""),
+        "year_ended": fy_end[:4] if fy_end else "", 
+        "financial_year_end": fy_end,
         "turnover": str(stored.get("turnover", "")),
         "total_net_assets": str(stored.get("total_net_assets", "")),
         # First proprietor
         "prop1_surname": prop1.get("surname", ""),
         "prop1_forenames": prop1.get("forenames", ""),
         "prop1_nationality": prop1.get("nationality", ""),
-        "prop1_dob": prop1.get("dob", ""),
+        "prop1_dob": format_date(prop1.get("dob", ""), space_count=6),
         "prop1_gender": prop1.get("gender", ""),
         "prop1_phone": prop1.get("phone", ""),
         "prop1_id_number": prop1.get("id_number", ""),
@@ -113,10 +117,10 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
         # Presented by
         "presented_name": presented.get("name", ""),
         "presented_accreditation_number": presented.get("accreditation_number", ""),
-        "presented_address_number": "",  # not structured
+        "presented_address_number": presented_number,
         # whole address
-        "presented_address_street": presented.get("address", ""),
-        "presented_address_city": "", 
+        "presented_address_street": presented_street,
+        "presented_address_city": presented_city, 
         "presented_address_lga": "",
         "presented_address_postal": "", 
         "presented_address_state": "",

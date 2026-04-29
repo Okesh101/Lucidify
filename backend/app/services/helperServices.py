@@ -211,17 +211,74 @@ def split_date_into_digits(date_str):
     return year_parts, month_parts, day_parts
 
 
+def split_address(address_str):
+    """
+    Splits an address string into (number, street, city).
+    Example: "12 Awolowo Road, Ikoyi" -> ("12", "Awolowo Road", "Ikoyi")
+    """
+    if not address_str or not isinstance(address_str, str):
+        return "", "", ""
+
+    # 1. Separate the city from the rest (split at the first comma)
+    parts = address_str.split(',', 1)
+    street_area = parts[0].strip()
+    city = parts[1].strip() if len(parts) > 1 else ""
+
+    # 2. Separate the house number from the street name (split at the first space)
+    street_parts = street_area.split(' ', 1)
+    number = street_parts[0]
+    street_name = street_parts[1] if len(street_parts) > 1 else ""
+
+    return number, street_name, city
+
+
+def format_date(date_str, space_count=5):
+    if not date_str:
+        return ""
+
+    # 1. Reverse the segments: ['1987', '05', '14'] -> ['14', '05', '1987']
+    parts = date_str.split('-')[::-1]
+
+    # 2. Join with a single space first to get "14 05 1987"
+    combined = " ".join(parts)
+
+    # 3. Split into individual characters: ['1', '4', ' ', '0', '5', ' ', '1', '9', '8', '7']
+    individual_digits = list(combined)
+
+    # 4. Join them back using your "plenty" of spaces
+    spacer = " " * space_count
+    return spacer.join(individual_digits)
+
+
 def universal_fill_pdf(template_path, field_values):
+    # reader = PdfReader(template_path)
+    # writer = PdfWriter()
+
+    # # Copy each page individually to preserve annotations
+    # for page in reader.pages:
+    #     writer.add_page(page)
+
+    # # Now update the annotations on every page in the writer
+    # for page in writer.pages:
+    #     for annot in page.annotations:
+    #         field = annot.get('/T')
+    #         if field and field in field_values:
+    #             annot.update({
+    #                 NameObject('/V'): create_string_object(str(field_values[field]))
+    #             })
+
+    # buf = io.BytesIO()
+    # writer.write(buf)
+    # buf.seek(0)
+    # return buf
     reader = PdfReader(template_path)
     writer = PdfWriter()
-    writer.append(reader)
+    writer.append(reader)                    # <-- this preserves the form
     for page in writer.pages:
-        for annot in page.annotations:
-            field_name = annot.get('/T')
-            if field_name in field_values:
-                annot.update(
-                    {NameObject('/V'): create_string_object(str(field_values[field_name]))})
+        writer.update_page_form_field_values(page, field_values)
     buf = io.BytesIO()
     writer.write(buf)
     buf.seek(0)
     return buf
+
+
