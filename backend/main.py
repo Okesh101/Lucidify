@@ -13,7 +13,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     from app.routes.health import health_bp
     from app.routes.auth import auth_bp

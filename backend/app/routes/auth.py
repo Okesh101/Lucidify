@@ -22,8 +22,8 @@ def signup_endpoint():
                         "message": "Missing userDetails in request body",
                         "code": 400}), 400
 
-    first_name = data.get('first_name', '')
-    last_name = data.get('last_name', '')
+    first_name = data.get('firstName', '')
+    last_name = data.get('lastName', '')
     email = data.get('email', '')
     password = data.get('password', '')
 
