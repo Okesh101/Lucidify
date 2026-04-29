@@ -10,7 +10,7 @@ interface Props {
 
 function Step({ number, title, desc }: Props) {
   return (
-    <div className="text-center shadow-sm shadow-gray-700 p-6 rounded-xl">
+    <div className="text-center shadow-sm shadow-gray-700/70 p-6 rounded-xl">
       <div className="w-10 h-10 mx-auto rounded-full font-[ClashDisplay] text-xl bg-[#16A34A] flex items-center justify-center font-bold">
         {number}
       </div>

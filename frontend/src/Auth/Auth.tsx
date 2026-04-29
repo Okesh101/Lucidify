@@ -1,139 +1,136 @@
-import { useReducer, useState, } from "react";
+import { useReducer, useState } from "react";
 import InputItem from "../components/InputItem";
-import { motion,AnimatePresence } from "framer-motion";
-import {toast} from 'react-hot-toast'
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-
-type Mode = "login" | "signup"
-type Action = {type: 'login'} | {type: 'signup'}
+type Mode = "login" | "signup";
+type Action = { type: "login" } | { type: "signup" };
 
 interface formProp {
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
-  function reducer(state: Mode, action: Action) {
-    switch (action.type) {
-      case 'signup':
-          return "signup";
-      case 'login': 
-          return "login";
-      default:
-          return state;
+function reducer(state: Mode, action: Action) {
+  switch (action.type) {
+    case "signup":
+      return "signup";
+    case "login":
+      return "login";
+    default:
+      return state;
+  }
+}
+
+export default function Auth() {
+  const [mode, dispatch] = useReducer(reducer, "login");
+
+  const [form, setForm] = useState<formProp>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  //
+  const [errors, setErrors] = useState<formProp>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+
+  // HAndle onChnage function for input fields
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  // function to handle validation of fields
+  function Validation(name: string, isValidFlag: boolean, fieldName: string) {
+    let isValid = isValidFlag;
+    if (!name.trim()) {
+      setErrors((prev) => ({ ...prev, [fieldName]: "This field is required" }));
+      isValid = false;
+    } else {
+      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
     }
+    return isValid;
   }
 
-  
-export default function Auth() {
+  // Function to hanlde submission if the condition is met
+  const handleSubmit = async (tab: string) => {
+    let isValid = true;
 
-    const [mode, dispatch] = useReducer(reducer, "login");
-   
-    const [form, setForm] = useState<formProp>({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: ""
-    })
-    // 
-    const [errors, setErrors] = useState<formProp>({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: ""
-    })
-
-    // HAndle onChnage function for input fields
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-      const {name, value} = e.target;
-
-      setForm((prev) => ({
-        ...prev, [name]: value
-      }))
-    }
-    // function to handle validation of fields
-    function Validation(name: string, isValidFlag: boolean, fieldName: string){
-      let isValid = isValidFlag;
-      if (!name.trim()) {
-        setErrors(prev => ({ ...prev, [fieldName]: "This field is required" }));
-        isValid = false;
-      } else {
-        setErrors(prev => ({ ...prev, [fieldName]: "" }));
-      }
-      return isValid;
+    if (mode === "signup") {
+      isValid = Validation(form.firstName, isValid, "firstName");
+      isValid = Validation(form.lastName, isValid, "lastName");
     }
 
-    // Function to hanlde submission if the condition is met
-    const handleSubmit = async(tab: string) => {
-      let isValid = true;
-      
-      if (mode === 'signup') {
-        isValid = Validation(form.firstName, isValid, 'firstName');
-        isValid = Validation(form.lastName, isValid, 'lastName');
-      }
-      
-      isValid = Validation(form.email, isValid, 'email');
-      isValid = Validation(form.password, isValid, 'password');
-      
-      if (isValid) {
-        setErrors({ firstName: "", lastName: "", email: "", password: "" });
-        try {
-          const res = await fetch(`/api/v1/auth/${tab}`, {
-            method: 'POST',
-            headers: {"Content-Type" : "application/json"},
-            body: JSON.stringify({"AuthDetails": form})
-          })
-          const data = await res.json()
-          console.log(data)
+    isValid = Validation(form.email, isValid, "email");
+    isValid = Validation(form.password, isValid, "password");
 
-          // condition rendering for the toast(notification) that shows at the top of the page
-            if (data.status === "OK") {
-              toast(data.message, {
-                style: {
-                  backgroundColor: "#fff",
-                  boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                  color: "#000",
-                  padding: "12px 16px",
-                  borderRadius: "10px",
-                  fontFamily: "DMMono",
-                  letterSpacing: 0.8
-                },
-              });
+    if (isValid) {
+      setErrors({ firstName: "", lastName: "", email: "", password: "" });
+      try {
+        const res = await fetch(`/api/v1/auth/${tab}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ AuthDetails: form }),
+        });
+        const data = await res.json();
+        console.log(data);
 
-              // navigate("/dashboard")
-            } else{
-            toast(data.message, {
-                style: {
-                  backgroundColor: "red",
-                  boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                  color: "#000",
-                  padding: "12px 16px",
-                  borderRadius: "10px",
-                  fontFamily: "DMMono",
-                  letterSpacing: 0.8
-                },
-              });
-            }
-
-        } catch (error: unknown) {
-          if(error instanceof Error){
-            console.log(error.message)
-            // Function showing the toast(notification) at the top of the page if an error occurs
-            toast("Please try again later", {
-              style: {
-                 backgroundColor: "red",
-                boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                color: "#fff",
-                padding: "6px 10px",
-                borderRadius: "10px",
-                fontFamily: "DMMono",
-              },
-            });
-          }
+        // condition rendering for the toast(notification) that shows at the top of the page
+        if (data.code === 201 || data.code === 200) {
+          toast(data.message, {
+            style: {
+              backgroundColor: "green",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#000",
+              padding: "12px 16px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+              letterSpacing: 0.8,
+            },
+          });
+        } else {
+          toast(data.message, {
+            style: {
+              backgroundColor: "red",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#000",
+              padding: "12px 16px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+              letterSpacing: 0.8,
+            },
+          });
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error.message);
+          // Function showing the toast(notification) at the top of the page if an error occurs
+          toast("Please try again later", {
+            style: {
+              backgroundColor: "red",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
+          });
         }
       }
     }
+  };
 
   // Function to clear all state when switching through tabs
   const switchMode = (newMode: Mode) => {
@@ -142,86 +139,123 @@ export default function Auth() {
       firstName: "",
       lastName: "",
       email: "",
-      password: ""
+      password: "",
     });
     setErrors({
       firstName: "",
       lastName: "",
       email: "",
-      password: ""
+      password: "",
     });
-  }
+  };
   return (
     <div className="min-h-screen bg-radial from-[#e2dede85] to-[#cecccc8c] flex items-center justify-center px-3 md:px-6">
       <AnimatePresence mode="wait">
-        <motion.div 
+        <motion.div
           className="w-full max-w-md bg-white rounded-2xl p-4 md:p-8 shadow-xl mt-3 mb-3"
           key={mode}
-          initial={{ opacity: 0, y: 30, }}
-          animate={{ opacity: 1, y: 0,}}
-          exit={{ opacity: 0, y: -30, }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -30 }}
           transition={{ duration: 0.56 }}
         >
-          
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[#0B1F3A] font-[Nunito] ">
-              {mode === 'login' ? 'Welcome Back' : 'Welcome'}
+              {mode === "login" ? "Welcome Back" : "Welcome"}
             </h1>
             <p className="text-gray-500 mt-1 font-[Onest]">
-              {mode === 'login' ? "Login to continue your CAC filing" : "Sign Up to get Started"}
+              {mode === "login"
+                ? "Login to continue your CAC filing"
+                : "Sign Up to get Started"}
             </p>
           </div>
 
           {/* FORM */}
           <form className="mt-8 space-y-5">
             {/* First name input field for signup page */}
-            {mode === 'signup' && (
-              <InputItem type="text" name="firstName" placeholder="john" title="First Name" errorMssg={errors.firstName} handleChange={handleChange} value={form.firstName}/>
+            {mode === "signup" && (
+              <InputItem
+                type="text"
+                name="firstName"
+                placeholder="John"
+                title="First Name"
+                errorMssg={errors.firstName}
+                handleChange={handleChange}
+                value={form.firstName}
+              />
             )}
-            {mode === 'signup' && (
-              <InputItem type="text" name="lastName" placeholder="Doe" title="Last Name" errorMssg={errors.lastName} handleChange={handleChange} value={form.lastName}/>
+            {mode === "signup" && (
+              <InputItem
+                type="text"
+                name="lastName"
+                placeholder="Doe"
+                title="Last Name"
+                errorMssg={errors.lastName}
+                handleChange={handleChange}
+                value={form.lastName}
+              />
             )}
             {/* EMAIL */}
-            <InputItem type="email" name="email" placeholder="johndoe@gmail.com" title="Email" errorMssg={errors.email} handleChange={handleChange} value={form.email}/>
+            <InputItem
+              type="email"
+              name="email"
+              placeholder="johndoe@gmail.com"
+              title="Email"
+              errorMssg={errors.email}
+              handleChange={handleChange}
+              value={form.email}
+            />
             {/* PASSWORD */}
-            <InputItem type="password" name="password" placeholder="••••••••" title="Password" errorMssg={errors.password} handleChange={handleChange} value={form.password}/>
+            <InputItem
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              title="Password"
+              errorMssg={errors.password}
+              handleChange={handleChange}
+              value={form.password}
+            />
 
-            
-            {mode === 'login' ? (
+            {mode === "login" ? (
               <button
-              type="button"
-              className="w-full bg-[#16A34A] text-white h-12 rounded-lg font-medium cursor-pointer" onClick={() => handleSubmit('login')}
-            >
-             Login
-            </button>
+                type="button"
+                className="w-full bg-[#16A34A] text-white h-12 rounded-lg font-medium cursor-pointer"
+                onClick={() => handleSubmit("login")}
+              >
+                Login
+              </button>
             ) : (
               <button
-              type="button"
-              className="w-full bg-[#16A34A] text-white h-12 rounded-lg font-medium cursor-pointer" onClick={() => handleSubmit('signup')}
-            >
-              SignUp
-            </button>
+                type="button"
+                className="w-full bg-[#16A34A] text-white h-12 rounded-lg font-medium cursor-pointer"
+                onClick={() => handleSubmit("signup")}
+              >
+                Sign Up
+              </button>
             )}
-            
           </form>
 
-
-          {mode === 'login' ? (
+          {mode === "login" ? (
             <p className="text-center text-sm text-gray-500 mt-6">
               Don’t have an account?{" "}
-              <span className="text-[#16A34A] cursor-pointer hover:underline" onClick={() => switchMode('signup')}>
+              <span
+                className="text-[#16A34A] cursor-pointer hover:underline"
+                onClick={() => switchMode("signup")}
+              >
                 Sign up
               </span>
             </p>
-          ): (
+          ) : (
             <p className="text-center text-sm text-gray-500 mt-6">
-            I have an account.{" "}
-            <span className="text-[#16A34A] cursor-pointer hover:underline" onClick={() => switchMode('login')}>
-              Login
-            </span>
-          </p>
+              I have an account.{" "}
+              <span
+                className="text-[#16A34A] cursor-pointer hover:underline"
+                onClick={() => switchMode("login")}
+              >
+                Login
+              </span>
+            </p>
           )}
-          
         </motion.div>
       </AnimatePresence>
     </div>

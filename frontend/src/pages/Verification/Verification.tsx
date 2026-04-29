@@ -19,10 +19,11 @@ function Details({ title, desc }: DetailsProp) {
 
 export default function Verification() {
 
+  const regNumber = sessionStorage.getItem("regNumber")
   useEffect(() => {
     const fetchCompanyDetails = async() => {
       try {
-        const res = await fetch("/api/v1/verify-registration",{
+        const res = await fetch(`/api/v1/verify-registration?regNumber=${regNumber}`,{
           method: "GET",
           credentials: 'include'
         })
@@ -43,7 +44,7 @@ export default function Verification() {
       }
     }
     fetchCompanyDetails()
-  }, [])
+  }, [regNumber])
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-2 md:px-4">
