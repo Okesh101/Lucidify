@@ -27,3 +27,13 @@ CREATE TABLE IF NOT EXISTS business_entities (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME
 );
+
+
+CREATE TABLE IF NOT EXISTS business_data (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT REFERENCES users(id),
+    entity_type TEXT NOT NULL, -- 'business_name' or 'ltd_company'
+    jsonData TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
