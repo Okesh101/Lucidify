@@ -37,3 +37,36 @@ def recieve_extracted_data(user_id, entity_type, data):
     finally:
         if db:
             db.close()
+
+
+def retrieve_extracted_data(user_id):
+    db = get_db_connection()
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            """SELECT entity_type, jsonData FROM business_data 
+                WHERE user_id = ?
+            """, (user_id,)
+        )
+        fullData = cursor.fetchone()
+        
+        if fullData == None:
+            return {"status": "ERROR",
+                    "code": 404,
+                    "message": "This user does not have data available to be retrieved."
+                    }
+        
+        return {"status": "SUCCESS",
+                "code": 200,
+                "entity_type": fullData[0],
+                "jsonData": fullData[1],
+                "message": "Fetched data successfully for review."
+                }
+    except sqlite3.Error as e:
+        return {"status": "ERROR",
+                "code": 500,
+                "message": f"Error fetching business data for review: {e}."
+                }
+    finally:
+        if db:
+            db.close()
