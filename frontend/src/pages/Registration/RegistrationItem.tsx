@@ -48,7 +48,7 @@ export default function RegistrationItem({
         body: JSON.stringify({ RegistrationNumber: bnNumber }),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       if (data.code === 200) {
         toast(data.message, {
           style: {

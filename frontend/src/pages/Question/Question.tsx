@@ -1,12 +1,12 @@
-import  { useReducer, useState } from "react";
+import  { useState, useEffect } from "react";
 import CurrentTabNumber from "../../components/CurrentTabNumber";
 import RadioItem from "../../components/RadioItem";
 import InputItem from "../../components/InputItem";
-import { HandleNavigateNext, NavigateBack } from "../../components/NavigateItem";
+import { NavigateBack } from "../../components/NavigateItem";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-type Mode = "business" | "company" | "none";
-type Action = { type: "business" } | { type: "company" } | { type: "none" };
+type Mode = "business_name" | "ltd_company" | null;
 interface formProp {
   bnNumber: string;
   proprietor_name: string;
@@ -19,21 +19,18 @@ interface formProp {
   new_registered_address: string
 }
 
-function reducer(mode: Mode, action: Action) {
-  switch (action.type) {
-    case "business":
-      return "business";
-    case "company":
-      return "company";
-    case "none":
-      return "none";
-    default:
-      return mode;
-  }
-}
 
 const Question = () => {
-  const [mode, dispatch] = useReducer(reducer, "none");
+  const regNumber = sessionStorage.getItem("regNumber")
+  const [companyType,  setCompanyType] = useState<Mode>(null);
+
+  useEffect(() => {
+    if (regNumber?.startsWith("BN")) {
+      setCompanyType("business_name");
+    } else {
+      setCompanyType("ltd_company");
+    }
+  }, [regNumber])
   const [errors, setErrors ] = useState<formProp>({
     bnNumber: "",
     proprietor_name: "",
@@ -45,6 +42,7 @@ const Question = () => {
     issued_shared_capital: "",
     new_registered_address: ""
   })
+  const navigate = useNavigate()
   const [questionData, setQuestionData ] = useState<formProp>({
     bnNumber: "",
     proprietor_name: "",
@@ -76,14 +74,14 @@ const Question = () => {
 
   const handleNext= async() => {
     let isValid = true;
-    if(mode === 'business'){
+    if(companyType === 'business_name'){
       isValid = Validation(questionData.bnNumber, isValid, 'bnNumber') && isValid
       isValid = Validation(questionData.proprietor_name, isValid, 'proprietor_name') && isValid
       isValid = Validation(questionData.business_nature, isValid, 'business_nature') && isValid
       if(radioSelections.question5 === 'yes') {
         isValid = Validation(questionData.new_residential_address, isValid, 'new_residential_address') && isValid
       }
-    } else if(mode === 'company') {
+    } else if(companyType === 'ltd_company') {
       isValid = Validation(questionData.rcNumber, isValid, 'rcNumber') && isValid
       isValid = Validation(questionData.company_name, isValid, 'company_name') && isValid
       if(radioSelections.question2 === 'yes') {
@@ -99,17 +97,26 @@ const Question = () => {
 
     if(isValid){
       // Handle form submission for business
-      handleReset()
+      // handleReset()
 
       try {
+
         const res = await fetch("/api/v1/extract", {
           method:'POST',
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({"BusinessDetails": questionData})
+          body: JSON.stringify({
+            "BusinessDetails": {
+              "entity_type": companyType === 'business_name' ? 'business_name' : 'ltd_company',
+              "answers": questionData
+            }
+          })
         })
         const data = await res.json()
         console.log(data)
-        HandleNavigateNext({pathname: "review"})
+        if(data.status === "SUCCESS"){
+          console.log("Data sent successfully")
+          navigate("/review")
+        }
       } catch (error) {
         if (error instanceof Error) {
         toast("Failed to send your data. Please try again later.", {
@@ -126,20 +133,6 @@ const Question = () => {
       }
       }
   }
-
-  function handleReset() {
-    setErrors({
-      bnNumber: "",
-      proprietor_name: "",
-      business_nature: "",
-      new_residential_address: "",
-      rcNumber: "",
-      company_name: "",
-      agm_date: "",
-      issued_shared_capital: "",
-      new_registered_address: ""
-    })
-  }
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
@@ -152,31 +145,13 @@ const Question = () => {
         </h1>
 
         <p className="text-gray-500 text-center font-[Onest] mt-2 text-lg">
-          We found this company with RC: "number".
+          We found this company with {regNumber}.
         </p>
 
-        <div className="max-w-2xl mx-auto mt-12 space-y-10 pb-5">
-          <div className="flex gap-3 ">
-            <button
-              className="bg-green-600 rounded-lg font-[Nunito] text-white px-3 py-2 text-sm cursor-pointer"
-              onClick={() => {dispatch({ type: "business" }); handleReset()}}
-            >
-              Business
-            </button>
-            <button
-              className="border outline-gray-600 rounded-lg font-[Nunito] px-3 py-2 text-sm cursor-pointer"
-              onClick={() => {dispatch({ type: "company" }); handleReset()}}
-            >
-              Private Company Limited
-            </button>
-          </div>
+        <div className="max-w-2xl mx-auto mt-9 space-y-10 pb-5">
           {/* </div> */}
           <form className="space-y-8">
-            {mode === "none" ? (
-              <span className="text-gray-700 flex justify-center mx-auto md:p-5 rounded-lg mt-10 text-shadow-xs text-shadow-black font-[Nunito] text-lg md:text-2xl">
-                Please Select Your business type
-              </span>
-            ) : mode === "company" ? (
+            {companyType === 'ltd_company' ? (
               <>
                 <InputItem
                   name="rcNumber"
@@ -344,10 +319,10 @@ const Question = () => {
 
             <div className="mt-7 flex justify-between items-center">
               <NavigateBack pathname="verification" />
-              {mode === 'none' ? (
+              {companyType === null ? (
                 <button
                   type="button"
-                  className='bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 cursor-not-allowed'
+                  className='bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 opacity-30 cursor-not-allowed'
                 >
                   Continue
                   <span>&rarr;</span>

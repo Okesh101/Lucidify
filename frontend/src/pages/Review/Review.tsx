@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CurrentTabNumber from "../../components/CurrentTabNumber";
 import { FiCheck } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -22,23 +22,25 @@ function Details({ title, desc }: DetailsProp) {
 }
 
 const Review = () => {
+  
   const navigate = useNavigate();
   function navigateBack() {
     navigate(`/registration`);
   }
+
+  const regNumber = sessionStorage.getItem("regNumber")
 
   const [currentPage, setCurrentPage] = useState<Page>("review");
   
   const handleGeneratePdf = async() => {
     try {
       const res = await fetch("/api/v1/generate-pdf",{
-        method: "GET",
+        method: "POST",
         credentials: 'include'
       })
-      const data = await res.json()
-      console.log(data)
-      
-    setCurrentPage("download")
+      // const data = await res.json()
+      // console.log(data)
+      setCurrentPage("download")
     } catch (error) {
       if(error instanceof Error){
         toast("There was an error trying to generate your pdf. Please try again later", {
@@ -92,7 +94,7 @@ const Review = () => {
                     </header>
                     <div className=" space-y-3">
                       <Details title="Company Name" desc="Your company name" />
-                      <Details title="BN Number" desc="Your BN Number" />
+                      <Details title="BN Number" desc={`Your ${regNumber?.startsWith("BN") ? "BN": "RC"} Number`} />
                       <Details title="Company Type" desc="Your Company Type" />
                       <Details
                         title="Registration Date"
