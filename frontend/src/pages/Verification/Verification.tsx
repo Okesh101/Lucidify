@@ -1,10 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CurrentTabNumber from "../../components/CurrentTabNumber";
 import { NavigateBack, NavigateNext } from "../../components/NavigateItem";
 import toast from "react-hot-toast";
 interface DetailsProp {
   title: string;
   desc: string;
+}
+
+interface VerificationProps {
+  bn_number: string
+  business_name: string
+  business_nature: string
+  registered_address: string
+  status: string
 }
 
 function Details({ title, desc }: DetailsProp) {
@@ -19,6 +27,7 @@ function Details({ title, desc }: DetailsProp) {
 
 export default function Verification() {
 
+ const [verificationData, setVerificationData] = useState<VerificationProps | null>(null);
   const regNumber = sessionStorage.getItem("regNumber")
   useEffect(() => {
     const fetchCompanyDetails = async() => {
@@ -27,7 +36,9 @@ export default function Verification() {
           method: "GET",
           credentials: 'include'
         })
-        console.log(res)
+        const data = await res.json()
+        setVerificationData(data.data)
+        // console.log(data.data)
       } catch (error) {
         if (error instanceof Error) {
           toast("Failed to retrive your data. Please try again later.", {
@@ -56,18 +67,18 @@ export default function Verification() {
           </h1>
 
           <p className="text-gray-500 text-center font-[Onest] mt-2 text-lg">
-            We found this company with RC: "number".
+            We found this company with {verificationData?.bn_number}.
           </p>
           <div className="max-w-3xl mx-auto mt-12">
             <section className=" space-y-3">
-              <Details title="Company Name" desc="Your company name" />
-              <Details title="BN Number" desc="Your BN Number" />
-              <Details title="Company Type" desc="Your Company Type" />
-              <Details title="Registration Date" desc="Date of registration" />
-              <Details title="status" desc="Active" />
+              <Details title="Company Name" desc={verificationData?.business_name || "Loading..."} />
+              <Details title="BN Number" desc={verificationData?.bn_number || "Loading..."} />
+              <Details title="Company Type" desc={verificationData?.business_nature || "Loading..."} />
+              <Details title="Registration Date" desc={verificationData?.registered_address || "Loading..."} />
+              <Details title="status" desc={verificationData?.status || "Loading..."} />
               <Details
                 title="Registration Address"
-                desc="Your Registration address"
+                desc={verificationData?.registered_address || "Loading..."}
               />
             </section>
 

@@ -85,7 +85,8 @@ export default function Auth() {
           body: JSON.stringify({ AuthDetails: form }),
         });
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
+        navigate("/registration")
 
         // condition rendering for the toast(notification) that shows at the top of the page
         if (data.code === 201 || data.code === 200) {
@@ -93,7 +94,7 @@ export default function Auth() {
             style: {
               backgroundColor: "green",
               boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#000",
+              color: "#fff",
               padding: "12px 16px",
               borderRadius: "10px",
               fontFamily: "DMMono",
@@ -105,7 +106,7 @@ export default function Auth() {
             style: {
               backgroundColor: "red",
               boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#000",
+              color: "#fff",
               padding: "12px 16px",
               borderRadius: "10px",
               fontFamily: "DMMono",
