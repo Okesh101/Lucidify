@@ -7,12 +7,21 @@ interface DetailsProp {
   desc: string;
 }
 
-interface VerificationProps {
-  bn_number: string
-  business_name: string
-  business_nature: string
-  registered_address: string
-  status: string
+interface BVerificationProps { // For business
+  bn_number: string;
+  business_name: string;
+  business_nature: string;
+  registered_address: string;
+  status: string;
+}
+
+interface CVerificationProps { // For company
+  rc_number: string;
+  company_name: string;
+  company_type: string;
+  registered_address: string;
+  registration_date: string;
+  status: string;
 }
 
 function Details({ title, desc }: DetailsProp) {
@@ -27,8 +36,12 @@ function Details({ title, desc }: DetailsProp) {
 
 export default function Verification() {
 
- const [verificationData, setVerificationData] = useState<VerificationProps | null>(null);
+ const [verificationBData, setVerificationBData] =
+   useState<BVerificationProps | null>(null);
+ const [verificationCData, setVerificationCData] =
+   useState<CVerificationProps | null>(null);
   const regNumber = sessionStorage.getItem("regNumber")
+  const business = regNumber?.includes("BN");
   useEffect(() => {
     const fetchCompanyDetails = async() => {
       try {
@@ -37,7 +50,13 @@ export default function Verification() {
           credentials: 'include'
         })
         const data = await res.json()
-        setVerificationData(data.data)
+        const dataType = data.entity_type === "business_name";
+        if (dataType) {
+          setVerificationBData(data.data)
+        } else {
+          setVerificationCData(data.data)
+        }
+        
         // console.log(data.data)
       } catch (error) {
         if (error instanceof Error) {
@@ -63,24 +82,72 @@ export default function Verification() {
 
         <main className="pt-10">
           <h1 className="text-4xl text-center font-[Nunito] font-semibold text-gray-900">
-            Let's verify your company
+            Let's verify your {business ? "business" : "company"}
           </h1>
-
           <p className="text-gray-500 text-center font-[Onest] mt-2 text-lg">
-            We found this company with {verificationData?.bn_number}.
+            We found this {business ? "business" : "company"} with{" "}
+            {business
+              ? verificationBData?.bn_number
+              : verificationCData?.rc_number}
+            .
           </p>
           <div className="max-w-3xl mx-auto mt-12">
-            <section className=" space-y-3">
-              <Details title="Company Name" desc={verificationData?.business_name || "Loading..."} />
-              <Details title="BN Number" desc={verificationData?.bn_number || "Loading..."} />
-              <Details title="Company Type" desc={verificationData?.business_nature || "Loading..."} />
-              <Details title="Registration Date" desc={verificationData?.registered_address || "Loading..."} />
-              <Details title="status" desc={verificationData?.status || "Loading..."} />
-              <Details
-                title="Registration Address"
-                desc={verificationData?.registered_address || "Loading..."}
-              />
-            </section>
+            {business ? (
+              <section className=" space-y-3">
+                <Details
+                  title={business ? "Business Name" : "Company Name"}
+                  desc={verificationBData?.business_name || "Loading..."}
+                />
+                <Details
+                  title={business ? "BN Number" : "RC Number"}
+                  desc={verificationBData?.bn_number || "Loading..."}
+                />
+                <Details
+                  title={business ? "Business Nature" : "Company Type"}
+                  desc={verificationBData?.business_nature || "Loading..."}
+                />
+                {/* This was commented out because there is no data from the backend recognized as registration date */}
+                {/* <Details
+                  title="Registration Date"
+                  desc={verificationBData?.registered_address || "Loading..."}
+                /> */}
+                <Details
+                  title="Status"
+                  desc={verificationBData?.status || "Loading..."}
+                />
+                <Details
+                  title="Registration Address"
+                  desc={verificationBData?.registered_address || "Loading..."}
+                />
+              </section>
+            ) : (
+              <section className=" space-y-3">
+                <Details
+                  title={business ? "Business Name" : "Company Name"}
+                  desc={verificationCData?.company_name || "Loading..."}
+                />
+                <Details
+                  title={business ? "BN Number" : "RC Number"}
+                  desc={verificationCData?.rc_number || "Loading..."}
+                />
+                <Details
+                  title={business ? "Business Nature" : "Company Type"}
+                  desc={verificationCData?.company_type || "Loading..."}
+                />
+                <Details
+                  title="Registration Date"
+                  desc={verificationCData?.registration_date || "Loading..."}
+                />
+                <Details
+                  title="Status"
+                  desc={verificationCData?.status || "Loading..."}
+                />
+                <Details
+                  title="Registration Address"
+                  desc={verificationCData?.registered_address || "Loading..."}
+                />
+              </section>
+            )}
 
             <div className="mt-7 flex justify-between items-center">
               <NavigateBack pathname="registration" />
@@ -89,10 +156,12 @@ export default function Verification() {
 
             <div className="flex flex-col text-center mt-10 bg-gray-300 rounded-lg space-y-0.5 p-2 font-[Onest]">
               <span className="underline text-red-800 cursor-pointer">
-                Not my Company
+                Not my {business ? "Business" : "Company"}
               </span>
-              <span>Can't find your company?</span>
-              <span>Check your BN/RC number and try again.</span>
+              <span>Can't find your {business ? "business" : "company"}?</span>
+              <span>
+                Check your {business ? "BN" : "RC"} number and try again.
+              </span>
             </div>
           </div>
         </main>

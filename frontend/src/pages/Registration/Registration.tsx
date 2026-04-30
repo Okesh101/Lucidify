@@ -9,41 +9,40 @@ export default function Registration() {
     const [cardSelected, setCardSelected]= useState<string>('')
   return (
     <div className="bg-gray-50 min-h-screen">
-        <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
+        <CurrentTabNumber />
 
-            <CurrentTabNumber />
+        <main className="pt-12">
+          <h1 className="text-4xl text-center font-[Nunito] font-semibold text-gray-900">
+            What type of organization are you filing for?
+          </h1>
 
-            <main className="pt-12">
-                <h1 className="text-4xl text-center font-[Nunito] font-semibold text-gray-900">
-                    What type of company are you filing for?
-                </h1>
+          <p className="text-gray-500 text-center font-[Onest] mt-3 text-lg">
+            Select the option that best describes your organization.
+          </p>
 
-                <p className="text-gray-500 text-center font-[Onest] mt-3 text-lg">
-                    Select the option that best describes your business.
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start mt-12">
+            <RegistrationItem
+              type="company"
+              title="Limited Liability Company"
+              desc="Private / Public Limited. Includes companies limited by shares or guarantee."
+              icon={<VscOrganization className="text-green-700" size={40} />}
+              selectedCard={cardSelected}
+              setSelectedCard={setCardSelected}
+            />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start mt-12">
-
-                    <RegistrationItem 
-                        type="company"
-                        title="Limited Liability Company"
-                        desc="Private / Public Limited. Includes companies limited by shares or guarantee."
-                        icon={<VscOrganization className="text-green-700" size={40} />}
-                        selectedCard={cardSelected}
-                        setSelectedCard={setCardSelected}
-                    />
-
-                    <RegistrationItem 
-                        type="miniBusiness"
-                        title=" Small Business / Business Name"
-                        pb-5 desc=" Sole proprietorships and registered business names."
-                        icon={<Store className="text-green-700" size={40} />}
-                        selectedCard={cardSelected}
-                        setSelectedCard={setCardSelected}
-                    />
-                </div>
-            </main>
-        </div>
+            <RegistrationItem
+              type="miniBusiness"
+              title=" Small Business / Business Name"
+              pb-5
+              desc=" Sole proprietorships and registered business names."
+              icon={<Store className="text-green-700" size={40} />}
+              selectedCard={cardSelected}
+              setSelectedCard={setCardSelected}
+            />
+          </div>
+        </main>
+      </div>
     </div>
-  )
+  );
 }
