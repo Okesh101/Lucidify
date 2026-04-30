@@ -282,3 +282,11 @@ def universal_fill_pdf(template_path, field_values):
     return buf
 
 
+def format_date_for_frontend(date_str):
+    if not date_str:
+        return ""
+    # Convert string to date object
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    
+    # Return a "human-friendly" format
+    return date_obj.strftime("%B %d, %Y") # Output: May 05, 2022

@@ -176,7 +176,7 @@ export default function About() {
             Start now and complete your filing in under 4 minutes.
           </p>
 
-          <button className="mt-6 bg-[#16A34A] font-[ClashDisplay] tracking-wider text-white px-6 py-3 rounded-lg" onClick={() => navigate("/authentication")}>
+          <button className="mt-6 bg-[#16A34A] font-[ClashDisplay] tracking-wider text-white px-6 py-3 rounded-lg cursor-pointer" onClick={() => navigate("/authentication")}>
             Start Filing
           </button>
         </motion.section>

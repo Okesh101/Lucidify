@@ -133,7 +133,7 @@ export default function HowItWorks() {
           </p>
 
           <button
-            className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider"
+            className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider cursor-pointer"
             onClick={() => navigate("/authentication")}
           >
             Start Filing Now

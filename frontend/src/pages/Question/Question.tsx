@@ -141,17 +141,17 @@ const Question = () => {
 
       <main className="pt-10 px-5">
         <h1 className="text-4xl text-center font-[Nunito] font-semibold text-gray-900">
-          Tell us about your company
+          Tell us about your {companyType === 'business_name' ? "business" : "company"}
         </h1>
 
         <p className="text-gray-500 text-center font-[Onest] mt-2 text-lg">
-          We found this company with {regNumber}.
+          We found this {companyType === 'business_name' ? "business" : "company"} with {regNumber}.
         </p>
 
         <div className="max-w-2xl mx-auto mt-9 space-y-10 pb-5">
           {/* </div> */}
           <form className="space-y-8">
-            {companyType === 'ltd_company' ? (
+            {companyType === "ltd_company" ? (
               <>
                 <InputItem
                   name="rcNumber"
@@ -159,7 +159,12 @@ const Question = () => {
                   title="RC Number"
                   placeholder="What is your RC Number"
                   value={questionData.rcNumber}
-                  handleChange={(e) => setQuestionData(prev => ({...prev, rcNumber: e.target.value}))}
+                  handleChange={(e) =>
+                    setQuestionData((prev) => ({
+                      ...prev,
+                      rcNumber: e.target.value,
+                    }))
+                  }
                   errorMssg={errors.rcNumber}
                 />
                 <InputItem
@@ -168,7 +173,12 @@ const Question = () => {
                   title="Company Name"
                   placeholder="Your company name"
                   value={questionData.company_name}
-                  handleChange={(e) => setQuestionData(prev => ({...prev, company_name: e.target.value}))}
+                  handleChange={(e) =>
+                    setQuestionData((prev) => ({
+                      ...prev,
+                      company_name: e.target.value,
+                    }))
+                  }
                   errorMssg={errors.company_name}
                 />
                 <div className="space-y-4">
@@ -192,8 +202,18 @@ const Question = () => {
                     inputNoteType="date"
                     errorMssg={errors.agm_date}
                     value={questionData.agm_date}
-                    handleChange={(e) => setQuestionData(prev => ({...prev, agm_date: e.target.value}))}
-                    onRadioChange={(val) => setRadioSelections(prev => ({...prev, question2: val}))}
+                    handleChange={(e) =>
+                      setQuestionData((prev) => ({
+                        ...prev,
+                        agm_date: e.target.value,
+                      }))
+                    }
+                    onRadioChange={(val) =>
+                      setRadioSelections((prev) => ({
+                        ...prev,
+                        question2: val,
+                      }))
+                    }
                   />
                 </div>
 
@@ -232,8 +252,18 @@ const Question = () => {
                     inputNoteType="number"
                     errorMssg={errors.issued_shared_capital}
                     value={questionData.issued_shared_capital}
-                    handleChange={(e) => setQuestionData(prev => ({...prev, issued_shared_capital: e.target.value}))}
-                    onRadioChange={(val) => setRadioSelections(prev => ({...prev, question5: val}))}
+                    handleChange={(e) =>
+                      setQuestionData((prev) => ({
+                        ...prev,
+                        issued_shared_capital: e.target.value,
+                      }))
+                    }
+                    onRadioChange={(val) =>
+                      setRadioSelections((prev) => ({
+                        ...prev,
+                        question5: val,
+                      }))
+                    }
                   />
                 </div>
 
@@ -248,8 +278,18 @@ const Question = () => {
                     inputNoteType="text"
                     errorMssg={errors.new_registered_address}
                     value={questionData.new_registered_address}
-                    handleChange={(e) => setQuestionData(prev => ({...prev, new_registered_address: e.target.value}))}
-                    onRadioChange={(val) => setRadioSelections(prev => ({...prev, question6: val}))}
+                    handleChange={(e) =>
+                      setQuestionData((prev) => ({
+                        ...prev,
+                        new_registered_address: e.target.value,
+                      }))
+                    }
+                    onRadioChange={(val) =>
+                      setRadioSelections((prev) => ({
+                        ...prev,
+                        question6: val,
+                      }))
+                    }
                   />
                 </div>
               </>
@@ -261,16 +301,26 @@ const Question = () => {
                   title="BN Number"
                   placeholder="What is your Business Number"
                   value={questionData.bnNumber}
-                  handleChange={(e) => setQuestionData(prev => ({...prev, bnNumber: e.target.value}))}
+                  handleChange={(e) =>
+                    setQuestionData((prev) => ({
+                      ...prev,
+                      bnNumber: e.target.value,
+                    }))
+                  }
                   errorMssg={errors.bnNumber}
                 />
                 <InputItem
                   name="proprietor_name"
                   type="text"
-                  title="Full Name of proprietor"
-                  placeholder="Your company name"
+                  title="Full Name of Proprietor"
+                  placeholder="Your business name"
                   value={questionData.proprietor_name}
-                  handleChange={(e) => setQuestionData(prev => ({...prev, proprietor_name: e.target.value}))}
+                  handleChange={(e) =>
+                    setQuestionData((prev) => ({
+                      ...prev,
+                      proprietor_name: e.target.value,
+                    }))
+                  }
                   errorMssg={errors.proprietor_name}
                 />
                 <fieldset className="flex flex-col space-y-3">
@@ -286,11 +336,18 @@ const Question = () => {
                     className="mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#16A34A] font-[Onest] resize-none"
                     rows={4}
                     value={questionData.business_nature}
-                    onChange={(e) => setQuestionData(prev => ({...prev, business_nature: e.target.value}))}
+                    onChange={(e) =>
+                      setQuestionData((prev) => ({
+                        ...prev,
+                        business_nature: e.target.value,
+                      }))
+                    }
                   />
-                   {/* {errorMssg && */}
-                    <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">{errors.business_nature}</p> 
-                    {/* } */}
+                  {/* {errorMssg && */}
+                  <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">
+                    {errors.business_nature}
+                  </p>
+                  {/* } */}
                 </fieldset>
                 <RadioItem
                   name="question5"
@@ -302,8 +359,15 @@ const Question = () => {
                   inputNoteType="text"
                   errorMssg={errors.new_residential_address}
                   value={questionData.new_residential_address}
-                  handleChange={(e) => setQuestionData(prev => ({...prev, new_residential_address: e.target.value}))}
-                  onRadioChange={(val) => setRadioSelections(prev => ({...prev, question5: val}))}
+                  handleChange={(e) =>
+                    setQuestionData((prev) => ({
+                      ...prev,
+                      new_residential_address: e.target.value,
+                    }))
+                  }
+                  onRadioChange={(val) =>
+                    setRadioSelections((prev) => ({ ...prev, question5: val }))
+                  }
                 />
 
                 <RadioItem
@@ -322,7 +386,7 @@ const Question = () => {
               {companyType === null ? (
                 <button
                   type="button"
-                  className='bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 opacity-30 cursor-not-allowed'
+                  className="bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 opacity-30 cursor-not-allowed"
                 >
                   Continue
                   <span>&rarr;</span>
@@ -330,14 +394,13 @@ const Question = () => {
               ) : (
                 <button
                   type="button"
-                  className='bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer'
+                  className="bg-green-600 text-white flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer"
                   onClick={handleNext}
                 >
                   Continue
                   <span>&rarr;</span>
                 </button>
               )}
-               
             </div>
           </form>
         </div>

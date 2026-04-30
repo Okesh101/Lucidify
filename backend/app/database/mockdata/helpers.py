@@ -1,3 +1,4 @@
+from app.services.helperServices import format_date_for_frontend
 import json
 import os
 
@@ -83,6 +84,7 @@ def retrieve_organization_data(reg_number, type):
                     "status": "Active",
                     "registered_address": registered_address
                 },
+                "entity_type": "business_name",
                 "message": "Business details retrieved successfully."}
     else:
         company_data = loadRegistryJSON('companies.json')
@@ -103,8 +105,9 @@ def retrieve_organization_data(reg_number, type):
                     "company_name": company_name,
                     "rc_number": reg_number,
                     "company_type": company_type,
-                    "registration_date": registration_date,
+                    "registration_date": format_date_for_frontend(registration_date),
                     "status": "Active",
                     "registered_address": registered_address
                 },
+                "entity_type": "ltd_company",
                 "message": "Company verified and details retrieved successfully."}
