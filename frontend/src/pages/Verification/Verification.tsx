@@ -156,7 +156,7 @@ export default function Verification() {
 
             <div className="flex flex-col text-center mt-10 bg-gray-300 rounded-lg space-y-0.5 p-2 font-[Onest]">
               <span className="underline text-red-800 cursor-pointer">
-                Not my {business ? "Business" : "Company"}
+                Not my {business ? "Business?" : "Company?"}
               </span>
               {/* <span>Can't find your {business ? "business" : "company"}?</span> */}
               <span>
