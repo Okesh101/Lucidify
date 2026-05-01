@@ -158,7 +158,7 @@ export default function Verification() {
               <span className="underline text-red-800 cursor-pointer">
                 Not my {business ? "Business" : "Company"}
               </span>
-              <span>Can't find your {business ? "business" : "company"}?</span>
+              {/* <span>Can't find your {business ? "business" : "company"}?</span> */}
               <span>
                 Check your {business ? "BN" : "RC"} number and try again.
               </span>

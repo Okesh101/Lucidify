@@ -86,7 +86,13 @@ export default function Auth() {
         });
         const data = await res.json();
         // console.log(data);
-        navigate("/registration")
+
+        if(tab === 'signup'){
+          switchMode("login")
+        }
+       if(data.code === 200){
+         navigate("/registration")
+       }
 
         // condition rendering for the toast(notification) that shows at the top of the page
         if (data.code === 201 || data.code === 200) {
