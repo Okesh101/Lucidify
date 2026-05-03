@@ -7,19 +7,23 @@ import { useNavigate } from "react-router-dom";
 
 type Mode = "business_name" | "ltd_company" | null;
 interface formProp {
-  bnNumber: string;
-  proprietor_name: string;
-  business_nature: string;
-  new_residential_address: string;
-  rcNumber: string;
-  company_name: string;
-  agm_date: string;
-  issued_shared_capital: string;
-  new_registered_address: string;
-  rcQuestion1: string;
-  rcQuestion3: string;
-  rcQuestion4: string;
-  bnQuestion6: string;
+  miniBusiness: {
+    bnNumber: string;
+    proprietor_name: string;
+    business_nature: string;
+    new_residential_address: string;
+    bnQuestion6: string;
+  };
+  ltd_company: {
+    rcNumber: string;
+    company_name: string;
+    agm_date: string;
+    issued_shared_capital: string;
+    new_registered_address: string;
+    rcQuestion1: string;
+    rcQuestion3: string;
+    rcQuestion4: string;
+  };
 }
 
 const Question = () => {
@@ -35,35 +39,43 @@ const Question = () => {
     }
   }, [regNumber]);
   const [errors, setErrors] = useState<formProp>({
-    bnNumber: "",
-    proprietor_name: "",
-    business_nature: "",
-    new_residential_address: "",
-    rcNumber: "",
-    company_name: "",
-    agm_date: "",
-    issued_shared_capital: "",
-    new_registered_address: "",
-    rcQuestion1: "",
-    rcQuestion3: "",
-    rcQuestion4: "",
-    bnQuestion6: "",
+    miniBusiness: {
+      bnNumber: "",
+      proprietor_name: "",
+      business_nature: "",
+      new_residential_address: "",
+      bnQuestion6: "",
+    },
+    ltd_company: {
+      rcNumber: "",
+      company_name: "",
+      agm_date: "",
+      issued_shared_capital: "",
+      new_registered_address: "",
+      rcQuestion1: "",
+      rcQuestion3: "",
+      rcQuestion4: "",
+    },
   });
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState<formProp>({
-    bnNumber: "",
-    proprietor_name: "",
-    business_nature: "",
-    new_residential_address: "",
-    rcNumber: "",
-    company_name: "",
-    agm_date: "",
-    issued_shared_capital: "",
-    new_registered_address: "",
-    rcQuestion1: "",
-    rcQuestion3: "",
-    rcQuestion4: "",
-    bnQuestion6: "",
+    miniBusiness: {
+      bnNumber: "",
+      proprietor_name: "",
+      business_nature: "",
+      new_residential_address: "",
+      bnQuestion6: "",
+    },
+    ltd_company: {
+      rcNumber: "",
+      company_name: "",
+      agm_date: "",
+      issued_shared_capital: "",
+      new_registered_address: "",
+      rcQuestion1: "",
+      rcQuestion3: "",
+      rcQuestion4: "",
+    },
   });
   const [radioSelections, setRadioSelections] = useState<{
     [key: string]: string;
@@ -106,8 +118,11 @@ const Question = () => {
       //   Validation(questionData.proprietor_name, isValid, "proprietor_name") &&
       //   isValid;
       isValid =
-        Validation(questionData.business_nature, isValid, "business_nature") &&
-        isValid;
+        Validation(
+          questionData.miniBusiness.business_nature,
+          isValid,
+          "business_nature",
+        ) && isValid;
 
       if (!radioSelections.question5) {
         setErrors((prev) => ({
@@ -118,7 +133,7 @@ const Question = () => {
       } else if (radioSelections.question5 === "yes") {
         isValid =
           Validation(
-            questionData.new_residential_address,
+            questionData.miniBusiness.new_residential_address,
             isValid,
             "new_residential_address",
           ) && isValid;
@@ -131,18 +146,31 @@ const Question = () => {
       // isValid =
       //   Validation(questionData.company_name, isValid, "company_name") &&
       //   isValid;
-      isValid = Validation(questionData.rcQuestion1, isValid, "rcQuestion1");
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion1,
+        isValid,
+        "rcQuestion1",
+      );
 
-      isValid = Validation(questionData.rcQuestion3, isValid, "rcQuestion3");
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion3,
+        isValid,
+        "rcQuestion3",
+      );
 
-      isValid = Validation(questionData.rcQuestion4, isValid, "rcQuestion4");
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion4,
+        isValid,
+        "rcQuestion4",
+      );
 
       if (!radioSelections.question2) {
         setErrors((prev) => ({ ...prev, agm_date: "This Field is required" }));
         isValid = false;
       } else if (radioSelections.question2 === "yes") {
         isValid =
-          Validation(questionData.agm_date, isValid, "agm_date") && isValid;
+          Validation(questionData.ltd_company.agm_date, isValid, "agm_date") &&
+          isValid;
       } else {
         setErrors((prev) => ({ ...prev, agm_date: "" }));
       }
@@ -156,7 +184,7 @@ const Question = () => {
       } else if (radioSelections.question5 === "yes") {
         isValid =
           Validation(
-            questionData.issued_shared_capital,
+            questionData.ltd_company.issued_shared_capital,
             isValid,
             "issued_shared_capital",
           ) && isValid;
@@ -175,7 +203,7 @@ const Question = () => {
       } else if (radioSelections.question6 === "yes") {
         isValid =
           Validation(
-            questionData.new_registered_address,
+            questionData.ltd_company.new_registered_address,
             isValid,
             "new_registered_address",
           ) && isValid;
@@ -199,7 +227,10 @@ const Question = () => {
                 companyType === "business_name"
                   ? "business_name"
                   : "ltd_company",
-              answers: questionData,
+              answers:
+                companyType === "business_name"
+                  ? questionData.miniBusiness
+                  : questionData.ltd_company,
             },
           }),
         });
@@ -298,7 +329,7 @@ const Question = () => {
                     title_2="No"
                     questionTitle="Is the company a 'Small Company'?"
                     note="This affects specific exemptions under CAMA"
-                    errorMssg={errors.rcQuestion1}
+                    errorMssg={errors.ltd_company.rcQuestion1}
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
@@ -317,8 +348,8 @@ const Question = () => {
                     questionTitle="Did your company hold an Annual General Meeting(AGM)?"
                     inputNote="If yes, select AGM date"
                     inputNoteType="date"
-                    errorMssg={errors.agm_date}
-                    value={questionData.agm_date}
+                    errorMssg={errors.ltd_company.agm_date}
+                    value={questionData.ltd_company.agm_date}
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
@@ -344,7 +375,7 @@ const Question = () => {
                     questionTitle="Have there been any changes in directors during the year?"
                     note="Director/Secretary changes require Form CAC &A. Please update
                   CAC before filing annual return"
-                    errorMssg={errors.rcQuestion3}
+                    errorMssg={errors.ltd_company.rcQuestion3}
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
@@ -365,7 +396,7 @@ const Question = () => {
                     note="
                   Shareholding changes require separate filing. Please update
                   CAC before filing annual return"
-                    errorMssg={errors.rcQuestion4}
+                    errorMssg={errors.ltd_company.rcQuestion4}
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
@@ -384,8 +415,8 @@ const Question = () => {
                     questionTitle="Have the issued shared capital changed?"
                     inputNote="New share capital number"
                     inputNoteType="number"
-                    errorMssg={errors.issued_shared_capital}
-                    value={questionData.issued_shared_capital}
+                    errorMssg={errors.ltd_company.issued_shared_capital}
+                    value={questionData.ltd_company.issued_shared_capital}
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
@@ -414,8 +445,8 @@ const Question = () => {
                     questionTitle="Has the company issued any new shares during the year?"
                     inputNote="New registered address"
                     inputNoteType="text"
-                    errorMssg={errors.new_registered_address}
-                    value={questionData.new_registered_address}
+                    errorMssg={errors.ltd_company.new_registered_address}
+                    value={questionData.ltd_company.new_registered_address}
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
@@ -477,7 +508,7 @@ const Question = () => {
                     placeholder="Brief description of the nature of business"
                     className="mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#16A34A] font-[Onest] resize-none"
                     rows={4}
-                    value={questionData.business_nature}
+                    value={questionData.miniBusiness.business_nature}
                     onChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
@@ -487,7 +518,7 @@ const Question = () => {
                   />
                   {/* {errorMssg && */}
                   <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">
-                    {errors.business_nature}
+                    {errors.miniBusiness.business_nature}
                   </p>
                   {/* } */}
                 </fieldset>
@@ -499,8 +530,8 @@ const Question = () => {
                   questionTitle="Has the proprietor's residential address changed since last filing?"
                   inputNote="New Residential Address"
                   inputNoteType="text"
-                  errorMssg={errors.new_residential_address}
-                  value={questionData.new_residential_address}
+                  errorMssg={errors.miniBusiness.new_residential_address}
+                  value={questionData.miniBusiness.new_residential_address}
                   handleChange={(e) =>
                     setQuestionData((prev) => ({
                       ...prev,
@@ -523,7 +554,7 @@ const Question = () => {
                   title_2="No"
                   questionTitle="Have you made any other changes to business particulars with CAC this year?"
                   note="Please complete updates via CAC portal first. Then return here."
-                  errorMssg={errors.bnQuestion6}
+                  errorMssg={errors.miniBusiness.bnQuestion6}
                   onRadioChange={(val) => {
                     setQuestionData((prev) => ({
                       ...prev,
