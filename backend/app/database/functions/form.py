@@ -10,12 +10,12 @@ def recieve_extracted_data(user_id, entity_type, data):
 
         # Check if exists
         cursor.execute(
-            "SELECT id FROM business_data WHERE user_id = ?", (user_id,))
+            "SELECT id FROM business_data WHERE user_id = ? AND entity_type = ?", (user_id, entity_type))
         existing = cursor.fetchone()
 
         if existing:
             cursor.execute("UPDATE business_data SET jsonData = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                        (str(data), existing['id']))
+                        (str(data), existing['id'],))
         else:
             cursor.execute("""
                 INSERT INTO business_data (id, user_id, entity_type, jsonData)
@@ -39,14 +39,14 @@ def recieve_extracted_data(user_id, entity_type, data):
             db.close()
 
 
-def retrieve_extracted_data(user_id):
+def retrieve_extracted_data(user_id, type):
     db = get_db_connection()
     try:
         cursor = db.cursor()
         cursor.execute(
             """SELECT entity_type, jsonData FROM business_data 
-                WHERE user_id = ?
-            """, (user_id,)
+                WHERE user_id = ? AND entity_type = ?
+            """, (user_id, type,)
         )
         fullData = cursor.fetchone()
         
