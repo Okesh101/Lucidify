@@ -1,12 +1,14 @@
 from flask import Blueprint, request, jsonify
 from app.wrappers.user_required import user_required
 from app.database.mockdata.helpers import loadRegistryJSON
-from app.services.pdfService import fill_business_name_pdf
+from app.services.pdfService import fill_business_name_pdf, fill_ltd_company_pdf
 from app.database.functions.pdf import next_filling_deadline
 import os
+import base64
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 pdf_bp = Blueprint("pdf_bp", __name__, url_prefix="/api/v1")
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 @pdf_bp.route("/generate-pdf", methods=['POST'])
@@ -16,6 +18,20 @@ def generate_pdf(user_id):
     entity_type = data.get("entity_type")
     extracted = data.get("extracted")   # the validated output
     rc_bn_number = extracted.get("bn_number") or extracted.get("rc_number")
+
+    if not all([entity_type, extracted, rc_bn_number]):
+        return jsonify({
+            "status": "ERROR",
+            "code": 400,
+            "message": "Missing essential data eg. entity_type, extracted, rc_number or bn_number."
+        })
+
+    if entity_type not in ["business_name", "ltd_company"]:
+        return jsonify({
+            "status": "ERROR",
+            "code": 400,
+            "message": "The entity_type field has to be either 'business_name' or 'ltd_company'."
+        })
 
     # Load stored data for the complete picture
     STORED = {}
@@ -36,26 +52,57 @@ def generate_pdf(user_id):
         template_path = os.path.join(
             BASE_DIR, '..', 'cacdata', 'business_name.pdf' if entity_type == "business_name" else 'ltd_company.pdf')
         # you need an equivalent for company
-        pdf_buffer = fill_business_name_pdf(
-            template_path, STORED, extracted) if entity_type == "business_name" else fill_company_pdf(...)
+        if entity_type == "business_name":
+            pdf_buffer = fill_business_name_pdf(
+                template_path, STORED, extracted)
+        elif entity_type == "ltd_company":
+            pdf_buffer = fill_ltd_company_pdf(template_path, STORED, extracted)
     except Exception as e:
         return jsonify({
-            "status": "ERROR", 
-            "message": f"PDF generation failed: {e}", 
+            "status": "ERROR",
+            "message": f"PDF generation failed: {e}.",
             "code": 500
         }), 500
 
-    # Update next_filing_deadline in business_entities
+
+    # Encode PDF to base64
+    pdf_base64 = base64.b64encode(pdf_buffer.read()).decode('utf-8')
+
+    # Update next deadline
+    business_name = STORED.get("business_name") or STORED.get("company_name")
+    result = next_filling_deadline(user_id, business_name, rc_bn_number, entity_type)
+
+    return jsonify({
+        "status": "SUCCESS",
+        "code": 200,
+        "message": "PDF generated successfully.",
+        "pdf_base64": pdf_base64,
+        "filename": f"{rc_bn_number}_annual_return.pdf",
+        "deadline_update": result
+    })
+
+
+# Temporary route – remove after testing
+@pdf_bp.route("/test-download", methods=['POST'])
+@user_required
+def test_download(user_id):
+    # Same logic as generate-pdf, but return file directly
+    data = request.get_json()
+    entity_type = data.get("entity_type")
+    extracted = data.get("extracted")
+    rc_bn_number = extracted.get("bn_number") or extracted.get("rc_number")
+
+    # Load stored data (copy from generate_pdf) ...
+    template_path = os.path.join(BASE_DIR, '..', 'cacdata',
+                                 'business_name.pdf' if entity_type == "business_name" else 'ltd_company.pdf')
     if entity_type == "business_name":
-        business_name = STORED['business_name']
+        pdf_buffer = fill_business_name_pdf(template_path, STORED, extracted)
     else:
-        business_name = STORED['company_name']
-    result = next_filling_deadline(user_id, business_name)
+        pdf_buffer = fill_ltd_company_pdf(template_path, STORED, extracted)
 
     return send_file(
         pdf_buffer,
         mimetype='application/pdf',
         as_attachment=True,
-        download_name=f"{rc_bn_number}_annual_return.pdf"
+        download_name=f"{rc_bn_number}_test.pdf"
     )
-

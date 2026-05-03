@@ -35,13 +35,3 @@ export const NavigateNext = ({ pathname }: ItemProp) => {
     </button>
   );
 };
-
-// Function to handle navigation for the next button without JSX
-export function HandleNavigateNext({ pathname }: ItemProp) {
-  // Using the useNavigate hook to programmatically navigate to the specified pathname
-  const navigate = useNavigate();
-  
-  navigate(`/${pathname}`)
-};
-
-// export default [{"NavigateBack":NavigateBack}, NavigateNext]

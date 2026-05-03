@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CurrentTabNumber from "../../components/CurrentTabNumber";
 import { FiCheck } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -10,50 +10,97 @@ interface DetailsProp {
 }
 
 type Page = "review" | "download";
+interface AgmProp {
+  date: string;
+  held: boolean;
+}
+interface ReviewProps {
+  company_name: string;
+  directors_changed: boolean;
+  new_registered_address: string;
+  new_share_capital: string;
+  rc_number: string;
+  registered_address_changed: boolean;
+  share_capital_changed: boolean;
+  shareholders_changed: boolean;
+  small_company: boolean;
+  agm_details: AgmProp;
+}
 
 function Details({ title, desc }: DetailsProp) {
   return (
     <div className="grid grid-cols-2 gap-10 items-center">
-      <h1 className="font-[Nunito] text-lg md:text-xl text-gray-800">{title}</h1>
+      <h1 className="font-[Nunito] text-lg md:text-xl text-gray-800">
+        {title}
+      </h1>
 
-      <span className="font-[Onest] text-sm md:text-lg text-gray-700">{desc}</span>
+      <span className="font-[Onest] text-sm md:text-lg text-gray-700">
+        {desc}
+      </span>
     </div>
   );
 }
 
 const Review = () => {
+  const [reviewData, setReviewData] = useState<ReviewProps | null>(null);
   const navigate = useNavigate();
   function navigateBack() {
     navigate(`/registration`);
   }
 
+  const regNumber = sessionStorage.getItem("regNumber");
+
   const [currentPage, setCurrentPage] = useState<Page>("review");
-  
-  const handleGeneratePdf = async() => {
-    try {
-      const res = await fetch("/api/v1/generate-pdf",{
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [blob, setBlob] = useState<Blob | null>(null);
+
+  useEffect(() => {
+    const fetchReviewData = async () => {
+      const res = await fetch("/api/v1/review", {
         method: "GET",
-        credentials: 'include'
-      })
-      const data = await res.json()
-      console.log(data)
-      
-    setCurrentPage("download")
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      setReviewData(data.data.extracted);
+      console.log(data);
+    };
+
+    fetchReviewData();
+  }, []);
+  // console.log("This is review data: ", reviewData)
+
+  const handleGeneratePdf = async () => {
+    try {
+      const res = await fetch("/api/v1/generate-pdf", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      // console.log(data)
+      setCurrentPage("download");
+      const base64 = data.file;
+
+      const pdfBlob = base64ToBlob(base64);
+      const url = Ur;
     } catch (error) {
-      if(error instanceof Error){
-        toast("There was an error trying to generate your pdf. Please try again later", {
-          style: {
+      if (error instanceof Error) {
+        toast(
+          "There was an error trying to generate your pdf. Please try again later",
+          {
+            style: {
               backgroundColor: "red",
-            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-            color: "#fff",
-            padding: "6px 10px",
-            borderRadius: "10px",
-            fontFamily: "DMMono",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
           },
-        });
+        );
       }
     }
-  }
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
@@ -92,7 +139,10 @@ const Review = () => {
                     </header>
                     <div className=" space-y-3">
                       <Details title="Company Name" desc="Your company name" />
-                      <Details title="BN Number" desc="Your BN Number" />
+                      <Details
+                        title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
+                        desc={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
+                      />
                       <Details title="Company Type" desc="Your Company Type" />
                       <Details
                         title="Registration Date"
@@ -114,11 +164,54 @@ const Review = () => {
                       <p>Edit</p>
                     </header>
                     <div className=" space-y-3">
-                      <Details title="AGM Held" desc="Yes(Feb 2026)" />
-                      <Details title="Address Changed" desc="No" />
-                      <Details title="Directors Changed" desc="No" />
-                      <Details title="Share Issued" desc="No" />
-                      <Details title="Other Changes" desc="No" />
+                      <Details
+                        title="AGM Held"
+                        desc={
+                          reviewData?.agm_details.held === false
+                            ? "No"
+                            : reviewData?.agm_details.date
+                        }
+                      />
+                      <Details
+                        title="Address Changed"
+                        desc={
+                          reviewData?.registered_address_changed === false
+                            ? "No"
+                            : "Yes"
+                        }
+                      />
+                      <Details
+                        title="Directors Changed"
+                        desc={
+                          reviewData?.directors_changed === false ? "No" : "Yes"
+                        }
+                      />
+                      <Details
+                        title="Share Capital Changed"
+                        desc={
+                          reviewData?.shareholders_changed === false
+                            ? "No"
+                            : "Yes"
+                        }
+                      />
+                      <Details
+                        title="Share Issued"
+                        desc={
+                          reviewData?.shareholders_changed === false
+                            ? "No"
+                            : "Yes"
+                        }
+                      />
+                      <Details
+                        title="Is your company a small company"
+                        desc={
+                          reviewData?.shareholders_changed === false
+                            ? "No"
+                            : "Yes"
+                        }
+                      />
+                      {/* <Details title="Share Issued" desc={reviewData?.shareholders_changed === false ? "No" : "Yes"} /> */}
+                      {/* <Details title="Other Changes" desc="No" /> */}
                     </div>
                   </section>
                 </div>
@@ -139,8 +232,8 @@ const Review = () => {
             ) : (
               <div className="flex flex-col items-center mt-8">
                 <div className=" rounded-full p-4 bg-white shadow-sm">
-                    {/* <PiFilePdfDuotone size={200} color="white"/> */}
-                    <img src="./pdf.png" alt="pdf image " className="w-35 " />
+                  {/* <PiFilePdfDuotone size={200} color="white"/> */}
+                  <img src="./pdf.png" alt="pdf image " className="w-35 " />
                 </div>
                 <div className="mt-7 flex flex-col gap-3 ">
                   <button
@@ -168,7 +261,10 @@ const Review = () => {
                   Back
                 </button>
 
-                <button className="bg-green-600 text-white  flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold" onClick={handleGeneratePdf}>
+                <button
+                  className="bg-green-600 text-white  flex gap-2 items-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold"
+                  onClick={handleGeneratePdf}
+                >
                   Generate PDF <span>&rarr;</span>
                 </button>
               </div>

@@ -14,15 +14,16 @@ auth_bp = Blueprint('auth_bp', __name__, url_prefix='/api/v1/auth')
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup_endpoint():
-    data = request.json.get("userDetails")
+    raw_data = request.get_json()
+    data = raw_data.get("AuthDetails", "")
 
     if not data:
         return jsonify({"status": "ERROR",
-                        "message": "Missing userDetails in request body",
+                        "message": "Missing AuthDetails in request body",
                         "code": 400}), 400
-    
-    first_name = data.get('first_name', '')
-    last_name = data.get('last_name', '')
+
+    first_name = data.get('firstName', '')
+    last_name = data.get('lastName', '')
     email = data.get('email', '')
     password = data.get('password', '')
 
@@ -36,13 +37,14 @@ def signup_endpoint():
 
 @auth_bp.route('/login', methods=['POST'])
 def login_endpoint():
-    data = request.json.get("userDetails")
+    raw_data = request.get_json()
+    data = raw_data.get("AuthDetails", "")
 
     if not data:
         return jsonify({"status": "ERROR",
-                        "message": "Missing userDetails in request body",
+                        "message": "Missing AuthDetails in request body",
                         "code": 400}), 400
-    
+
     email = data.get('email', "")
     password = data.get('password', "")
 
@@ -79,4 +81,3 @@ def logout_endpoint(user_id):
         response.delete_cookie('session_id')
         return response, 200
     return jsonify(result), result["code"]
-

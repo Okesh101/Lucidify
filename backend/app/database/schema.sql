@@ -24,5 +24,16 @@ CREATE TABLE IF NOT EXISTS business_entities (
     entity_type TEXT NOT NULL, -- 'business_name' or 'ltd_company'
     next_filing_deadline DATE NOT NULL,
     last_reminder_sent_days INTEGER DEFAULT 0, -- To avoid double emails
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+
+CREATE TABLE IF NOT EXISTS business_data (
+    id TEXT PRIMARY KEY NOT NULL,
+    user_id TEXT REFERENCES users(id),
+    entity_type TEXT NOT NULL, -- 'business_name' or 'ltd_company'
+    jsonData TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
 );

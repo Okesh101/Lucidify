@@ -59,7 +59,7 @@ export default function About() {
           <p className="mt-4 text-gray-500 leading-relaxed font-[ClashDisplay] tracking-wider">
             Filling your CAC Annual Return shouldn’t require lawyers, long queues, or confusing paperwork.
             Our mission is to eliminate friction in compliance by turning complex legal processes into
-            simple, guided experiences that any business owner can complete in minutes.
+            simple, guided experiences that any limited liability company or business owner can complete in minutes.
           </p>
         </motion.section>
 
@@ -95,20 +95,20 @@ export default function About() {
 
           <div className="grid md:grid-cols-3 gap-6 mt-6">
             <Card title="Auto Fetch">
-              Enter your BN number and we pre-fill your company details instantly.
+              Enter your BN/RC number and we pre-fill your business or company details instantly.
             </Card>
             <Card title="Guided Questions">
               Answer simple questions in plain English — no legal jargon.
             </Card>
             <Card title="Verified Output">
-              Our system checks your data and generates a ready-to-submit PDF.
+              Our system checks your data against CAC rules and standards then generates a ready-to-submit PDF.
             </Card>
           </div>
         </motion.section>
 
         {/* WHY US */}
        <motion.section 
-          className="rounded-xl shadow-sm shadow-green-950 mt-12 overflow-hidden" 
+          className="rounded-xl shadow-sm shadow-green-950/70 mt-12 overflow-hidden" 
           initial={{ x: -20, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.3  }}
@@ -137,7 +137,7 @@ export default function About() {
               </p>
 
               <ul className="list-disc pl-5 space-y-2 font-[Onest] ">
-                <li>Pre-approved BN/06 PDF template (CAC official format)</li>
+                <li>Pre-approved BN/07 and BN/06 PDF template (CAC original official format)</li>
                 <li>Validated field values from static legal dictionaries</li>
                 <li>User-provided answers (converted to structured output)</li>
               </ul>
@@ -176,7 +176,7 @@ export default function About() {
             Start now and complete your filing in under 4 minutes.
           </p>
 
-          <button className="mt-6 bg-[#16A34A] font-[ClashDisplay] tracking-wider text-white px-6 py-3 rounded-lg" onClick={() => navigate("/authentication")}>
+          <button className="mt-6 bg-[#16A34A] font-[ClashDisplay] tracking-wider text-white px-6 py-3 rounded-lg cursor-pointer" onClick={() => navigate("/authentication")}>
             Start Filing
           </button>
         </motion.section>

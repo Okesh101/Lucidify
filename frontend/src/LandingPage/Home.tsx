@@ -27,7 +27,7 @@ export default function LandingPage() {
         ZERO LAWYERS.
       </h1>
       <p className="mt-4 sm:mt-6 md:mt-7 text-black font-[Onest] text-sm sm:text-base max-w-2xl mx-auto lg:mx-0">
-        File your CAC Annual Return in minutes — whether you’re a small business or a large organisation.
+        File your CAC Annual Return in minutes — whether you’re a small business or a limited liability company.
       </p>
 
       {/* BUTTON */}

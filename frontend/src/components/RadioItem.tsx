@@ -29,20 +29,24 @@ const RadioItem = ({
   inputNoteType,
 }: ItemProp) => {
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const [showInput, setShowInput] = useState<boolean>(false)
+  const [showInput, setShowInput] = useState<boolean>(false);
   const [selected, setSelected] = useState<string>("");
 
-const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const radioValue = e.target.value;
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const radioValue = e.target.value;
 
-  setSelected(radioValue);
-  setShowMessage(radioValue === "yes");
-  setShowInput(radioValue === "yes" && Boolean(inputNote));
-  
-  if(onRadioChange) {
-    onRadioChange(radioValue);
-  }
-};
+    setSelected(radioValue);
+    setShowMessage(radioValue === "yes");
+    setShowInput(radioValue === "yes" && Boolean(inputNote));
+
+    if (onRadioChange) {
+      onRadioChange(radioValue);
+    }
+  };
+
+  const radioError = !showInput ? errorMssg : "";
+  const inputError = showInput ? errorMssg : "";
+
   return (
     <div className="space-y-2">
       <h1 className="space-x-3 font-[Nunito] text-lg">
@@ -74,6 +78,12 @@ const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             {title_2}
           </label>
         </div>
+
+        {radioError && (
+          <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">
+            {radioError}
+          </p>
+        )}
       </fieldset>
 
       {showMessage ? (
@@ -90,12 +100,14 @@ const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             onChange={handleChange}
           />
 
-          {errorMssg && <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">{errorMssg}</p> }
+          {inputError && (
+            <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">
+              {inputError}
+            </p>
+          )}
         </div>
       ) : null}
     </div>
-
-    //   {errorMssg && <p className="text-red-500 text-sm mt-1.5 font-[DMMono]">{errorMssg}</p> }
   );
 };
 

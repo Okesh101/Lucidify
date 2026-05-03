@@ -10,7 +10,7 @@ interface Props {
 
 function Step({ number, title, desc }: Props) {
   return (
-    <div className="text-center shadow-sm shadow-gray-700 p-6 rounded-xl">
+    <div className="text-center shadow-sm shadow-gray-700/70 p-6 rounded-xl">
       <div className="w-10 h-10 mx-auto rounded-full font-[ClashDisplay] text-xl bg-[#16A34A] flex items-center justify-center font-bold">
         {number}
       </div>
@@ -58,7 +58,7 @@ export default function HowItWorks() {
         <div className="text-center">
           <h1 className="text-4xl font-bold font-[Nunito]">How It Works</h1>
           <p className="mt-4 text-gray-700 font-[Unbounded] text-sm">
-            From BN number to ready-to-submit CAC filing in under 4 minutes.
+            From BN/RC number to ready-to-submit CAC Annual Return Form in under 4 minutes.
           </p>
         </div>
 
@@ -66,8 +66,8 @@ export default function HowItWorks() {
         <div className="mt-16 grid md:grid-cols-4 gap-8">
           <Step
             number="1"
-            title="Enter RC Number"
-            desc="We securely fetch your company details directly from CAC records."
+            title="Enter BN/RC Number"
+            desc="We securely fetch your business & company details directly from CAC records."
           />
           <Step
             number="2"
@@ -82,7 +82,7 @@ export default function HowItWorks() {
           <Step
             number="4"
             title="Download & Submit"
-            desc="Get a fully formatted BN/06 PDF ready for submission instantly."
+            desc="Get a fully formatted BN/07 or BN/06 PDF ready for submission instantly."
           />
         </div>
 
@@ -133,7 +133,7 @@ export default function HowItWorks() {
           </p>
 
           <button
-            className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider"
+            className="mt-6 bg-[#15c054d5] text-white px-6 py-3 rounded-lg font-[ClashDisplay] tracking-wider cursor-pointer"
             onClick={() => navigate("/authentication")}
           >
             Start Filing Now
