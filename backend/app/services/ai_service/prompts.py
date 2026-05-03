@@ -15,8 +15,6 @@ If a field is truly unknown or not applicable, set it to null (never use empty s
 
 Schema:
 {
-  "bn_number": "string (exactly as in stored data)",
-  "proprietor_name": "string (from stored data if user confirms no change, else user's new input)",
   "principal_place_of_business": "string (from stored data if same, else user's new address)",
   "nature_of_business": "string",
   "proprietor_residential_address": "string or null (null if residence has NOT changed)",
@@ -42,8 +40,6 @@ Use the stored data to fill unchanged fields; user input takes precedence when a
 
 Schema:
 {
-  "rc_number": "string (exactly as in stored data)",
-  "company_name": "string (from stored data unless user corrected it)",
   "small_company": "boolean (true if user says Yes, else false)",
   "agm_details": {
     "held": "boolean",
@@ -69,6 +65,12 @@ Important rules:
 - Output ONLY the JSON object.
 """
 
+# "bn_number": "string (exactly as in stored data)",
+# "proprietor_name": "string (from stored data if user confirms no change, else user's new input)",
+
+# "rc_number": "string (exactly as in stored data)",
+# "company_name": "string (from stored data unless user corrected it)",
+
 
 def build_prompt(entity_type: str, answers: dict, stored_data: dict = None) -> tuple:
     if stored_data is None:
@@ -77,13 +79,23 @@ def build_prompt(entity_type: str, answers: dict, stored_data: dict = None) -> t
 
     if entity_type == "business_name":
         system_prompt = BN07_SYSTEM_PROMPT
-    elif entity_type == "ltd_company":
-        system_prompt = BN06_SYSTEM_PROMPT
+        # We clarify for the AI what the React keys mean
+        context_answers = {
+            "nature_of_business": answers.get("business_nature"),
+            "residence_changed": answers.get("residence_changed") == "yes",
+            "new_residential_address": answers.get("new_residential_address")
+        }
     else:
-        raise ValueError("Invalid entity type")
+        system_prompt = BN06_SYSTEM_PROMPT
+        context_answers = {
+            "is_small_company": answers.get("is_small_company") == "yes",
+            "agm_held": answers.get("agm_held") == "yes",
+            "agm_date": answers.get("agm_date"),
+            "changes": {
+                "directors": answers.get("directors_changed") == "yes",
+                "shares": answers.get("shareholders_changed") == "yes"
+            }
+        }
 
-    user_prompt = (
-        f"User answers: {json.dumps(answers)}\n\n"
-        f"Stored data: {json.dumps(stored_data)}"
-    )
+    user_prompt = f"User Inputs: {json.dumps(context_answers)}\nRegistry Truth: {json.dumps(stored_data)}"
     return system_prompt, user_prompt

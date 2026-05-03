@@ -19,7 +19,7 @@ def signup_endpoint():
 
     if not data:
         return jsonify({"status": "ERROR",
-                        "message": "Missing userDetails in request body",
+                        "message": "Missing AuthDetails in request body",
                         "code": 400}), 400
 
     first_name = data.get('firstName', '')
@@ -42,7 +42,7 @@ def login_endpoint():
 
     if not data:
         return jsonify({"status": "ERROR",
-                        "message": "Missing userDetails in request body",
+                        "message": "Missing AuthDetails in request body",
                         "code": 400}), 400
 
     email = data.get('email', "")
