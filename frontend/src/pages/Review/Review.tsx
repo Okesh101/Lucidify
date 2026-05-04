@@ -180,7 +180,7 @@ const Review = () => {
                   <section className="space-y-5 bg-white shadow-sm p-4 rounded-xl">
                     <header className="flex items-center justify-between">
                       <h1 className="text-xl tracking-wide font-bold font-[ClashDisplay]">
-                        Company Information
+                        {regNumber?.startsWith("BN") ? "Business Information" : "Company Information"}
                       </h1>
                       {/* <p>Edit</p> */}
                     </header>
@@ -188,12 +188,12 @@ const Review = () => {
                       {/* Mini Businessess */}
                      {regNumber?.startsWith("BN") ? (
                       <>
-                        <Details title="Company Name" desc={companyInfo?.business_name || "Loading..."} />
+                        <Details title={regNumber?.startsWith("BN") ? "Business Name" : "Company Name"} desc={companyInfo?.business_name || "Loading..."} />
                         <Details
                           title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
                           desc={regNumber || "Loading..."}
                         />
-                        <Details title="Company Type" desc={companyInfo?.business_type || "Loading..."}/>
+                        <Details title={regNumber?.startsWith("BN") ? "Business Type" : "Company Type"} desc={companyInfo?.business_type || "Loading..."}/>
                         <Details
                           title="Registration Address"
                           desc={companyInfo?.registered_address || "Loading..."}
