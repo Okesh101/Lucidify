@@ -15,7 +15,7 @@ pdf_bp = Blueprint("pdf_bp", __name__, url_prefix="/api/v1")
 @pdf_bp.route("/generate-pdf", methods=['GET'])
 @user_required
 def generate_pdf(user_id):
-    rc_bn_number = request.args.get("rc_bn_number", "")
+    rc_bn_number = request.args.get("regNumber", "")
     if not rc_bn_number:
         return jsonify({
             "status": "ERROR",
