@@ -83,8 +83,7 @@ def _validate_bn07_against_stored(data, stored):
 #     return e
 def _validate_business_name(data: dict) -> list:
     e = []
-    required = ["bn_number", "proprietor_name",
-                "principal_place_of_business", "nature_of_business"]
+    required = ["principal_place_of_business", "nature_of_business"]
     for field in required:
         if not data.get(field):
             e.append(f"Missing required field: {field}")

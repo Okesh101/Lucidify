@@ -9,8 +9,8 @@ import { ValidateField } from "../../utils/Validation";
 type Mode = "business_name" | "ltd_company" | null;
 interface formProp {
   miniBusiness: {
-    bnNumber: string;
-    proprietor_name: string;
+    // bnNumber: string;
+    // proprietor_name: string;
     business_nature: string;
     new_residential_address: string;
     bnQuestion6: string;
@@ -41,8 +41,8 @@ const Question = () => {
   }, [regNumber]);
   const [errors, setErrors] = useState<formProp>({
     miniBusiness: {
-      bnNumber: "",
-      proprietor_name: "",
+      // bnNumber: "",
+      // proprietor_name: "",
       business_nature: "",
       new_residential_address: "",
       bnQuestion6: "",
@@ -61,8 +61,8 @@ const Question = () => {
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState<formProp>({
     miniBusiness: {
-      bnNumber: "",
-      proprietor_name: "",
+      // bnNumber: "",
+      // proprietor_name: "",
       business_nature: "",
       new_residential_address: "",
       bnQuestion6: "",
@@ -607,7 +607,7 @@ const Question = () => {
                       miniBusiness: {
                         ...prev.miniBusiness,
                         new_residential_address: e.target.value,
-                      }
+                      },
                     }))
                   }
                   onRadioChange={(val) => {
