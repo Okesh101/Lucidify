@@ -1,9 +1,9 @@
 import { TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 
-const Button = ({ title = "", onPress, style, image }) => {
+const Button = ({ title = "", onPress, style, image, textStyle }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text style={[styles.buttonText]}>{title}</Text>
+      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
        {image && <Image source={image} style={styles.image} />}
      
     </TouchableOpacity>

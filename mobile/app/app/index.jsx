@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
 import Input from "../components/input";
 import Button from "../components/button";
 import { useState } from "react";
@@ -11,183 +11,185 @@ const HomeLayout = () => {
   const [activeTab, setActiveTab] = useState("login");
   return (
     <SafeAreaView style={styles.Container}>
-      <View style={{ gap: 10 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: 80,
-          }}
-        >
-          <View>
-            <Image
-              style={{ width: 50, height: 50, marginRight: 10 }}
-              source={require("../assets/images/insurance.png")}
-            />
+      <ScrollView>
+        <View style={{ gap: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 80,
+            }}
+          >
+            <View>
+              <Image
+                style={{ width: 50, height: 50, marginRight: 10 }}
+                source={require("../assets/images/insurance.png")}
+              />
+            </View>
+
+            <View style={styles.safeView}>
+              <Text
+                style={{
+                  color: "#0000",
+                  justifyContent: "center",
+                  fontFamily: "bold",
+                  fontSize: 18,
+                }}
+              >
+                SME Compliance
+              </Text>
+              <Text style={{ fontFamily: "SemiBold", color: "#145C2F" }}>
+                Fast-Track
+              </Text>
+            </View>
           </View>
 
-          <View style={styles.safeView}>
-            <Text
-              style={{
-                color: "#0000",
-                justifyContent: "center",
-                fontFamily: "bold",
-                fontSize: 18,
-              }}
-            >
-              SME Compliance
-            </Text>
-            <Text style={{ fontFamily: "SemiBold", color: "#145C2F" }}>
-              Fast-Track
-            </Text>
-          </View>
-        </View>
-
-        <Text
-          style={{
-            justifyContent: "center",
-            textAlign: "center",
-            fontFamily: "medium",
-          }}
-        >
-          One form. Four minutes. Zero lawyers
-        </Text>
-      </View>
-
-      <View style={styles.centerView}>
-        <View style={styles.tabsRow}>
-          <TouchableOpacity
-          // conditionally rendered the style based on the current tab
-            style={
-              activeTab === "login" ? styles.activeTab : styles.inactiveTab
-            }
-            // Function to set the active tab to be login when clicked on it 
-            onPress={() => setActiveTab("login") }
+          <Text
+            style={{
+              justifyContent: "center",
+              textAlign: "center",
+              fontFamily: "medium",
+            }}
           >
-            {/* Conditionally rendered the text style  */}
-            <Text
-              style={
-                activeTab === "login"
-                  ? styles.activeTabText
-                  : styles.inactiveTabText
-              }
-            >
-              Login
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-           // conditionally rendered the style based on the current tab
-            style={
-              activeTab === "signup" ? styles.activeTab : styles.inactiveTab
-            }
-              // Function to set the active tab to be signup when clicked on it 
-            onPress={() => setActiveTab("signup")}
-          >
-            {/* Conditionally rendered the text style  */}
-            <Text
-              style={
-                activeTab === "signup"
-                  ? styles.activeTabText
-                  : styles.inactiveTabText
-              }
-            >
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.welcomeText}>
-          {/* Conditionally rendered the text content based on the tab  */}
-          {activeTab === "login" ? "Welcome back" : "Create an Account"}
-        </Text>
-        <Text
-          style={{ fontSize: 13, marginVertical: 10, fontFamily: "regular" }}
-        >
-          {/* Conditionally rendered the text content based on the tab  */}
-          {activeTab === "login"
-            ? "Login to continue filing your CAC Annual Return"
-            : "Signup to start filing your CAC Annual Return"}
-        </Text>
-        {/* Conditional statement that shows when the activeTab is signup only */}
-        {activeTab === "signup" && (
-          <>
-            <Text style={{ marginVertical: 10, fontFamily: "medium" }}>
-              First Name
-            </Text>
-            <Input title="John" />
-
-            <Text style={{ marginVertical: 10, fontFamily: "medium" }}>
-              Last Name
-            </Text>
-            <Input title="Doe" />
-          </>
-        )}
-
-        <Text style={{ marginVertical: 10, fontFamily: "medium" }}>Email</Text>
-        <Input title="JohnDoe@gmail.com" />
-
-        <Text
-          style={{ marginVertical: 10, marginTop: 20, fontFamily: "medium" }}
-        >
-          Password
-        </Text>
-        <Input title="********" security={true} />
-
-        <Text
-          style={{
-            textAlign: "right",
-            marginTop: 15,
-            fontFamily: "regular",
-            color: "#22A84A",
-            fontSize: 12,
-          }}
-        >
-          Forgot Password?
-        </Text>
-
-        <View
-          style={{ flexDirection: "row", alignSelf: "center", marginTop: 30 }}
-        >
-          <Text style={{ fontFamily: "light", fontSize: 13 }}>
-            {/* Conditionally rendered the text content based on the tab  */}
-            {activeTab === "login"
-              ? "Don't have an account?"
-              : "Already have an account?"}
+            One form. Four minutes. Zero lawyers
           </Text>
+        </View>
 
-          {/* Conditionally rendered the button text content based on the tab  */}
-          {activeTab === "login" ? (
-            <Text
-              style={{ color: "#22A84A", fontFamily: "regular", fontSize: 13 }}
-              onPress={() => setActiveTab("signup")}
-            >
-              {" "}
-              Create one
-            </Text>
-          ) : (
-            <Text
-              style={{ color: "#22A84A", fontFamily: "regular", fontSize: 13 }}
+        <View style={styles.centerView}>
+          <View style={styles.tabsRow}>
+            <TouchableOpacity
+              // conditionally rendered the style based on the current tab
+              style={
+                activeTab === "login" ? styles.activeTab : styles.inactiveTab
+              }
+              // Function to set the active tab to be login when clicked on it 
               onPress={() => setActiveTab("login")}
             >
-              {" "}
-              Login
-            </Text>
+              {/* Conditionally rendered the text style  */}
+              <Text
+                style={
+                  activeTab === "login"
+                    ? styles.activeTabText
+                    : styles.inactiveTabText
+                }
+              >
+                Login
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              // conditionally rendered the style based on the current tab
+              style={
+                activeTab === "signup" ? styles.activeTab : styles.inactiveTab
+              }
+              // Function to set the active tab to be signup when clicked on it 
+              onPress={() => setActiveTab("signup")}
+            >
+              {/* Conditionally rendered the text style  */}
+              <Text
+                style={
+                  activeTab === "signup"
+                    ? styles.activeTabText
+                    : styles.inactiveTabText
+                }
+              >
+                Sign Up
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.welcomeText}>
+            {/* Conditionally rendered the text content based on the tab  */}
+            {activeTab === "login" ? "Welcome back" : "Create an Account"}
+          </Text>
+          <Text
+            style={{ fontSize: 13, marginVertical: 10, fontFamily: "regular" }}
+          >
+            {/* Conditionally rendered the text content based on the tab  */}
+            {activeTab === "login"
+              ? "Login to continue filing your CAC Annual Return"
+              : "Signup to start filing your CAC Annual Return"}
+          </Text>
+          {/* Conditional statement that shows when the activeTab is signup only */}
+          {activeTab === "signup" && (
+            <>
+              <Text style={{ marginVertical: 10, fontFamily: "medium" }}>
+                First Name
+              </Text>
+              <Input title="John" />
+
+              <Text style={{ marginVertical: 10, fontFamily: "medium" }}>
+                Last Name
+              </Text>
+              <Input title="Doe" />
+            </>
           )}
-        </View>
+
+          <Text style={{ marginVertical: 10, fontFamily: "medium" }}>Email</Text>
+          <Input title="JohnDoe@gmail.com" />
+
+          <Text
+            style={{ marginVertical: 10, marginTop: 20, fontFamily: "medium" }}
+          >
+            Password
+          </Text>
+          <Input title="********" security={true} />
+
+          <Text
+            style={{
+              textAlign: "right",
+              marginTop: 15,
+              fontFamily: "regular",
+              color: "#22A84A",
+              fontSize: 12,
+            }}
+          >
+            Forgot Password?
+          </Text>
+
+          <View
+            style={{ flexDirection: "row", alignSelf: "center", marginTop: 30 }}
+          >
+            <Text style={{ fontFamily: "light", fontSize: 13 }}>
+              {/* Conditionally rendered the text content based on the tab  */}
+              {activeTab === "login"
+                ? "Don't have an account?"
+                : "Already have an account?"}
+            </Text>
+
+            {/* Conditionally rendered the button text content based on the tab  */}
+            {activeTab === "login" ? (
+              <Text
+                style={{ color: "#22A84A", fontFamily: "regular", fontSize: 13 }}
+                onPress={() => setActiveTab("signup")}
+              >
+                {" "}
+                Create one
+              </Text>
+            ) : (
+              <Text
+                style={{ color: "#22A84A", fontFamily: "regular", fontSize: 13 }}
+                onPress={() => setActiveTab("login")}
+              >
+                {" "}
+                Login
+              </Text>
+            )}
+          </View>
 
           {/* Conditionally rendered the text content based on the tab  */}
-        <Button
-          title={activeTab === 'login' ? "Login" : "Sign Up"}
-          onPress={() => {
-            if (activeTab === 'login') {
-              router.push('/dashboard');
-            } else {
-              setActiveTab('login');
-            }
-          }}
-        />
-      </View>
+          <Button
+            title={activeTab === 'login' ? "Login" : "Sign Up"}
+            onPress={() => {
+              if (activeTab === 'login') {
+                router.push('/dashboard');
+              } else {
+                setActiveTab('login');
+              }
+            }}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -253,6 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     alignItems: "center",
+
   },
 
   activeTabText: {

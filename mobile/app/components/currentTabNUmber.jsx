@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const steps = [
-  {title: "Verification", pathname: "/verification", number: 1},
-  {title: "Questions", pathname: "/question", number: 2},
-  {title: "Review", pathname: "/review", number: 3}
+  { title: "Verification", pathname: "/verification", number: 1 },
+  { title: "Questions", pathname: "/question", number: 2 },
+  { title: "Review", pathname: "/review", number: 3 }
 ];
 
 export const CurrentTabNNumber = () => {
@@ -24,10 +24,10 @@ export const CurrentTabNNumber = () => {
                 <View
                   style={[
                     styles.stepCircle,
-                    {backgroundColor: isActive ? "#22A84A" : "#D1D5DB"},
+                    { backgroundColor: isActive ? "#22A84A" : "#D1D5DB" },
                   ]}
                 >
-                  <Text style={[styles.stepNumber, {color: isActive ? "#FFFFFF" : "#6B7280"}]}>
+                  <Text style={[styles.stepNumber, { color: isActive ? "#FFFFFF" : "#6B7280" }]}>
                     {step.number}
                   </Text>
                 </View>
@@ -56,10 +56,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     marginTop: 40,
-    marginHorizontal: 50,
+    marginLeft: 37,
     width: "100%",
     paddingHorizontal: 10,
-    
+    alignItems: "center",
+
+
   },
   stepContainer: {
     flex: 1,
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
+
   },
   stepCircle: {
     width: 30,
