@@ -86,6 +86,35 @@ const Question = () => {
     question6: "",
   });
 
+  function Validation(
+    name: string,
+    isValidFlag: boolean,
+    fieldName: string,
+    category: "miniBusiness" | "ltd_company",
+  ) {
+    let isValid = isValidFlag;
+    if (!name.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [fieldName]: "This Field is required",
+        },
+      }));
+      isValid = false;
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [fieldName]: "",
+        },
+      }));
+    }
+    // returning the isValid flag to be used in form submission
+    return isValid;
+  }
+
   useEffect(() => {
     if (isLoading) {
       document.body.style.overflow = "hidden";
@@ -111,7 +140,7 @@ const Question = () => {
           data.business_nature,
           "miniBusiness",
           "business_nature",
-          setErrors
+          companyType === "business_name" ? "miniBusiness" : "ltd_company",
         ) && isValid;
 
       isValid = 
@@ -138,7 +167,7 @@ const Question = () => {
             data.new_residential_address,
             "miniBusiness",
             "new_residential_address",
-            setErrors
+            companyType === "business_name" ? "miniBusiness" : "ltd_company",
           ) && isValid;
       } else {
         setErrors((prev) => ({
@@ -149,22 +178,31 @@ const Question = () => {
           },
         }));
       }
-    }
+    } else if (companyType === "ltd_company") {
+      // isValid =
+      //   Validation(questionData.rcNumber, isValid, "rcNumber") && isValid;
+      // isValid =
+      //   Validation(questionData.company_name, isValid, "company_name") &&
+      //   isValid;
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion1,
+        isValid,
+        "rcQuestion1",
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
+      );
 
-    // ================= LTD COMPANY =================
-    else if (companyType === "ltd_company") {
-      const data = questionData.ltd_company;
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion3,
+        isValid,
+        "rcQuestion3",
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
+      );
 
-      // Validate required radio answers
-      ["rcQuestion1", "rcQuestion3", "rcQuestion4"].forEach((field) => {
-        isValid =
-          ValidateField(
-            data[field as keyof typeof data],
-            "ltd_company",
-            field,
-            setErrors
-          ) && isValid;
-      });
+      isValid = Validation(
+        questionData.ltd_company.rcQuestion4,
+        isValid,
+        "rcQuestion4",
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",      );
 
       // AGM
       if (!radioSelections.question2) {
@@ -178,8 +216,12 @@ const Question = () => {
         isValid = false;
       } else if (radioSelections.question2 === "yes") {
         isValid =
-          ValidateField(data.agm_date, "ltd_company", "agm_date", setErrors) &&
-          isValid;
+          Validation(
+            questionData.ltd_company.agm_date,
+            isValid,
+            "agm_date",
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
+          ) && isValid;
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -206,7 +248,7 @@ const Question = () => {
             data.issued_shared_capital,
             "ltd_company",
             "issued_shared_capital",
-            setErrors
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
           ) && isValid;
       } else {
         setErrors((prev) => ({
@@ -234,7 +276,7 @@ const Question = () => {
             data.new_registered_address,
             "ltd_company",
             "new_registered_address",
-            setErrors
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
           ) && isValid;
       } else {
         setErrors((prev) => ({
@@ -267,21 +309,69 @@ const Question = () => {
         }),
       });
 
-      const data = await res.json();
-
-      if (data.status === "SUCCESS" || data.code === 200) {
-        navigate("/review");
-      } else {
-        toast(data.message, { 
-          style: { 
-            backgroundColor: "red", 
-            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)", 
-            color: "#fff", 
-            padding: "6px 10px", 
-            borderRadius: "10px", 
-            fontFamily: "DMMono", 
-          }
+      try {
+        setIsLoading(true);
+        const res = await fetch("/api/v1/extract", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            BusinessDetails: {
+              entity_type:
+                companyType === "business_name"
+                  ? "business_name"
+                  : "ltd_company",
+              answers:
+                companyType === "business_name"
+                  ? questionData.miniBusiness
+                  : questionData.ltd_company,
+              registration_number: regNumber,
+            },
+          }),
         });
+        const data = await res.json();
+        console.log(data);
+        if (data.status === "SUCCESS" || data.code === 200) {
+          console.log("Data sent successfully");
+          setIsLoading(false);
+          toast(data.message, {
+            style: {
+              backgroundColor: "green",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
+          });
+          navigate("/review");
+        } else {
+          setIsLoading(false);
+          toast(data.message, {
+            style: {
+              backgroundColor: "red",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
+          });
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setIsLoading(false);
+          toast("Failed to send your data. Please try again later.", {
+            style: {
+              backgroundColor: "red",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
+          });
+        }
       }
     } catch {
       toast("Failed to send your data. Please try again later.", { 
