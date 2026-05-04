@@ -21,10 +21,10 @@ def extract_endpoint(user_id):
     answers = data.get("answers")
     reg_no = data.get("registration_number")
 
-    if not all([entity_type, answers]):
+    if not all([entity_type, answers, reg_no]):
         return jsonify({"status": "ERROR",
                         "code": 400,
-                        "message": "Missing entity type or answers"
+                        "message": "Missing entity type or answers or registration number"
                         }), 400
 
     if entity_type not in ["business_name", "ltd_company"]:
@@ -81,7 +81,7 @@ def extract_endpoint(user_id):
 @user_required
 def review_endpoint(user_id):
     type = request.args.get("type", "")
-    
+
     if type not in ["business_name", "ltd_company"]:
         return jsonify({"status": "ERROR",
                         "code": 400,

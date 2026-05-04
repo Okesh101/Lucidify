@@ -85,13 +85,30 @@ const Question = () => {
     question6: "",
   });
 
-  function Validation(name: string, isValidFlag: boolean, fieldName: string) {
+  function Validation(
+    name: string,
+    isValidFlag: boolean,
+    fieldName: string,
+    category: "miniBusiness" | "ltd_company",
+  ) {
     let isValid = isValidFlag;
     if (!name.trim()) {
-      setErrors((prev) => ({ ...prev, [fieldName]: "This Field is required" }));
+      setErrors((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [fieldName]: "This Field is required",
+        },
+      }));
       isValid = false;
     } else {
-      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
+      setErrors((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          [fieldName]: "",
+        },
+      }));
     }
     // returning the isValid flag to be used in form submission
     return isValid;
@@ -122,6 +139,7 @@ const Question = () => {
           questionData.miniBusiness.business_nature,
           isValid,
           "business_nature",
+          companyType === "business_name" ? "miniBusiness" : "ltd_company",
         ) && isValid;
 
       if (!radioSelections.question5) {
@@ -136,6 +154,7 @@ const Question = () => {
             questionData.miniBusiness.new_residential_address,
             isValid,
             "new_residential_address",
+            companyType === "business_name" ? "miniBusiness" : "ltd_company",
           ) && isValid;
       } else {
         setErrors((prev) => ({ ...prev, new_residential_address: "" }));
@@ -150,27 +169,33 @@ const Question = () => {
         questionData.ltd_company.rcQuestion1,
         isValid,
         "rcQuestion1",
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
       );
 
       isValid = Validation(
         questionData.ltd_company.rcQuestion3,
         isValid,
         "rcQuestion3",
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
       );
 
       isValid = Validation(
         questionData.ltd_company.rcQuestion4,
         isValid,
         "rcQuestion4",
-      );
+        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",      );
 
       if (!radioSelections.question2) {
         setErrors((prev) => ({ ...prev, agm_date: "This Field is required" }));
         isValid = false;
       } else if (radioSelections.question2 === "yes") {
         isValid =
-          Validation(questionData.ltd_company.agm_date, isValid, "agm_date") &&
-          isValid;
+          Validation(
+            questionData.ltd_company.agm_date,
+            isValid,
+            "agm_date",
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
+          ) && isValid;
       } else {
         setErrors((prev) => ({ ...prev, agm_date: "" }));
       }
@@ -187,6 +212,7 @@ const Question = () => {
             questionData.ltd_company.issued_shared_capital,
             isValid,
             "issued_shared_capital",
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
           ) && isValid;
 
         // setErrors((prev) => ({ ...prev, issued_shared_capital: "" }));
@@ -206,6 +232,7 @@ const Question = () => {
             questionData.ltd_company.new_registered_address,
             isValid,
             "new_registered_address",
+            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
           ) && isValid;
       } else {
         setErrors((prev) => ({ ...prev, new_registered_address: "" }));
@@ -220,6 +247,7 @@ const Question = () => {
         setIsLoading(true);
         const res = await fetch("/api/v1/extract", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             BusinessDetails: {
@@ -231,6 +259,7 @@ const Question = () => {
                 companyType === "business_name"
                   ? questionData.miniBusiness
                   : questionData.ltd_company,
+              registration_number: regNumber,
             },
           }),
         });
@@ -238,9 +267,20 @@ const Question = () => {
         console.log(data);
         if (data.status === "SUCCESS" || data.code === 200) {
           console.log("Data sent successfully");
-          navigate("/review");
           setIsLoading(false);
+          toast(data.message, {
+            style: {
+              backgroundColor: "green",
+              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              color: "#fff",
+              padding: "6px 10px",
+              borderRadius: "10px",
+              fontFamily: "DMMono",
+            },
+          });
+          navigate("/review");
         } else {
+          setIsLoading(false);
           toast(data.message, {
             style: {
               backgroundColor: "red",
@@ -251,10 +291,10 @@ const Question = () => {
               fontFamily: "DMMono",
             },
           });
-          setIsLoading(false);
         }
       } catch (error) {
         if (error instanceof Error) {
+          setIsLoading(false);
           toast("Failed to send your data. Please try again later.", {
             style: {
               backgroundColor: "red",
@@ -265,7 +305,6 @@ const Question = () => {
               fontFamily: "DMMono",
             },
           });
-          setIsLoading(false);
         }
       }
     }
@@ -512,7 +551,10 @@ const Question = () => {
                     onChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
-                        business_nature: e.target.value,
+                        miniBusiness: {
+                          ...prev.miniBusiness,
+                          business_nature: e.target.value,
+                        },
                       }))
                     }
                   />

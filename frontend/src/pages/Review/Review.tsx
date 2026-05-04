@@ -74,6 +74,9 @@ const Review = () => {
     try {
       const res = await fetch("/api/v1/generate-pdf", {
         method: "POST",
+        headers: { 
+          "Content-Type": "application/json" 
+        },
         credentials: "include",
       });
       const data = await res.json();
