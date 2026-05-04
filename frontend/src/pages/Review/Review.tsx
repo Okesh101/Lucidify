@@ -84,67 +84,25 @@ const Review = () => {
   }, []);
   // console.log("This is review data: ", reviewData)
 
-  function base64ToBlob(base64: string) {
-  const base64Data = base64.includes(",")
-    ? base64.split(",")[1]
-    : base64;
-
-  const byteCharacters = atob(base64Data);
-  const byteNumbers = new Array(byteCharacters.length);
-
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-
-  return new Blob([new Uint8Array(byteNumbers)], {
-    type: "application/pdf",
-  });
-}
  
   const handleGeneratePdf = async () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`/api/v1/generate-pdf`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json" 
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          // data: reviewData,
-        }),
+      const res = await fetch(`/api/v1/generate-pdf?regNumber=${regNumber?.startsWith("BN") ? "business_name" : "ltd_company"}`, {
+        credentials: "include"
       });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Failed to generate PDF");
-      }
-
-      const contentType = res.headers.get("Content-Type");
-
-      if (contentType?.includes("application/json")) {
-        const data = await res.json();
-
-        const base64 = data.pdf;
-
-        const blob = base64ToBlob(base64);
-        const url = URL.createObjectURL(blob);
-
-        setPdfBlob(blob);
-        setPdfUrl(url);
-
-        console.log("PDF ready (base64)", url);
-      } else {
         // if backend returns RAW PDF
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
+        if(res.status === 200) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
 
-        setPdfBlob(blob);
-        setPdfUrl(url);
-
-        console.log("PDF ready (blob)", url);
-      }
+          setPdfBlob(blob);
+          setPdfUrl(url);
+          setCurrentPage("download")
+          console.log(blob)
+        }
     } catch (error) {
       if (error instanceof Error) {
         toast(
@@ -164,18 +122,32 @@ const Review = () => {
 
 
 
+  // const handleDownload = () => {
+  //   if (!pdfUrl) return;
+
+  //   // const url = URL.createObjectURL(pdfBlob);
+
+  //   const link = document.createElement("a");
+  //   link.href = pdfUrl;
+  //   link.download = "my-file.pdf";
+  //   link.click();
+
+  //   // URL.revokeObjectURL(url);
+  // };
   const handleDownload = () => {
-    if (!pdfBlob) return;
+  if (!pdfBlob) return;
 
-    const url = URL.createObjectURL(pdfBlob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "my-file.pdf";
-    link.click();
-
+  const url = URL.createObjectURL(pdfBlob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "my-file.pdf";
+  link.click();
+  
+  // Revoke after a short delay to ensure download starts
+  setTimeout(() => {
     URL.revokeObjectURL(url);
-  };
+  }, 100);
+};
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">

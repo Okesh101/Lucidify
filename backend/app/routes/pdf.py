@@ -125,3 +125,4 @@ def test_download(user_id):
         as_attachment=True,
         download_name=f"{rc_bn_number}_test.pdf"
     )
+
