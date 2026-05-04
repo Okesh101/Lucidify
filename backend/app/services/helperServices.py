@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta, date
-from pypdf.generic import NameObject, create_string_object
+from datetime import datetime, timedelta
 from pypdf import PdfReader, PdfWriter
 import json
 import os
-import re
 import io
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,172 +32,61 @@ def validate_output(data: dict, entity_type: str) -> tuple:
     return len(errors) == 0, errors
 
 
-def _validate_bn07_against_stored(data, stored):
-    e = []
-    if not stored:
-        return e
-    # If the AI says residence_changed = false, but the stored residential address is different from principal_place? No, just trust AI.
-    # More useful: check that bn_number matches
-    if data.get("bn_number") != stored.get("registration_number"):
-        e.append("BN Number mismatch between extracted and stored data.")
-    # If user claimed no change to residence, proprietors_residential_address MUST be null
-    if data.get("proprietor_residential_address") is not None and not data.get("proprietor_residential_address"):
-        # treated as empty string?
-        pass  # already handled by AI setting null
-    return e
-
-
-# def _validate_business_name(data: dict) -> list:
-#     e = []
-#     # Required fields
-#     for field in ["bn_number", "proprietor_name", "principal_place_of_business", "nature_of_business"]:
-#         if not data.get(field):
-#             e.append(f"Missing required field: {field}")
-
-#     # BN number format (BN-XXXXXX or BN-XXXXXXX)
-#     bn = data.get("bn_number", "")
-#     if bn:
-#         # 9 chars = BN- (3) + 6 digits | 10 chars = BN- (3) + 7 digits
-#         if not (bn.startswith("BN-") and len(bn) in [9, 10] and bn[3:].isdigit()):
-#             e.append("Invalid BN Number format. Expected BN-XXXXXX or BN-XXXXXXX.")
-
-#     # # If address changed, new address must not be empty
-#     # if data.get("proprietor_residential_address") is not None and data.get("proprietor_residential_address") == "":
-#     #     e.append("Proprietor residential address required when changed.")
-
-#     # If residence changed true, then new address must be non-null and non-empty
-#     # but we don't have that field in our BN07 schema; we only have proprietor_residential_address
-#     if data.get("residence_changed") is True:
-#         # Instead, check: if proprietor_residential_address is provided (not None and not empty), then it's a change; we just need it to be non-empty.
-#         # So if it's set and is empty string -> error.
-#         addr = data.get("proprietor_residential_address")
-#         if addr is not None and addr == "":
-#             e.append("Proprietor residential address must not be empty if changed.")
-
-#     # Validate warnings list if present
-#     if "warnings" in data and not isinstance(data["warnings"], list):
-#         e.append("'warnings' must be a list.")
-
-#     return e
 def _validate_business_name(data: dict) -> list:
     e = []
-    required = ["principal_place_of_business", "nature_of_business"]
-    for field in required:
-        if not data.get(field):
-            e.append(f"Missing required field: {field}")
+    # Core requirements for the summary
+    if not data.get("nature_of_business"):
+        e.append("Nature of business is required.")
 
-    # Format Check
-    if data.get("bn_number") and not re.match(r"^BN-\d{6,7}$", data["bn_number"]):
-        e.append("BN Number format must be BN-XXXXXX")
+    # Check if address was provided when logic says it changed
+    # (Checking data.get because AI might set it to empty string if confused)
+    addr = data.get("proprietor_residential_address")
+    if addr == "":
+        e.append("New residential address cannot be empty if a change was indicated.")
 
     return e
-
-# def _validate_company(data: dict) -> list:
-#     e = []
-#     # Required top-level fields
-#     for field in ["rc_number", "company_name"]:
-#         if not data.get(field):
-#             e.append(f"Missing required field: {field}")
-
-#     # RC number format (RC-XXXXXX or RC-XXXXXXX)
-#     rc = data.get("rc_number", "")
-#     if rc:
-#         # 9 chars = RC- (3) + 6 digits | 10 chars = RC- (3) + 7 digits
-#         if not (rc.startswith("RC-") and len(rc) in [9, 10] and rc[3:].isdigit()):
-#             e.append("Invalid RC Number format. Expected RC-XXXXXX or RC-XXXXXXX.")
-
-#     # small_company must be boolean
-#     if not isinstance(data.get("small_company"), bool):
-#         e.append("'small_company' must be a boolean.")
-
-#     # Validate agm_details object
-#     agm = data.get("agm_details", {})
-#     if not isinstance(agm, dict):
-#         e.append("'agm_details' must be an object.")
-#     else:
-#         if "held" not in agm or not isinstance(agm["held"], bool):
-#             e.append("'agm_details.held' must be a boolean.")
-#         else:
-#             if agm["held"] is True:
-#                 if not agm.get("date"):
-#                     e.append("AGM date required when 'held' is true.")
-#                 else:
-#                     # Validate date format and CAMA 42-day rule
-#                     try:
-#                         agm_date = datetime.strptime(agm["date"], "%Y-%m-%d")
-#                         # AGM must be within 42 days after the company's financial year end.
-#                         # This is a soft check: we simply ensure it's a plausible date within the current year.
-#                         if agm_date > datetime.now() + timedelta(days=30):
-#                             e.append(
-#                                 "AGM date appears to be in the future, please verify.")
-#                     except ValueError:
-#                         e.append("Invalid AGM date format. Use YYYY-MM-DD.")
-#             else:  # agm not held
-#                 if not agm.get("explanation"):
-#                     e.append("Explanation required when AGM was not held.")
-
-#     # Booleans for changes
-#     for field in ["directors_changed", "shareholders_changed", "share_capital_changed", "registered_address_changed"]:
-#         if not isinstance(data.get(field), bool):
-#             e.append(f"'{field}' must be a boolean.")
-
-#     # Conditional checks
-#     if data.get("share_capital_changed") is True:
-#         new_cap = data.get("new_share_capital")
-#         if new_cap is None or not isinstance(new_cap, (int, float)) or new_cap <= 0:
-#             e.append(
-#                 "New share capital must be a positive number when share capital changed.")
-
-#     if data.get("registered_address_changed") is True:
-#         if not data.get("new_registered_address"):
-#             e.append("New registered address required when address changed.")
-
-#     # Cross-reference with legal dictionary (anti-hallucination)
-#     # e.g., ensure company type if present matches allowed types
-#     if "company_type" in data:
-#         allowed_types = LEGAL_DICT.get("company_types", [])
-#         if data["company_type"] not in allowed_types:
-#             e.append(
-#                 f"Company type '{data['company_type']}' is not a valid CAC type. Allowed: {allowed_types}")
-
-#     # Check state names for registered address (if we parse addresses in future)
-#     # For now, we can skip deep address validation.
-
-#     # Warnings list
-#     if "warnings" in data and not isinstance(data["warnings"], list):
-#         e.append("'warnings' must be a list.")
-
-#     return e
 
 
 def _validate_company(data: dict) -> list:
     e = []
-    # 1. Top Level
-    if not data.get("rc_number") or not data.get("company_name"):
-        e.append("Company Identity (RC/Name) missing")
-
-    # 2. AGM Logic (CAMA Compliance)
     agm = data.get("agm_details", {})
+    
+    # 1. AGM Logic
     if agm.get("held"):
         if not agm.get("date"):
-            e.append("AGM date is required when AGM is marked as held.")
+            e.append("AGM date is required.")
         else:
             try:
-                # Check if AGM date is reasonably recent
                 agm_date = datetime.strptime(agm["date"], "%Y-%m-%d")
-                if agm_date > datetime.now():
+                today = datetime.now()
+
+                # Rule: AGM cannot be in the future
+                if agm_date > today:
                     e.append("AGM date cannot be in the future.")
-            except:
+                
+                # CAMA Rule: Return must be filed within 42 days of AGM
+                # If today is more than 42 days after agm_date, trigger a warning/error
+                deadline = agm_date + timedelta(days=42)
+                if today > deadline:
+                    days_over = (today - deadline).days
+                    e.append(f"Filing is {days_over} days past the statutory 42-day limit after the AGM. Late penalties may apply.")
+
+            except ValueError:
                 e.append("Invalid date format. Use YYYY-MM-DD.")
-    elif not agm.get("explanation"):
-        e.append("An explanation is required if no AGM was held.")
+    else:
+        # If AGM was not held, an explanation is mandatory
+        if not agm.get("explanation") or str(agm.get("explanation")).strip() == "":
+            e.append("An explanation is required if no AGM was held.")
 
-    # 3. Change Dependency Checks
-    if data.get("share_capital_changed") and not data.get("new_share_capital"):
-        e.append("New share capital amount is required if capital changed.")
-
-    if data.get("registered_address_changed") and not data.get("new_registered_address"):
-        e.append("New registered address is required if address changed.")
+    # 2. Capital Change Logic
+    if data.get("share_capital_changed"):
+        try:
+            val = data.get("new_share_capital")
+            # Using float conversion to handle both strings and numbers from the AI
+            if not val or float(val) <= 0:
+                e.append("Valid share capital amount is required if capital changed.")
+        except (ValueError, TypeError):
+            e.append("Share capital must be a numeric value.")
 
     return e
 
@@ -217,7 +104,6 @@ def build_company_info(stored: dict, entity_type: str) -> dict:
             "business_type": stored.get("general_nature", ""),
             "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
             "status": "Active"   # mocked – all our records are active
-            # "entity_type": "business_name"
         }
     elif entity_type == "ltd_company":
         # if available in company JSON
@@ -229,7 +115,6 @@ def build_company_info(stored: dict, entity_type: str) -> dict:
             "registered_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", "),
             "status": "Active",
             "financial_address": f"{pp.get('number', '')} {pp.get('street', '')}, {pp.get('city', '')}, {pp.get('state', '')}".strip(", ")
-            # "entity_type": "ltd_company"
         }
     else:
         return {}
@@ -293,6 +178,16 @@ def format_date(date_str, space_count=5):
     return spacer.join(individual_digits)
 
 
+def format_date_for_frontend(date_str):
+    if not date_str:
+        return ""
+    # Convert string to date object
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+    # Return a "human-friendly" format
+    return date_obj.strftime("%B %d, %Y")  # Output: May 05, 2022
+
+
 def universal_fill_pdf(template_path, field_values):
     reader = PdfReader(template_path)
     writer = PdfWriter()
@@ -303,13 +198,3 @@ def universal_fill_pdf(template_path, field_values):
     writer.write(buf)
     buf.seek(0)
     return buf
-
-
-def format_date_for_frontend(date_str):
-    if not date_str:
-        return ""
-    # Convert string to date object
-    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-
-    # Return a "human-friendly" format
-    return date_obj.strftime("%B %d, %Y")  # Output: May 05, 2022
