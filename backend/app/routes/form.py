@@ -5,7 +5,6 @@ from app.services.ai_service.aiService import ai_extract
 from app.services.helperServices import validate_output, build_company_info
 from app.database.mockdata.helpers import loadRegistryJSON
 from app.database.functions.form import recieve_extracted_data, retrieve_extracted_data
-import json
 import ast
 
 form_bp = Blueprint("form_bp", __name__, url_prefix="/api/v1")
