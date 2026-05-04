@@ -98,9 +98,6 @@ const Review = () => {
           "Content-Type": "application/json" 
         },
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json", 
-        },
         body: JSON.stringify({
           data: reviewData,
         }),

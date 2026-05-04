@@ -86,34 +86,6 @@ const Question = () => {
     question6: "",
   });
 
-  function Validation(
-    name: string,
-    isValidFlag: boolean,
-    fieldName: string,
-    category: "miniBusiness" | "ltd_company",
-  ) {
-    let isValid = isValidFlag;
-    if (!name.trim()) {
-      setErrors((prev) => ({
-        ...prev,
-        [category]: {
-          ...prev[category],
-          [fieldName]: "This Field is required",
-        },
-      }));
-      isValid = false;
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        [category]: {
-          ...prev[category],
-          [fieldName]: "",
-        },
-      }));
-    }
-    // returning the isValid flag to be used in form submission
-    return isValid;
-  }
 
   useEffect(() => {
     if (isLoading) {
@@ -130,26 +102,23 @@ const Question = () => {
   const handleNext = async () => {
     let isValid = true;
 
-    // ================= BUSINESS NAME =================
+    // Business name
     if (companyType === "business_name") {
       const data = questionData.miniBusiness;
 
-      // Validate textarea
-      isValid =
-        ValidateField(
-          data.business_nature,
-          "miniBusiness",
-          "business_nature",
-          companyType === "business_name" ? "miniBusiness" : "ltd_company",
-        ) && isValid;
+      isValid = ValidateField(
+        data.business_nature,
+        "miniBusiness",
+        "business_nature",
+        setErrors  
+      ) && isValid;
 
-      isValid = 
-        ValidateField(
-          data.bnQuestion6,
-          "miniBusiness",
-          "bnQuestion6",
-          setErrors
-        ) && isValid
+      isValid = ValidateField(
+        data.bnQuestion6,
+        "miniBusiness",
+        "bnQuestion6",
+        setErrors
+      ) && isValid;
 
       // Radio logic
       if (!radioSelections.question5) {
@@ -162,13 +131,12 @@ const Question = () => {
         }));
         isValid = false;
       } else if (radioSelections.question5 === "yes") {
-        isValid =
-          ValidateField(
-            data.new_residential_address,
-            "miniBusiness",
-            "new_residential_address",
-            companyType === "business_name" ? "miniBusiness" : "ltd_company",
-          ) && isValid;
+        isValid = ValidateField(
+          data.new_residential_address,
+          "miniBusiness",
+          "new_residential_address",
+          setErrors  
+        ) && isValid;
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -178,31 +146,30 @@ const Question = () => {
           },
         }));
       }
-    } else if (companyType === "ltd_company") {
-      // isValid =
-      //   Validation(questionData.rcNumber, isValid, "rcNumber") && isValid;
-      // isValid =
-      //   Validation(questionData.company_name, isValid, "company_name") &&
-      //   isValid;
-      isValid = Validation(
+    } 
+    
+    else if (companyType === "ltd_company") {
+      // Company validation
+      isValid = ValidateField(
         questionData.ltd_company.rcQuestion1,
-        isValid,
+        "ltd_company",
         "rcQuestion1",
-        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
-      );
+        setErrors  
+      ) && isValid;
 
-      isValid = Validation(
+      isValid = ValidateField(
         questionData.ltd_company.rcQuestion3,
-        isValid,
+        "ltd_company",
         "rcQuestion3",
-        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
-      );
+        setErrors  
+      ) && isValid;
 
-      isValid = Validation(
+      isValid = ValidateField(
         questionData.ltd_company.rcQuestion4,
-        isValid,
+        "ltd_company",
         "rcQuestion4",
-        companyType === "ltd_company" ? "ltd_company" : "miniBusiness",      );
+        setErrors  
+      ) && isValid;
 
       // AGM
       if (!radioSelections.question2) {
@@ -215,13 +182,12 @@ const Question = () => {
         }));
         isValid = false;
       } else if (radioSelections.question2 === "yes") {
-        isValid =
-          Validation(
-            questionData.ltd_company.agm_date,
-            isValid,
-            "agm_date",
-            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
-          ) && isValid;
+        isValid = ValidateField(
+          questionData.ltd_company.agm_date,
+          "ltd_company",
+          "agm_date",
+          setErrors  
+        ) && isValid;
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -243,13 +209,12 @@ const Question = () => {
         }));
         isValid = false;
       } else if (radioSelections.question5 === "yes") {
-        isValid =
-          ValidateField(
-            data.issued_shared_capital,
-            "ltd_company",
-            "issued_shared_capital",
-            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
-          ) && isValid;
+        isValid = ValidateField(
+          questionData.ltd_company.issued_shared_capital,
+          "ltd_company",
+          "issued_shared_capital",
+          setErrors  
+        ) && isValid;
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -271,13 +236,12 @@ const Question = () => {
         }));
         isValid = false;
       } else if (radioSelections.question6 === "yes") {
-        isValid =
-          ValidateField(
-            data.new_registered_address,
-            "ltd_company",
-            "new_registered_address",
-            companyType === "ltd_company" ? "ltd_company" : "miniBusiness",
-          ) && isValid;
+        isValid = ValidateField(
+          questionData.ltd_company.new_registered_address,
+          "ltd_company",
+          "new_registered_address",
+          setErrors  
+        ) && isValid;
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -289,106 +253,75 @@ const Question = () => {
       }
     }
 
-    // ================= SUBMIT =================
-    if (!isValid) return;
+     if (!isValid) return;
 
     try {
       setIsLoading(true);
-
       const res = await fetch("/api/v1/extract", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           BusinessDetails: {
-            entity_type: companyType,
+            entity_type:
+              companyType === "business_name"
+                ? "business_name"
+                : "ltd_company",
             answers:
               companyType === "business_name"
                 ? questionData.miniBusiness
                 : questionData.ltd_company,
+            registration_number: regNumber,
           },
         }),
       });
-
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/v1/extract", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            BusinessDetails: {
-              entity_type:
-                companyType === "business_name"
-                  ? "business_name"
-                  : "ltd_company",
-              answers:
-                companyType === "business_name"
-                  ? questionData.miniBusiness
-                  : questionData.ltd_company,
-              registration_number: regNumber,
-            },
-          }),
+      const data = await res.json();
+      console.log(data);
+      if (data.status === "SUCCESS" || data.code === 200) {
+        console.log("Data sent successfully");
+        setIsLoading(false);
+        toast(data.message, {
+          style: {
+            backgroundColor: "green",
+            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "10px",
+            fontFamily: "DMMono",
+          },
         });
-        const data = await res.json();
-        console.log(data);
-        if (data.status === "SUCCESS" || data.code === 200) {
-          console.log("Data sent successfully");
-          setIsLoading(false);
-          toast(data.message, {
-            style: {
-              backgroundColor: "green",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
-            },
-          });
-          navigate("/review");
-        } else {
-          setIsLoading(false);
-          toast(data.message, {
-            style: {
-              backgroundColor: "red",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
-            },
-          });
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          setIsLoading(false);
-          toast("Failed to send your data. Please try again later.", {
-            style: {
-              backgroundColor: "red",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
-            },
-          });
-        }
+        navigate("/review");
+      } else {
+        setIsLoading(false);
+        toast(data.message, {
+          style: {
+            backgroundColor: "red",
+            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "10px",
+            fontFamily: "DMMono",
+          },
+        });
       }
-    } catch {
-      toast("Failed to send your data. Please try again later.", { 
-        style: { 
-          backgroundColor: "red", 
-          boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)", 
-          color: "#fff", 
-          padding: "6px 10px", 
-          borderRadius: "10px", 
-          fontFamily: "DMMono", 
-        }
-      });
-      
-    } finally {
+    } catch (error) {
+      if (error instanceof Error) {
+        setIsLoading(false);
+        toast("Failed to send your data. Please try again later.", {
+          style: {
+            backgroundColor: "red",
+            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "10px",
+            fontFamily: "DMMono",
+          },
+        });
+      }
+    }finally {
       setIsLoading(false);
     }
-  };
+  }
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
