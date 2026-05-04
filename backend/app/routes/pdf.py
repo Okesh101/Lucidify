@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from app.wrappers.user_required import user_required
 from app.database.mockdata.helpers import loadRegistryJSON
 from app.services.pdfService import fill_business_name_pdf, fill_ltd_company_pdf
 from app.database.functions.pdf import next_filling_deadline
-import os
+from app.database.functions.form import retrieve_extracted_data
+import os, json
 import base64
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,27 +12,34 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 pdf_bp = Blueprint("pdf_bp", __name__, url_prefix="/api/v1")
 
 
-@pdf_bp.route("/generate-pdf", methods=['POST'])
+@pdf_bp.route("/generate-pdf", methods=['GET'])
 @user_required
 def generate_pdf(user_id):
-    data = request.get_json()
-    entity_type = data.get("entity_type")
-    extracted = data.get("extracted")   # the validated output
-    rc_bn_number = extracted.get("bn_number") or extracted.get("rc_number")
-
-    if not all([entity_type, extracted, rc_bn_number]):
+    rc_bn_number = request.args.get("regNumber", "")
+    if not rc_bn_number:
         return jsonify({
             "status": "ERROR",
             "code": 400,
-            "message": "Missing essential data eg. entity_type, extracted, rc_number or bn_number."
+            "message": "Missing rc_bn_number query parameter."
         })
-
-    if entity_type not in ["business_name", "ltd_company"]:
+    
+    if rc_bn_number.startswith("BN"):
+        entity_type = "business_name"
+    elif rc_bn_number.startswith("RC"):
+        entity_type = "ltd_company"
+    else:
         return jsonify({
             "status": "ERROR",
             "code": 400,
-            "message": "The entity_type field has to be either 'business_name' or 'ltd_company'."
+            "message": "Invalid rc_bn_number. Must start with 'BN' for business names or 'RC' for companies."
         })
+    
+    # Retrieve the latest extracted data for this user and entity
+    extracted_result = retrieve_extracted_data(user_id, entity_type)
+    if extracted_result['code'] != 200:
+        return jsonify(extracted_result), extracted_result['code']
+
+    extracted = extracted_result['jsonData']['return_summary']
 
     # Load stored data for the complete picture
     STORED = {}
@@ -64,22 +72,33 @@ def generate_pdf(user_id):
             "code": 500
         }), 500
 
-
-    # Encode PDF to base64
-    pdf_base64 = base64.b64encode(pdf_buffer.read()).decode('utf-8')
-
     # Update next deadline
     business_name = STORED.get("business_name") or STORED.get("company_name")
-    result = next_filling_deadline(user_id, business_name, rc_bn_number, entity_type)
+    deadline_result = next_filling_deadline(user_id, business_name, rc_bn_number, entity_type)
 
-    return jsonify({
-        "status": "SUCCESS",
-        "code": 200,
-        "message": "PDF generated successfully.",
-        "pdf_base64": pdf_base64,
-        "filename": f"{rc_bn_number}_annual_return.pdf",
-        "deadline_update": result
-    })
+    # Encode PDF to base64
+    # pdf_base64 = base64.b64encode(pdf_buffer.read()).decode('utf-8')
+
+    response = send_file(
+        pdf_buffer,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=f"{rc_bn_number}_annual_return.pdf"
+    )
+
+    response.headers['X-Deadline-Update'] = json.dumps(deadline_result)
+    response.headers['Access-Control-Expose-Headers'] = 'X-Deadline-Update'
+
+    return response
+
+    # return jsonify({
+    #     "status": "SUCCESS",
+    #     "code": 200,
+    #     "message": "PDF generated successfully.",
+    #     "pdf_base64": pdf_base64,
+    #     "filename": f"{rc_bn_number}_annual_return.pdf",
+    #     "deadline_update": result
+    # })
 
 
 # Temporary route – remove after testing
