@@ -5,7 +5,7 @@ from app.services.pdfService import fill_business_name_pdf, fill_ltd_company_pdf
 from app.database.functions.pdf import next_filling_deadline
 from app.database.functions.form import retrieve_extracted_data
 import os, json
-import base64
+import ast
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,7 +39,7 @@ def generate_pdf(user_id):
     if extracted_result['code'] != 200:
         return jsonify(extracted_result), extracted_result['code']
 
-    extracted = extracted_result['jsonData']['return_summary']
+    extracted = ast.literal_eval(extracted_result['jsonData'])['return_summary']
 
     # Load stored data for the complete picture
     STORED = {}
