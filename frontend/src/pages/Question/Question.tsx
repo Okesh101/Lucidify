@@ -4,6 +4,7 @@ import RadioItem from "../../components/RadioItem";
 import { NavigateBack } from "../../components/NavigateItem";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { ValidateField } from "../../utils/Validation";
 
 type Mode = "business_name" | "ltd_company" | null;
 interface formProp {
@@ -85,18 +86,6 @@ const Question = () => {
     question6: "",
   });
 
-  function Validation(name: string, isValidFlag: boolean, fieldName: string) {
-    let isValid = isValidFlag;
-    if (!name.trim()) {
-      setErrors((prev) => ({ ...prev, [fieldName]: "This Field is required" }));
-      isValid = false;
-    } else {
-      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
-    }
-    // returning the isValid flag to be used in form submission
-    return isValid;
-  }
-
   useEffect(() => {
     if (isLoading) {
       document.body.style.overflow = "hidden";
@@ -111,163 +100,203 @@ const Question = () => {
 
   const handleNext = async () => {
     let isValid = true;
+
+    // ================= BUSINESS NAME =================
     if (companyType === "business_name") {
-      // isValid =
-      //   Validation(questionData.bnNumber, isValid, "bnNumber") && isValid;
-      // isValid =
-      //   Validation(questionData.proprietor_name, isValid, "proprietor_name") &&
-      //   isValid;
+      const data = questionData.miniBusiness;
+
+      // Validate textarea
       isValid =
-        Validation(
-          questionData.miniBusiness.business_nature,
-          isValid,
+        ValidateField(
+          data.business_nature,
+          "miniBusiness",
           "business_nature",
+          setErrors
         ) && isValid;
 
+      isValid = 
+        ValidateField(
+          data.bnQuestion6,
+          "miniBusiness",
+          "bnQuestion6",
+          setErrors
+        ) && isValid
+
+      // Radio logic
       if (!radioSelections.question5) {
         setErrors((prev) => ({
           ...prev,
-          new_residential_address: "This Field is required",
+          miniBusiness: {
+            ...prev.miniBusiness,
+            new_residential_address: "This Field is required",
+          },
         }));
         isValid = false;
       } else if (radioSelections.question5 === "yes") {
         isValid =
-          Validation(
-            questionData.miniBusiness.new_residential_address,
-            isValid,
+          ValidateField(
+            data.new_residential_address,
+            "miniBusiness",
             "new_residential_address",
+            setErrors
           ) && isValid;
       } else {
-        setErrors((prev) => ({ ...prev, new_residential_address: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          miniBusiness: {
+            ...prev.miniBusiness,
+            new_residential_address: "",
+          },
+        }));
       }
-    } else if (companyType === "ltd_company") {
-      // isValid =
-      //   Validation(questionData.rcNumber, isValid, "rcNumber") && isValid;
-      // isValid =
-      //   Validation(questionData.company_name, isValid, "company_name") &&
-      //   isValid;
-      isValid = Validation(
-        questionData.ltd_company.rcQuestion1,
-        isValid,
-        "rcQuestion1",
-      );
+    }
 
-      isValid = Validation(
-        questionData.ltd_company.rcQuestion3,
-        isValid,
-        "rcQuestion3",
-      );
+    // ================= LTD COMPANY =================
+    else if (companyType === "ltd_company") {
+      const data = questionData.ltd_company;
 
-      isValid = Validation(
-        questionData.ltd_company.rcQuestion4,
-        isValid,
-        "rcQuestion4",
-      );
+      // Validate required radio answers
+      ["rcQuestion1", "rcQuestion3", "rcQuestion4"].forEach((field) => {
+        isValid =
+          ValidateField(
+            data[field as keyof typeof data],
+            "ltd_company",
+            field,
+            setErrors
+          ) && isValid;
+      });
 
+      // AGM
       if (!radioSelections.question2) {
-        setErrors((prev) => ({ ...prev, agm_date: "This Field is required" }));
+        setErrors((prev) => ({
+          ...prev,
+          ltd_company: {
+            ...prev.ltd_company,
+            agm_date: "This Field is required",
+          },
+        }));
         isValid = false;
       } else if (radioSelections.question2 === "yes") {
         isValid =
-          Validation(questionData.ltd_company.agm_date, isValid, "agm_date") &&
+          ValidateField(data.agm_date, "ltd_company", "agm_date", setErrors) &&
           isValid;
       } else {
-        setErrors((prev) => ({ ...prev, agm_date: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          ltd_company: {
+            ...prev.ltd_company,
+            agm_date: "",
+          },
+        }));
       }
 
+      // Share capital
       if (!radioSelections.question5) {
         setErrors((prev) => ({
           ...prev,
-          issued_shared_capital: "This Field is required",
+          ltd_company: {
+            ...prev.ltd_company,
+            issued_shared_capital: "This Field is required",
+          },
         }));
         isValid = false;
       } else if (radioSelections.question5 === "yes") {
         isValid =
-          Validation(
-            questionData.ltd_company.issued_shared_capital,
-            isValid,
+          ValidateField(
+            data.issued_shared_capital,
+            "ltd_company",
             "issued_shared_capital",
+            setErrors
           ) && isValid;
-
-        // setErrors((prev) => ({ ...prev, issued_shared_capital: "" }));
       } else {
-        setErrors((prev) => ({ ...prev, issued_shared_capital: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          ltd_company: {
+            ...prev.ltd_company,
+            issued_shared_capital: "",
+          },
+        }));
       }
 
+      // Address
       if (!radioSelections.question6) {
         setErrors((prev) => ({
           ...prev,
-          new_registered_address: "This Field is required",
+          ltd_company: {
+            ...prev.ltd_company,
+            new_registered_address: "This Field is required",
+          },
         }));
         isValid = false;
       } else if (radioSelections.question6 === "yes") {
         isValid =
-          Validation(
-            questionData.ltd_company.new_registered_address,
-            isValid,
+          ValidateField(
+            data.new_registered_address,
+            "ltd_company",
             "new_registered_address",
+            setErrors
           ) && isValid;
       } else {
-        setErrors((prev) => ({ ...prev, new_registered_address: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          ltd_company: {
+            ...prev.ltd_company,
+            new_registered_address: "",
+          },
+        }));
       }
     }
 
-    if (isValid) {
-      // Handle form submission for business
-      // handleReset()
+    // ================= SUBMIT =================
+    if (!isValid) return;
 
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/v1/extract", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            BusinessDetails: {
-              entity_type:
-                companyType === "business_name"
-                  ? "business_name"
-                  : "ltd_company",
-              answers:
-                companyType === "business_name"
-                  ? questionData.miniBusiness
-                  : questionData.ltd_company,
-            },
-          }),
+    try {
+      setIsLoading(true);
+
+      const res = await fetch("/api/v1/extract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          BusinessDetails: {
+            entity_type: companyType,
+            answers:
+              companyType === "business_name"
+                ? questionData.miniBusiness
+                : questionData.ltd_company,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.status === "SUCCESS" || data.code === 200) {
+        navigate("/review");
+      } else {
+        toast(data.message, { 
+          style: { 
+            backgroundColor: "red", 
+            boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)", 
+            color: "#fff", 
+            padding: "6px 10px", 
+            borderRadius: "10px", 
+            fontFamily: "DMMono", 
+          }
         });
-        const data = await res.json();
-        console.log(data);
-        if (data.status === "SUCCESS" || data.code === 200) {
-          console.log("Data sent successfully");
-          navigate("/review");
-          setIsLoading(false);
-        } else {
-          toast(data.message, {
-            style: {
-              backgroundColor: "red",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
-            },
-          });
-          setIsLoading(false);
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast("Failed to send your data. Please try again later.", {
-            style: {
-              backgroundColor: "red",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-              color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
-            },
-          });
-          setIsLoading(false);
-        }
       }
+    } catch {
+      toast("Failed to send your data. Please try again later.", { 
+        style: { 
+          backgroundColor: "red", 
+          boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)", 
+          color: "#fff", 
+          padding: "6px 10px", 
+          borderRadius: "10px", 
+          fontFamily: "DMMono", 
+        }
+      });
+      
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -333,9 +362,16 @@ const Question = () => {
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
+                        ltd_company: {
+                          ...prev.ltd_company,
                         rcQuestion1: val,
+                        }
                       }));
-                      setErrors((prev) => ({ ...prev, rcQuestion1: "" }));
+                      setErrors((prev) => ({ ...prev,
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        rcQuestion1: '',
+                        }}));
                     }}
                   />
                 </div>
@@ -353,7 +389,11 @@ const Question = () => {
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
+                        
+                        ltd_company: {
+                          ...prev.ltd_company,
                         agm_date: e.target.value,
+                        }
                       }))
                     }
                     onRadioChange={(val) => {
@@ -361,7 +401,11 @@ const Question = () => {
                         ...prev,
                         question2: val,
                       }));
-                      setErrors((prev) => ({ ...prev, agm_date: "" }));
+                      setErrors((prev) => ({ ...prev, 
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        agm_date: '',
+                        }}));
                     }}
                   />
                 </div>
@@ -379,9 +423,16 @@ const Question = () => {
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
+                        ltd_company: {
+                          ...prev.ltd_company,
                         rcQuestion3: val,
+                        }
                       }));
-                      setErrors((prev) => ({ ...prev, rcQuestion3: "" }));
+                      setErrors((prev) => ({ ...prev, 
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        rcQuestion3: '',
+                        }}));
                     }}
                   />
                 </div>
@@ -400,9 +451,16 @@ const Question = () => {
                     onRadioChange={(val) => {
                       setQuestionData((prev) => ({
                         ...prev,
+                        ltd_company: {
+                          ...prev.ltd_company,
                         rcQuestion4: val,
+                        }
                       }));
-                      setErrors((prev) => ({ ...prev, rcQuestion4: "" }));
+                      setErrors((prev) => ({ ...prev, 
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        rcQuestion4: '',
+                        }}));
                     }}
                   />
                 </div>
@@ -420,7 +478,10 @@ const Question = () => {
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
+                        ltd_company: {
+                          ...prev.ltd_company,
                         issued_shared_capital: e.target.value,
+                        }
                       }))
                     }
                     onRadioChange={(val) => {
@@ -430,7 +491,10 @@ const Question = () => {
                       }));
                       setErrors((prev) => ({
                         ...prev,
-                        issued_shared_capital: "",
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        issued_shared_capital: '',
+                        }
                       }));
                     }}
                   />
@@ -450,7 +514,11 @@ const Question = () => {
                     handleChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
+                        
+                        ltd_company: {
+                          ...prev.ltd_company,
                         new_registered_address: e.target.value,
+                        }
                       }))
                     }
                     onRadioChange={(val) => {
@@ -460,7 +528,10 @@ const Question = () => {
                       }));
                       setErrors((prev) => ({
                         ...prev,
-                        new_registered_address: "",
+                        ltd_company: {
+                          ...prev.ltd_company,
+                        new_registered_address: '',
+                        }
                       }));
                     }}
                   />
@@ -468,34 +539,6 @@ const Question = () => {
               </>
             ) : (
               <>
-                {/* <InputItem
-                  name="bnNumber"
-                  type="text"
-                  title="BN Number"
-                  placeholder="What is your Business Number"
-                  value={questionData.bnNumber}
-                  handleChange={(e) =>
-                    setQuestionData((prev) => ({
-                      ...prev,
-                      bnNumber: e.target.value,
-                    }))
-                  }
-                  errorMssg={errors.bnNumber}
-                />
-                <InputItem
-                  name="proprietor_name"
-                  type="text"
-                  title="Full Name of Proprietor"
-                  placeholder="Your business name"
-                  value={questionData.proprietor_name}
-                  handleChange={(e) =>
-                    setQuestionData((prev) => ({
-                      ...prev,
-                      proprietor_name: e.target.value,
-                    }))
-                  }
-                  errorMssg={errors.proprietor_name}
-                /> */}
                 <fieldset className="flex flex-col space-y-3">
                   <label
                     htmlFor="business_nature"
@@ -504,7 +547,7 @@ const Question = () => {
                     Nature of Business
                   </label>
                   <textarea
-                    name="business"
+                    name="business_nature"
                     placeholder="Brief description of the nature of business"
                     className="mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#16A34A] font-[Onest] resize-none"
                     rows={4}
@@ -512,7 +555,10 @@ const Question = () => {
                     onChange={(e) =>
                       setQuestionData((prev) => ({
                         ...prev,
-                        business_nature: e.target.value,
+                        miniBusiness: {
+                          ...prev.miniBusiness,
+                          business_nature: e.target.value,
+                        },
                       }))
                     }
                   />
@@ -535,14 +581,20 @@ const Question = () => {
                   handleChange={(e) =>
                     setQuestionData((prev) => ({
                       ...prev,
-                      new_residential_address: e.target.value,
+                      miniBusiness: {
+                        ...prev.miniBusiness,
+                        new_residential_address: e.target.value,
+                      }
                     }))
                   }
                   onRadioChange={(val) => {
-                    setRadioSelections((prev) => ({ ...prev, question5: val }));
+                    setRadioSelections((prev) => ({ ...prev,  question5: val }));
                     setErrors((prev) => ({
                       ...prev,
-                      new_residential_address: "",
+                       miniBusiness: {
+                        ...prev.miniBusiness,
+                      new_residential_address: '',
+                      }
                     }));
                   }}
                 />
@@ -558,9 +610,15 @@ const Question = () => {
                   onRadioChange={(val) => {
                     setQuestionData((prev) => ({
                       ...prev,
+                        miniBusiness: {
+                        ...prev.miniBusiness,
                       bnQuestion6: val,
+                      }
                     }));
-                    setErrors((prev) => ({ ...prev, bnQuestion6: "" }));
+                    setErrors((prev) => ({ ...prev,   miniBusiness: {
+                        ...prev.miniBusiness,
+                      bnQuestion6: '',
+                      }}));
                   }}
                 />
               </>

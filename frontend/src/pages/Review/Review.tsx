@@ -43,6 +43,7 @@ function Details({ title, desc }: DetailsProp) {
 
 const Review = () => {
   const [reviewData, setReviewData] = useState<ReviewProps | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   function navigateBack() {
     navigate(`/registration`);
@@ -52,17 +53,17 @@ const Review = () => {
 
   const [currentPage, setCurrentPage] = useState<Page>("review");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [blob, setBlob] = useState<Blob | null>(null);
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     const fetchReviewData = async () => {
-      const res = await fetch("/api/v1/review", {
+      const res = await fetch(`/api/v1/review?type=${regNumber?.startsWith('BN') ? "business_name" : "ltd_company"}`, {
         method: "GET",
         credentials: "include",
       });
 
       const data = await res.json();
-      setReviewData(data.data.extracted);
+      setReviewData(data);
       console.log(data);
     };
 
@@ -70,19 +71,67 @@ const Review = () => {
   }, []);
   // console.log("This is review data: ", reviewData)
 
+  function base64ToBlob(base64: string) {
+  const base64Data = base64.includes(",")
+    ? base64.split(",")[1]
+    : base64;
+
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  return new Blob([new Uint8Array(byteNumbers)], {
+    type: "application/pdf",
+  });
+}
+ 
   const handleGeneratePdf = async () => {
+    setIsLoading(true);
+
     try {
-      const res = await fetch("/api/v1/generate-pdf", {
+      const res = await fetch(`/api/v1/generate-pdf`, {
         method: "POST",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json", 
+        },
+        body: JSON.stringify({
+          data: reviewData,
+        }),
       });
-      const data = await res.json();
-      // console.log(data)
-      setCurrentPage("download");
-      const base64 = data.file;
 
-      const pdfBlob = base64ToBlob(base64);
-      const url = Ur;
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to generate PDF");
+      }
+
+      const contentType = res.headers.get("Content-Type");
+
+      if (contentType?.includes("application/json")) {
+        const data = await res.json();
+
+        const base64 = data.pdf;
+
+        const blob = base64ToBlob(base64);
+        const url = URL.createObjectURL(blob);
+
+        setPdfBlob(blob);
+        setPdfUrl(url);
+
+        console.log("PDF ready (base64)", url);
+      } else {
+        // if backend returns RAW PDF
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        setPdfBlob(blob);
+        setPdfUrl(url);
+
+        console.log("PDF ready (blob)", url);
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast(
@@ -90,19 +139,32 @@ const Review = () => {
           {
             style: {
               backgroundColor: "red",
-              boxShadow: "rgba 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
               color: "#fff",
-              padding: "6px 10px",
-              borderRadius: "10px",
-              fontFamily: "DMMono",
             },
-          },
+          }
         );
       }
+    } finally {
+      setIsLoading(false);
     }
   };
+
+
+
+  const handleDownload = () => {
+    if (!pdfBlob) return;
+
+    const url = URL.createObjectURL(pdfBlob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "my-file.pdf";
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       <div className="max-w-5xl mx-auto flex flex-col items-center py-10 px-4">
         <CurrentTabNumber />
         <main className="pt-10">
@@ -123,7 +185,7 @@ const Review = () => {
           <p className="text-gray-500 text-center font-[Onest] mt-2 text-lg">
             {currentPage === "review"
               ? "Please review all information before generating your PDF."
-              : "Your BN/06 annual return has been generated successfully"}
+              : `Your ${regNumber?.startsWith("BN") ? 'BN' : "RC"} annual return has been generated successfully`}
           </p>
 
           <div className="max-w-3xl mx-auto ">
@@ -143,7 +205,7 @@ const Review = () => {
                         title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
                         desc={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
                       />
-                      <Details title="Company Type" desc="Your Company Type" />
+                      <Details title="Company Type" desc={`${regNumber?.startsWith("BN") ? "Mini Business" : "Ltd Company"}`}/>
                       <Details
                         title="Registration Date"
                         desc="Date of registration"
@@ -164,7 +226,7 @@ const Review = () => {
                       <p>Edit</p>
                     </header>
                     <div className=" space-y-3">
-                      <Details
+                      {/* <Details
                         title="AGM Held"
                         desc={
                           reviewData?.agm_details.held === false
@@ -179,8 +241,8 @@ const Review = () => {
                             ? "No"
                             : "Yes"
                         }
-                      />
-                      <Details
+                      /> */}
+                      {/* <Details
                         title="Directors Changed"
                         desc={
                           reviewData?.directors_changed === false ? "No" : "Yes"
@@ -209,7 +271,7 @@ const Review = () => {
                             ? "No"
                             : "Yes"
                         }
-                      />
+                      /> */}
                       {/* <Details title="Share Issued" desc={reviewData?.shareholders_changed === false ? "No" : "Yes"} /> */}
                       {/* <Details title="Other Changes" desc="No" /> */}
                     </div>
@@ -244,7 +306,7 @@ const Review = () => {
                     Start Another Return
                   </button>
 
-                  <button className="bg-green-600 text-white gap-2 justify-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold">
+                  <button className="bg-green-600 text-white gap-2 justify-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold" onClick={handleDownload}>
                     Download PDF
                   </button>
                 </div>
@@ -272,6 +334,16 @@ const Review = () => {
           </div>
         </main>
       </div>
+       {isLoading && (
+        <div className="fixed top-0  bg-[#000000bb] bottom-0 right-0 left-0 flex flex-col items-center justify-center">
+          <div className="animate-[spin_2s_linear_infinite] rounded-full h-10 w-10 ">
+            <div className="bg-green-700 animate-bounce w-9 h-9"></div>
+          </div>
+          <p className="font-[Onest] text-xl text-white mt-6">
+            Please wait, while you data is processing.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
