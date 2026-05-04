@@ -597,7 +597,7 @@ const Question = () => {
                   title_1="Yes"
                   title_2="No"
                   questionTitle="Has the proprietor's residential address changed since last filing?"
-                  inputNote="New Residential Address"
+                  inputNote="New Registered Address"
                   inputNoteType="text"
                   errorMssg={errors.miniBusiness.new_residential_address}
                   value={questionData.miniBusiness.new_residential_address}
