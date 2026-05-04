@@ -6,35 +6,43 @@ import toast from "react-hot-toast";
 
 interface DetailsProp {
   title: string;
-  desc: string;
+  desc: string | boolean;
 }
 
 type Page = "review" | "download";
-interface AgmProp {
-  date: string;
-  held: boolean;
-}
 interface ReviewProps {
+  // MIni Business props
+  business_name: string;
+  nature_of_business: string;
+  registered_address: string;
+  business_type: string;
+
+
+  // ltd_company props
+
   company_name: string;
-  directors_changed: boolean;
-  new_registered_address: string;
-  new_share_capital: string;
-  rc_number: string;
-  registered_address_changed: boolean;
-  share_capital_changed: boolean;
-  shareholders_changed: boolean;
-  small_company: boolean;
-  agm_details: AgmProp;
+  company_type: string,
+  financial_address: string,
+  // rc_number: string,
+  directors_changed: boolean,
+  new_registered_address: string,
+  new_share_capital: string,
+  small_company: boolean,
+  shareholders_changed: boolean
+}
+interface BusinessLocation{
+  postal_code: string,
+  lga: string
 }
 
 function Details({ title, desc }: DetailsProp) {
   return (
-    <div className="grid grid-cols-2 gap-10 items-center">
-      <h1 className="font-[Nunito] text-lg md:text-xl text-gray-800">
+    <div className="flex justify-between gap-20 w-full md:grid md:grid-cols-2 md:gap-10">
+      <h1 className="font-[Nunito] text-lg md:text-xl text-gray-800 text-start">
         {title}
       </h1>
 
-      <span className="font-[Onest] text-sm md:text-lg text-gray-700">
+      <span className="font-[Onest] text-sm md:text-lg text-gray-700 text-end md:text-left">
         {desc}
       </span>
     </div>
@@ -42,7 +50,9 @@ function Details({ title, desc }: DetailsProp) {
 }
 
 const Review = () => {
-  const [reviewData, setReviewData] = useState<ReviewProps | null>(null);
+  const [companyInfo, setCompanyInfo] = useState<ReviewProps | null>(null);
+  const [reviewSummary, setReviewSummary] = useState<ReviewProps | null>(null);
+  const [businessLocation, setBusinessLocation] = useState<BusinessLocation | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   function navigateBack() {
@@ -55,6 +65,7 @@ const Review = () => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
+  // const entityType = regNumber?.startsWith("BN") ? "ltd_company" : "business_name"
   useEffect(() => {
     const fetchReviewData = async () => {
       const res = await fetch(`/api/v1/review?type=${regNumber?.startsWith('BN') ? "business_name" : "ltd_company"}`, {
@@ -63,7 +74,9 @@ const Review = () => {
       });
 
       const data = await res.json();
-      setReviewData(data);
+      setCompanyInfo(data.entity_type === "ltd_company" ? data.data.company_info : data.data.business_info);
+      setReviewSummary(data.data.return_summary)
+      setBusinessLocation(data.data.return_summary.principal_place_of_business)
       console.log(data);
     };
 
@@ -99,7 +112,7 @@ const Review = () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          data: reviewData,
+          // data: reviewData,
         }),
       });
 
@@ -197,24 +210,38 @@ const Review = () => {
                       <h1 className="text-xl tracking-wide font-bold font-[ClashDisplay]">
                         Company Information
                       </h1>
-                      <p>Edit</p>
+                      {/* <p>Edit</p> */}
                     </header>
                     <div className=" space-y-3">
-                      <Details title="Company Name" desc="Your company name" />
-                      <Details
-                        title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
-                        desc={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
-                      />
-                      <Details title="Company Type" desc={`${regNumber?.startsWith("BN") ? "Mini Business" : "Ltd Company"}`}/>
-                      <Details
-                        title="Registration Date"
-                        desc="Date of registration"
-                      />
-                      <Details title="status" desc="Active" />
-                      <Details
-                        title="Registration Address"
-                        desc="Your Registration address"
-                      />
+                      {/* Mini Businessess */}
+                     {regNumber?.startsWith("BN") ? (
+                      <>
+                        <Details title="Company Name" desc={companyInfo?.business_name || "Loading..."} />
+                        <Details
+                          title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
+                          desc={regNumber || "Loading..."}
+                        />
+                        <Details title="Company Type" desc={companyInfo?.business_type || "Loading..."}/>
+                        <Details
+                          title="Registration Address"
+                          desc={companyInfo?.registered_address || "Loading..."}
+                        />
+                      </>
+                     ) : (
+                      // Ltd companies
+                      <>
+                        <Details title="Company Name" desc={companyInfo?.company_name || "Loading..."} />
+                        <Details
+                          title={`Your ${regNumber?.startsWith("BN") ? "BN" : "RC"} Number`}
+                          desc={regNumber || "Loading..."}
+                        />
+                        <Details title="Company Type" desc={companyInfo?.company_type || "Loading..."}/>
+                        <Details
+                          title="Registration Address"
+                          desc={companyInfo?.financial_address || "Loading..."}
+                        />
+                      </>
+                     )}
                     </div>
                   </section>
 
@@ -223,57 +250,66 @@ const Review = () => {
                       <h1 className="text-xl tracking-wide font-bold font-[ClashDisplay]">
                         Return Summary
                       </h1>
-                      <p>Edit</p>
+                      {/* <p>Edit</p> */}
                     </header>
                     <div className=" space-y-3">
-                      {/* <Details
-                        title="AGM Held"
-                        desc={
-                          reviewData?.agm_details.held === false
-                            ? "No"
-                            : reviewData?.agm_details.date
-                        }
-                      />
-                      <Details
-                        title="Address Changed"
-                        desc={
-                          reviewData?.registered_address_changed === false
-                            ? "No"
-                            : "Yes"
-                        }
-                      /> */}
-                      {/* <Details
-                        title="Directors Changed"
-                        desc={
-                          reviewData?.directors_changed === false ? "No" : "Yes"
-                        }
-                      />
-                      <Details
-                        title="Share Capital Changed"
-                        desc={
-                          reviewData?.shareholders_changed === false
-                            ? "No"
-                            : "Yes"
-                        }
-                      />
-                      <Details
-                        title="Share Issued"
-                        desc={
-                          reviewData?.shareholders_changed === false
-                            ? "No"
-                            : "Yes"
-                        }
-                      />
-                      <Details
-                        title="Is your company a small company"
-                        desc={
-                          reviewData?.shareholders_changed === false
-                            ? "No"
-                            : "Yes"
-                        }
-                      /> */}
-                      {/* <Details title="Share Issued" desc={reviewData?.shareholders_changed === false ? "No" : "Yes"} /> */}
-                      {/* <Details title="Other Changes" desc="No" /> */}
+                      {regNumber?.startsWith("BN") ? (
+                        // Mini BUsinesses
+                        <>
+                          <Details
+                            title="Nature of Business"
+                            desc={
+                              reviewSummary?.nature_of_business || "Loading..."
+                          }
+                          />
+                          <Details
+                            title="Postal Code"
+                            desc={
+                              businessLocation?.postal_code || "Loading..."
+                          }
+                          />
+                          <Details
+                            title="Local Govt Area"
+                            desc={
+                              businessLocation?.lga || "Loading..."
+                          }
+                          />
+                        </>
+                      ) : (
+                        <>
+                        {/* Ltd companies */}
+                          <Details
+                            title="Was there a change of Director"
+                            desc={
+                              `${reviewSummary?.directors_changed === true ? "Yes" : "No" }`
+                          }
+                          />
+                          <Details
+                            title="New Registered Address"
+                            desc={
+                              `${reviewSummary?.new_registered_address === null ? "No" : "Yes"}`
+                          }
+                          />
+                          <Details
+                            title="New Share Capital"
+                            desc={
+                               `${reviewSummary?.new_share_capital === null ? "No" : "Yes"}`
+                          }
+                          />
+                          <Details
+                            title="Is your company a small company"
+                            desc={
+                              `${reviewSummary?.small_company === false ? "No" : 'Yes'}`
+                          }
+                          />
+                          <Details
+                            title='Was there a change of Share Holders'
+                            desc={
+                              `${reviewSummary?.shareholders_changed === false ? "No" : 'Yes'}`
+                          }
+                          />
+                        </>
+                      )}
                     </div>
                   </section>
                 </div>
