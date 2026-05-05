@@ -13,18 +13,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
     python3-dev \
+    libpangocairo-1.0-0 \
+    libglib2.0-0 \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy required files and install python dependencies
 COPY requirements.txt ./
-RUN pip install --upgrade pip -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
 # Expose the Flask default port
 EXPOSE 5000
 
-# Command to run the application using Gunicorn (a production-ready WSGI server)
-# The $PORT environment variable is automatically provided by Render at runtime.
-# We bind to 0.0.0.0 to listen on all available network interfaces.
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+# Command to run the application using Gunicorn
+# Using 4 workers is standard for a small production instance
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "main:app"]

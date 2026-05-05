@@ -72,6 +72,7 @@ def init_scheduler(app):
     print("📅 Scheduler started with ping and reminder jobs.")
     print(scheduler.get_jobs())
 
+app = create_app()
 
 if __name__ == "__main__":
     init_db()
