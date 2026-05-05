@@ -1,6 +1,6 @@
 from pypdf import PdfReader, PdfWriter
 from app.cacdata.mappings.mappings import BN07_FIELD_MAP, BN06_FIELD_MAP
-from app.services.helperServices import split_date_into_digits, universal_fill_pdf, split_address, format_date
+from app.services.helperServices import split_date_into_digits, universal_fill_pdf, split_address, format_date, return_month_name
 from datetime import datetime, date
 import io, traceback
 
@@ -27,6 +27,9 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
     principal_place_changed = extracted.get("principal_place_of_business")
     proprietor_residence_changed = extracted.get(
         "proprietor_residential_address")
+    extr_total_turnover = str(extracted.get("turnover"))
+    extr_net_assets = str(extracted.get("net_assets"))
+    extr_fy_end = extracted.get("financial_year_end")
 
     data = {
         # Section 1
@@ -147,8 +150,36 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
         data["prop1_res_lga"] = ""
         data["prop1_res_postal"] = ""
         data["prop1_res_state"] = ""
+    if extr_total_turnover:
+        data["turnover"] = extr_total_turnover
+    if extr_net_assets:
+        data["total_net_assets"] = extr_net_assets
+    if extr_fy_end:
+        data["year_ended"] = extr_fy_end
+        data["financial_year_end"] = f"{extr_fy_end}-12-31"
 
     return data
+
+
+def fill_business_name_pdf(template_path, stored_data: dict, extracted: dict) -> io.BytesIO:
+    # 1. Build a complete data dictionary from stored + extracted
+    try:
+        data = _build_bn07_data_from_stored(stored_data, extracted)
+    except Exception as e:
+        print("\n" + "="*50)
+        print("❌ ERROR IN BUILDER FUNCTION:")
+        traceback.print_exc()  # This shows the line number!
+        print("="*50 + "\n")
+        return {"status": "ERROR", 
+                "message": f"Builder failed: {str(e)}",
+                "code": 500}
+
+    # 2. Map data keys to PDF field names
+    field_values = {}
+    for key, field_name in BN07_FIELD_MAP.items():
+        val = data.get(key, "")
+        field_values[field_name] = str(val) if val else ""
+    return universal_fill_pdf(template_path, field_values)
 
 
 def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
@@ -188,6 +219,14 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
     auth = stored.get("authentication", {})
     presented = stored.get("presented_by", {})
 
+    # Turnover/Assets/Financial Year End
+    extr_total_turnover = str(extracted.get("turnover"))
+    extr_net_assets = str(extracted.get("net_assets"))
+    extr_filing_date = extracted.get("financial_year_end")
+    ext_fil_date_year = extr_filing_date.split("-")[0] if extr_filing_date else ""
+    ext_fil_date_month = extr_filing_date.split("-")[1] if extr_filing_date else ""
+    ext_fil_date_day = extr_filing_date.split("-")[2] if extr_filing_date else ""
+
     # Helper to get director data safely
     def get_dir(d, index):
         if index < len(d):
@@ -220,7 +259,7 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "annual_return_made_up_month": "",
         "annual_return_made_up_year": "",
         # full date string (maybe used elsewhere)
-        "date_of_agm": agm_date,
+        "date_of_agm": agm_date.split("-")[0],
         # AGM date digits
         "date_of_agm_d1": d_digits.get("d1", ""),
         "date_of_agm_d2": d_digits.get("d2", ""),
@@ -476,29 +515,17 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         if new_val:
             data["share1_number_of_shares"] = str(new_val)
             data["total_number_of_shares"] = str(new_val)
+    
+    if extr_total_turnover:
+        data["total_turnover"] = extr_total_turnover
+    if extr_net_assets:
+        data["total_net_assets"] = extr_net_assets
+    if extr_filing_date:
+        data["annual_return_made_up_day"] = ext_fil_date_day
+        data["annual_return_made_up_month"] = return_month_name(ext_fil_date_month)
+        data["annual_return_made_up_year"] = ext_fil_date_year
 
-    return data
-
-
-def fill_business_name_pdf(template_path, stored_data: dict, extracted: dict) -> io.BytesIO:
-    # 1. Build a complete data dictionary from stored + extracted
-    try:
-        data = _build_bn07_data_from_stored(stored_data, extracted)
-    except Exception as e:
-        print("\n" + "="*50)
-        print("❌ ERROR IN BUILDER FUNCTION:")
-        traceback.print_exc()  # This shows the line number!
-        print("="*50 + "\n")
-        return {"status": "ERROR", 
-                "message": f"Builder failed: {str(e)}",
-                "code": 500}
-
-    # 2. Map data keys to PDF field names
-    field_values = {}
-    for key, field_name in BN07_FIELD_MAP.items():
-        val = data.get(key, "")
-        field_values[field_name] = str(val) if val else ""
-    return universal_fill_pdf(template_path, field_values)
+    return data 
 
 
 def fill_ltd_company_pdf(template_path, stored_data: dict, extracted: dict) -> io.BytesIO:
