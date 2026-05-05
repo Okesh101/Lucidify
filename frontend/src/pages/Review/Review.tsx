@@ -18,7 +18,7 @@ interface ReviewProps {
   business_type: string;
   proprietor_residential_address: string;
   other_particulars_changed: boolean;
-  warnings: string[];
+
 
   // ltd_company props
 
@@ -32,11 +32,11 @@ interface ReviewProps {
   small_company: boolean;
   shareholders_changed: boolean;
   agm_details: string;
+
+  net_assets: string
+  turnover: string
+  warnings: string[];
 }
-// interface BusinessLocation {
-//   postal_code: string;
-//   lga: string;
-// }
 interface AGMData {
   date: string;
   explanation: string;
@@ -99,14 +99,10 @@ const Review = () => {
       setReviewSummary(data.data.return_summary);
       setAgmSummary(data.data.return_summary.agm_details);
       setValidationStatus(data.data.validation);
-      // setWarnings(data.data.)
-      // setBusinessLocation(data.data.return_summary.principal_place_of_business);
-      console.log(data);
     };
 
     fetchReviewData();
   }, []);
-  // console.log("This is review data: ", reviewData)
 
   const handleGeneratePdf = async () => {
     setIsLoading(true);
@@ -143,18 +139,6 @@ const Review = () => {
     }
   };
 
-  // const handleDownload = () => {
-  //   if (!pdfUrl) return;
-
-  //   // const url = URL.createObjectURL(pdfBlob);
-
-  //   const link = document.createElement("a");
-  //   link.href = pdfUrl;
-  //   link.download = "my-file.pdf";
-  //   link.click();
-
-  //   // URL.revokeObjectURL(url);
-  // };
   const handleDownload = () => {
     if (!pdfBlob) return;
 
@@ -267,6 +251,20 @@ const Review = () => {
                         // Mini BUsinesses
                         <>
                           <Details
+                            title="Net Profit"
+                            desc={
+                             `₦${reviewSummary?.net_assets}`
+                            }
+                          />
+
+                          <Details
+                            title="Annual Turnover"
+                            desc={
+                              `₦${reviewSummary?.turnover}`
+                            }
+                          />
+
+                          <Details
                             title="Nature of Business"
                             desc={
                               reviewSummary?.nature_of_business || "Loading..."
@@ -294,6 +292,20 @@ const Review = () => {
                         </>
                       ) : (
                         <>
+                          <Details
+                            title="Net Profit"
+                            desc={
+                              `₦${reviewSummary?.net_assets}`
+                            }
+                          />
+
+                          <Details
+                            title="Annual Turnover"
+                            desc={
+                              `₦${reviewSummary?.turnover}`
+                            }
+                          />
+
                           {/* Ltd companies */}
                           <Details
                             title="AGM Held"
