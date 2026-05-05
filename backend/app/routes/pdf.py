@@ -92,15 +92,6 @@ def generate_pdf(user_id):
 
     return response
 
-    # return jsonify({
-    #     "status": "SUCCESS",
-    #     "code": 200,
-    #     "message": "PDF generated successfully.",
-    #     "pdf_base64": pdf_base64,
-    #     "filename": f"{rc_bn_number}_annual_return.pdf",
-    #     "deadline_update": result
-    # })
-
 
 # Temporary route – remove after testing
 @pdf_bp.route("/test-download", methods=['POST'])
