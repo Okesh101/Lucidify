@@ -5,7 +5,7 @@ from app.services.pdfService import fill_business_name_pdf, fill_ltd_company_pdf
 from app.database.functions.pdf import next_filling_deadline
 from app.database.functions.form import retrieve_extracted_data
 import os, json
-import ast
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,8 +39,28 @@ def generate_pdf(user_id):
     if extracted_result['code'] != 200:
         return jsonify(extracted_result), extracted_result['code']
 
+
+    # Fetching the financial year for filing PDF from database records
+    if entity_type == "business_name":
+        upd_year_available = extracted_result.get('updatedYear') or ""
+        if upd_year_available != "":
+            upd_year = upd_year_available.split("-")[0] if upd_year_available else ""
+        else:
+            upd_year = extracted_result.get('createdYear').split("-")[0] if extracted_result.get('createdYear') else ""
+    elif entity_type == "ltd_company":
+        upd_year_available = extracted_result.get('updatedYear') or ""
+        if upd_year_available != "":
+            upd_year = upd_year_available.split()[0] if upd_year_available else ""
+        else:            
+            upd_year = extracted_result.get('createdYear').split()[0] if extracted_result.get('createdYear') else ""
+
     extracted = extracted_result['jsonData']['return_summary']
-    # print(extracted)
+    
+    if entity_type == "business_name":
+        extracted['financial_year_end'] = int(upd_year) - 1 if upd_year else ""
+    elif entity_type == "ltd_company":
+        extracted['financial_year_end'] = upd_year if upd_year else ""
+    
 
     # Load stored data for the complete picture
     STORED = {}
@@ -77,9 +97,6 @@ def generate_pdf(user_id):
     business_name = STORED.get("business_name") or STORED.get("company_name")
     deadline_result = next_filling_deadline(user_id, business_name, rc_bn_number, entity_type)
 
-    # Encode PDF to base64
-    # pdf_base64 = base64.b64encode(pdf_buffer.read()).decode('utf-8')
-
     response = send_file(
         pdf_buffer,
         mimetype='application/pdf',
@@ -91,30 +108,3 @@ def generate_pdf(user_id):
     response.headers['Access-Control-Expose-Headers'] = 'X-Deadline-Update'
 
     return response
-
-
-# Temporary route – remove after testing
-@pdf_bp.route("/test-download", methods=['POST'])
-@user_required
-def test_download(user_id):
-    # Same logic as generate-pdf, but return file directly
-    data = request.get_json()
-    entity_type = data.get("entity_type")
-    extracted = data.get("extracted")
-    rc_bn_number = extracted.get("bn_number") or extracted.get("rc_number")
-
-    # Load stored data (copy from generate_pdf) ...
-    template_path = os.path.join(BASE_DIR, '..', 'cacdata',
-                                 'business_name.pdf' if entity_type == "business_name" else 'ltd_company.pdf')
-    if entity_type == "business_name":
-        pdf_buffer = fill_business_name_pdf(template_path, STORED, extracted)
-    else:
-        pdf_buffer = fill_ltd_company_pdf(template_path, STORED, extracted)
-
-    return send_file(
-        pdf_buffer,
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name=f"{rc_bn_number}_test.pdf"
-    )
-

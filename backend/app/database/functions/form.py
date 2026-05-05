@@ -45,7 +45,7 @@ def retrieve_extracted_data(user_id, type):
     try:
         cursor = db.cursor()
         cursor.execute(
-            """SELECT entity_type, jsonData FROM business_data 
+            """SELECT entity_type, jsonData, updated_at, created_at FROM business_data 
                 WHERE user_id = ? AND entity_type = ?
             """, (user_id, type,)
         )
@@ -61,6 +61,8 @@ def retrieve_extracted_data(user_id, type):
                 "code": 200,
                 "entity_type": fullData[0],
                 "jsonData": ast.literal_eval(fullData[1]),
+                "updatedYear": fullData[2],
+                "createdYear": fullData[3],
                 "message": "Fetched data successfully for review."
                 }
     except sqlite3.Error as e:

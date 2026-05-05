@@ -9,6 +9,8 @@ Output a strict JSON object:
 {
   "principal_place_of_business": "string (from stored data if no change, else use residential address if it moved there)",
   "nature_of_business": "string: 'Similar' (from stored data, if business nature is similar slightly in context, else 'Not Similar')",
+  "turnover": "number (from user input)",
+  "net_assets": "number (from user input)",
   "proprietor_residential_address": "string or null (null if residence_changed is false)",
   "other_particulars_changed": "boolean (if other_particulars_changed is "yes", set to true, else, set to false)",
   "warnings": ["list of strings if other_particulars_changed is true"]
@@ -18,6 +20,7 @@ Rules:
 - If 'residence_changed' is true, set 'proprietor_residential_address' to the new address.
 - If 'other_particulars_changed' is true, add warning: "Other changes to particulars detected. Ensure BN/03, BN/04, or BN/05 was filed."
 - If 'nature_of_business' is 'Not Similar', add warning: "Nature of business has changed significantly. Ensure BN/03, BN/04, or BN/05 was filed."
+- If 'turnover' or 'net_assets' are not provided, add warning: "Total Turnover and Net Assets are missing. Resulting to past values."
 """
 
 BN06_SYSTEM_PROMPT = """
@@ -27,6 +30,8 @@ Focus ONLY on the annual return summary. Do not include company names or RC numb
 Output a strict JSON object:
 {
   "small_company": "boolean",
+  "turnover": "number (from user input)",
+  "net_assets": "number (from user input)",
   "agm_details": {
     "held": "boolean",
     "date": "YYYY-MM-DD or null",
@@ -43,6 +48,7 @@ Output a strict JSON object:
 Rules:
 - If agm_held is false, set date to null and provide a generic legal explanation (e.g., "Company is a small company exempt from AGM under CAMA 2020").
 - If shareholders_changed or directors_changed is true, add a warning about separate filings.
+- If 'turnover' or 'net_assets' are not provided, add warning: "Total Turnover and Net Assets are missing. Resulting to past values."
 """
 
 
@@ -58,6 +64,8 @@ def build_prompt(entity_type: str, answers: dict, stored_data: dict = None) -> t
 
         mapped_answers = {
             "nature_of_business": answers.get("business_nature"),
+            "turnover": answers.get("turnover"),
+            "net_assets": answers.get("net_assets"),
             "residence_changed": bool(residence_val),
             "new_residential_address": residence_val if residence_val else None,
             "other_particulars_changed": answers.get("bnQuestion6") == "yes"
@@ -72,6 +80,8 @@ def build_prompt(entity_type: str, answers: dict, stored_data: dict = None) -> t
 
         mapped_answers = {
             "is_small_company": answers.get("rcQuestion1") == "yes",
+            "turnover": answers.get("turnover"),
+            "net_assets": answers.get("net_assets"),
             "directors_changed": answers.get("rcQuestion3") == "yes",
             "shareholders_changed": answers.get("rcQuestion4") == "yes",
             "new_shares_issued": bool(new_shares_val),

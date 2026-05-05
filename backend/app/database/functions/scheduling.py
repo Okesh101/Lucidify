@@ -35,6 +35,7 @@ def check_and_send_reminders():
                     print({"status": "ERROR",
                             "code": 500,
                             "message": "Error sending reminder mail from google."})
+
         db.commit()
         print({"status": "SUCCESS",
                 "code": 200,

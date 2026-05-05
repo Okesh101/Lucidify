@@ -38,6 +38,12 @@ def _validate_business_name(data: dict) -> list:
     if not data.get("nature_of_business"):
         e.append("Nature of business is required.")
 
+    if not data.get("turnover"):
+        e.append("Total turnover for the year is required.")
+
+    if not data.get("net_assets"):
+        e.append("Net assets value for the year is required.")
+
     # Check if address was provided when logic says it changed
     # (Checking data.get because AI might set it to empty string if confused)
     addr = data.get("proprietor_residential_address")
@@ -176,6 +182,17 @@ def format_date(date_str, space_count=5):
     # 4. Join them back using your "plenty" of spaces
     spacer = " " * space_count
     return spacer.join(individual_digits)
+
+
+def return_month_name(month_num):
+    """Convert '05' to 'May'."""
+    try:
+        month_num = int(month_num)
+        if 1 <= month_num <= 12:
+            return datetime(1900, month_num, 1).strftime('%B')
+    except ValueError:
+        pass
+    return ""  # Return empty string for invalid input
 
 
 def format_date_for_frontend(date_str):

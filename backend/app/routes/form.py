@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.wrappers.user_required import user_required
 from app.services.ai_service.prompts import build_prompt
 from app.services.ai_service.aiService import ai_extract
-from app.services.helperServices import validate_output, build_company_info
+from app.services.helperServices import validate_output, build_company_info, format_date_for_frontend
 from app.database.mockdata.helpers import loadRegistryJSON
 from app.database.functions.form import recieve_extracted_data, retrieve_extracted_data
 
@@ -41,9 +41,9 @@ def extract_endpoint(user_id):
     except Exception as e:
         print(f"Registry lookup error: {e}")
 
-    # 2. Call AI for extraction
+    # 2. Build prompt for AI extraction
     system_prompt, user_prompt = build_prompt(
-        entity_type, answers, STORED)  # Build prompt
+        entity_type, answers, STORED)
     
     try:  # Call AI service (choose Gemini or Groq)
         extracted_json = ai_extract(system_prompt, user_prompt)
@@ -91,11 +91,20 @@ def review_endpoint(user_id):
     result = retrieve_extracted_data(user_id, type)
     if result['code'] != 200:
         return jsonify(result), result['code']
+    
+    jsonData = result['jsonData']
+
+    if type == "ltd_company" and 'return_summary' in jsonData:
+        agm = jsonData['return_summary'].get('agm_details', {})
+
+        if agm.get('held') and agm.get('date'):
+            agm['date'] = format_date_for_frontend(agm['date'])
+
 
     return jsonify({
         "status": result['status'],
         "code": result['code'],
-        "data": result['jsonData'],
+        "data": jsonData,
         "entity_type": result['entity_type'],
         "message": result['message']
     })
