@@ -42,7 +42,7 @@ export default function About() {
       <div className="max-w-5xl mx-auto pt-20 md:pt-30 p-6 md:p-4" data-aos="zoom-in">
         {/* HEADER */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold font-[Nunito]">About SME Compliance Fast-Track</h1>
+          <h1 className="text-4xl font-bold font-[Nunito]">About Lucidify</h1>
           <p className="mt-4 text-gray-500 font-[Unbounded] text-sm">
             We make CAC compliance simple, fast, and stress-free for Nigerian SMEs.
           </p>
@@ -90,7 +90,7 @@ export default function About() {
         >
           <h2 className="text-2xl font-semibold font-[Nunito]">Our Solution</h2>
           <p className="mt-4 text-gray-500 leading-relaxed font-[Unbounded]">
-            SME Compliance Fast-Track simplifies the entire process into a guided workflow:
+            Lucidify simplifies the entire process into a guided workflow:
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 mt-6">
