@@ -2,13 +2,13 @@
 
 export function ValidateField(
   value: string,
-  section: "miniBusiness" | "ltd_company",
+  section: "miniBusiness" | "ltd_company" | 'both',
   field: string,
   setErrors: any
 ) {
   let isValid = true;
 
-  if (!value.trim()) {
+  if (!value) {
     setErrors((prev: any) => ({
       ...prev,
       [section]: {
