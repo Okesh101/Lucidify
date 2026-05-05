@@ -12,12 +12,16 @@ interface formProp {
     // bnNumber: string;
     // proprietor_name: string;
     business_nature: string;
+    turnover: number;
+    net_assets: number;
     new_residential_address: string;
     bnQuestion6: string;
   };
   ltd_company: {
     rcNumber: string;
     company_name: string;
+    turnover: number;
+    net_assets: number;
     agm_date: string;
     issued_shared_capital: string;
     new_registered_address: string;
@@ -44,12 +48,16 @@ const Question = () => {
       // bnNumber: "",
       // proprietor_name: "",
       business_nature: "",
+      turnover: 0,
+      net_assets: 0,
       new_residential_address: "",
       bnQuestion6: "",
     },
     ltd_company: {
       rcNumber: "",
       company_name: "",
+      turnover: 0,
+      net_assets: 0,
       agm_date: "",
       issued_shared_capital: "",
       new_registered_address: "",
@@ -64,12 +72,16 @@ const Question = () => {
       // bnNumber: "",
       // proprietor_name: "",
       business_nature: "",
+      turnover: 0,
+      net_assets: 0,
       new_residential_address: "",
       bnQuestion6: "",
     },
     ltd_company: {
       rcNumber: "",
       company_name: "",
+      turnover: 0,
+      net_assets: 0,
       agm_date: "",
       issued_shared_capital: "",
       new_registered_address: "",
@@ -113,6 +125,20 @@ const Question = () => {
         setErrors  
       ) && isValid;
 
+      // isValid = ValidateField(
+      //   data.turnover,
+      //   "miniBusiness",
+      //   "turnover",
+      //   setErrors
+      // ) && isValid;
+
+      // isValid = ValidateField(
+      //   data.net_assets,
+      //   "miniBusiness",
+      //   "turnover",
+      //   setErrors
+      // ) && isValid;
+
       isValid = ValidateField(
         data.bnQuestion6,
         "miniBusiness",
@@ -150,6 +176,21 @@ const Question = () => {
     
     else if (companyType === "ltd_company") {
       // Company validation
+      // isValid = ValidateField(
+      //   questionData.ltd_company.turnover,
+      //   "ltd_company",
+      //   "rcQuestion1",
+      //   setErrors  
+      // ) && isValid;
+
+      // isValid =
+      //   ValidateField(
+      //     questionData.ltd_company.net_assets,
+      //     "ltd_company",
+      //     "rcQuestion1",
+      //     setErrors,
+      //   ) && isValid;
+
       isValid = ValidateField(
         questionData.ltd_company.rcQuestion1,
         "ltd_company",
@@ -530,8 +571,8 @@ const Question = () => {
                     title_1="Yes"
                     title_2="No"
                     questionTitle="Has the company issued any new shares during the year?"
-                    inputNote="New registered address"
-                    inputNoteType="text"
+                    inputNote="New shares amount"
+                    inputNoteType="number"
                     errorMssg={errors.ltd_company.new_registered_address}
                     value={questionData.ltd_company.new_registered_address}
                     handleChange={(e) =>
@@ -677,7 +718,7 @@ const Question = () => {
             <div className="bg-green-700 animate-bounce w-9 h-9"></div>
           </div>
           <p className="font-[Onest] text-xl text-white mt-6">
-            Please wait, while you data is processing.
+            Please wait, while your data is processing...
           </p>
         </div>
       )}

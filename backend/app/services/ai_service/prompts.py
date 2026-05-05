@@ -8,14 +8,16 @@ Focus ONLY on the business particulars. Do not include business names or BN numb
 Output a strict JSON object:
 {
   "principal_place_of_business": "string (from stored data if no change, else use residential address if it moved there)",
-  "nature_of_business": "string",
+  "nature_of_business": "string: 'Similar' (from stored data, if business nature is similar slightly in context, else 'Not Similar')",
   "proprietor_residential_address": "string or null (null if residence_changed is false)",
+  "other_particulars_changed": "boolean (if other_particulars_changed is "yes", set to true, else, set to false)",
   "warnings": ["list of strings if other_particulars_changed is true"]
 }
 
 Rules:
 - If 'residence_changed' is true, set 'proprietor_residential_address' to the new address.
 - If 'other_particulars_changed' is true, add warning: "Other changes to particulars detected. Ensure BN/03, BN/04, or BN/05 was filed."
+- If 'nature_of_business' is 'Not Similar', add warning: "Nature of business has changed significantly. Ensure BN/03, BN/04, or BN/05 was filed."
 """
 
 BN06_SYSTEM_PROMPT = """
