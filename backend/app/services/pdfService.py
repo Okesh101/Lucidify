@@ -482,7 +482,16 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
 
 def fill_business_name_pdf(template_path, stored_data: dict, extracted: dict) -> io.BytesIO:
     # 1. Build a complete data dictionary from stored + extracted
-    data = _build_bn07_data_from_stored(stored_data, extracted)
+    try:
+        data = _build_bn07_data_from_stored(stored_data, extracted)
+    except Exception as e:
+        print("\n" + "="*50)
+        print("❌ ERROR IN BUILDER FUNCTION:")
+        traceback.print_exc()  # This shows the line number!
+        print("="*50 + "\n")
+        return {"status": "ERROR", 
+                "message": f"Builder failed: {str(e)}",
+                "code": 500}
 
     # 2. Map data keys to PDF field names
     field_values = {}

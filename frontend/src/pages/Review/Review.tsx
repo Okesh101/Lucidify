@@ -373,26 +373,68 @@ const Review = () => {
                 </section>
               </div>
             ) : (
-              <div className="flex flex-col items-center mt-8">
-                <div className=" rounded-full p-4 bg-white shadow-sm">
-                  {/* <PiFilePdfDuotone size={200} color="white"/> */}
-                  <img src="./pdf.png" alt="pdf image " className="w-35 " />
-                </div>
-                <div className="mt-7 flex flex-col gap-3 ">
-                  <button
-                    type="button"
-                    className="outline outline-gray-500 rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold"
-                    onClick={navigateBack}
-                  >
-                    Start Another Return
-                  </button>
+              <div>
+                <div className="flex flex-col items-center mt-8">
+                  <div className=" rounded-full p-4 bg-white shadow-sm">
+                    {/* <PiFilePdfDuotone size={200} color="white"/> */}
+                    <img src="./pdf.png" alt="pdf image " className="w-35 " />
+                  </div>
+                  <div className="mt-7 flex flex-col gap-3 ">
+                    <button
+                      type="button"
+                      className="outline outline-gray-500 rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold"
+                      onClick={navigateBack}
+                    >
+                      Start Another Return
+                    </button>
 
-                  <button
-                    className="bg-green-600 text-white gap-2 justify-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold"
-                    onClick={handleDownload}
-                  >
-                    Download PDF
-                  </button>
+                    <button
+                      className="bg-green-600 text-white gap-2 justify-center rounded-sm px-4 py-2 cursor-pointer font-[Nunito] font-semibold"
+                      onClick={handleDownload}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </div>
+                <div className="bg-green-50/50 mt-10 p-6 rounded-xl border border-green-200 border-l-4 border-l-green-600 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="bg-green-600 p-1 rounded-full">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2.5"
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
+                      </svg>
+                    </div>
+                    <p className="font-[ClashDisplay] font-bold text-green-900 tracking-wide uppercase text-sm">
+                      What's Next?
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    {[
+                      "Login to your CAC portal",
+                      "Go to Annual Return Filing",
+                      "Upload the PDF you just generated",
+                      "Submit and pay the required fee",
+                    ].map((step, index) => (
+                      <div key={index} className="flex items-start gap-4">
+                        <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-green-200 text-green-800 text-xs font-bold font-[DMMono]">
+                          {index + 1}
+                        </span>
+                        <p className="font-[Onest] text-gray-700 text-sm leading-relaxed">
+                          {step}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
