@@ -9,24 +9,27 @@ import InputItem from "../../components/InputItem";
 
 type Mode = "business_name" | "ltd_company" | null;
 interface formProp {
-  both: {
-    turnover: "" ,
-    net_assets: "",
-  }
+  // both: {
+  //   turnover: "" ,
+  //   net_assets: "",
+  // }
   miniBusiness: {
     // bnNumber: string;
     // proprietor_name: string;
     business_nature: string;
+      turnover: '',
+      net_assets: '',
     // turnover: number;
     // net_assets: number;
     new_residential_address: string;
     bnQuestion6: string;
   };
   ltd_company: {
-    rcNumber: string;
     company_name: string;
     // turnover: number;
     // net_assets: number;
+      turnover: '',
+      net_assets: '',
     agm_date: string;
     issued_shared_capital: string;
     new_registered_address: string;
@@ -49,24 +52,25 @@ const Question = () => {
     }
   }, [regNumber]);
   const [errors, setErrors] = useState<formProp>({
-    both:{
-      turnover: '',
-      net_assets: '',
-    },
+    // both:{
+    // },
     miniBusiness: {
       // bnNumber: "",
       // proprietor_name: "",
       business_nature: "",
+      turnover: '',
+      net_assets: '',
       // turnover: 0,
       // net_assets: 0,
       new_residential_address: "",
       bnQuestion6: "",
     },
     ltd_company: {
-      rcNumber: "",
       company_name: "",
       // turnover: 0,
       // net_assets: 0,
+      turnover: '',
+      net_assets: '',
       agm_date: "",
       issued_shared_capital: "",
       new_registered_address: "",
@@ -77,10 +81,10 @@ const Question = () => {
   });
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState<formProp>({
-    both: {
-      net_assets: '',
-      turnover: '',
-    },
+    // both: {
+    //   net_assets: '',
+    //   turnover: '',
+    // },
     miniBusiness: {
       // bnNumber: "",
       // proprietor_name: "",
@@ -89,9 +93,10 @@ const Question = () => {
       // net_assets: 0,
       new_residential_address: "",
       bnQuestion6: "",
+      turnover: '',
+      net_assets: '',
     },
     ltd_company: {
-      rcNumber: "",
       company_name: "",
       // turnover: 0,
       // net_assets: 0,
@@ -101,6 +106,8 @@ const Question = () => {
       rcQuestion1: "",
       rcQuestion3: "",
       rcQuestion4: "",
+      turnover: '',
+      net_assets: '',
     },
   });
   const [radioSelections, setRadioSelections] = useState<{
@@ -129,18 +136,18 @@ const Question = () => {
 
 
     // Validation for total net assest and total turnover for both business and ltd_company
-      isValid = ValidateField(
-        questionData.both.turnover,
-        "both",
-        "turnover",
-        setErrors
-      ) && isValid;
-      isValid = ValidateField(
-        questionData.both.net_assets,
-        "both",
-        "net_assets",
-        setErrors
-      ) && isValid;
+      // isValid = ValidateField(
+      //   questionData.both.turnover,
+      //   "both",
+      //   "turnover",
+      //   setErrors
+      // ) && isValid;
+      // isValid = ValidateField(
+      //   questionData.both.net_assets,
+      //   "both",
+      //   "net_assets",
+      //   setErrors
+      // ) && isValid;
 
     // Business name
     if (companyType === "business_name") {
@@ -151,6 +158,21 @@ const Question = () => {
         "miniBusiness",
         "business_nature",
         setErrors  
+      ) && isValid;
+
+         isValid = ValidateField(
+        data.turnover,
+        "miniBusiness",
+        "turnover",
+        setErrors
+      ) && isValid;
+
+
+      isValid = ValidateField(
+        data.net_assets,
+        "miniBusiness",
+        "net_assets",
+        setErrors
       ) && isValid;
 
 
@@ -205,6 +227,22 @@ const Question = () => {
       //     "rcQuestion1",
       //     setErrors,
       //   ) && isValid;
+
+      isValid = ValidateField(
+        questionData.ltd_company.turnover,
+        "ltd_company",
+        "turnover",
+        setErrors
+      ) && isValid;
+
+      
+      isValid = ValidateField(
+        questionData.ltd_company.net_assets,
+        "ltd_company",
+        "net_assets",
+        setErrors
+      ) && isValid;
+
 
       isValid = ValidateField(
         questionData.ltd_company.rcQuestion1,
@@ -325,14 +363,14 @@ const Question = () => {
                 : "ltd_company",
             answers:
               companyType === "business_name"
-                ? (questionData.miniBusiness, questionData.both)
-                : (questionData.ltd_company, questionData.both),
+                ? (questionData.miniBusiness)
+                : (questionData.ltd_company),
             registration_number: regNumber,
           },
         }),
       });
       const data = await res.json();
-      console.log(data);
+      console.log(questionData);
       if (data.status === "SUCCESS" || data.code === 200) {
         console.log("Data sent successfully");
         setIsLoading(false);
@@ -406,14 +444,14 @@ const Question = () => {
                     type="number"
                     title="Total amount of money made in the year (before expenses)?"
                     placeholder="Annual turnover"
-                    value={questionData.both.turnover}
+                    value={questionData.ltd_company.turnover}
                     minValue={1}
                     handleChange={(e) =>{
                     const value = e.target.value;
                     setQuestionData((prev) => ({
                     ...prev,
-                      both: {
-                        ...prev.both,
+                      ltd_company: {
+                        ...prev.ltd_company,
                         [e.target.name]:
                         e.target.value === "" ? "" : Number(e.target.value),
                       }
@@ -421,26 +459,26 @@ const Question = () => {
 
                     ValidateField(
                       value,
-                      "both",
+                      "ltd_company",
                       "turnover",
                       setErrors
                     );
                     }}
-                    errorMssg={errors.both.turnover}
+                    errorMssg={errors.ltd_company.turnover}
                   />
                   <InputItem
                     name="net_assets"
                     type="number"
                     title="What is left after all business expenses for the year?"
                     placeholder="Net Profit"
-                    value={questionData.both.net_assets}
+                    value={questionData.ltd_company.net_assets}
                     minValue={1}
                     handleChange={(e) =>{
                       const value = e.target.value;
                       setQuestionData((prev) => ({
                         ...prev,
-                        both: {
-                          ...prev.both,
+                        ltd_company: {
+                          ...prev.ltd_company,
                           [e.target.name]:
                           e.target.value === "" ? "" : Number(e.target.value),
                         },
@@ -453,7 +491,7 @@ const Question = () => {
                         setErrors
                       );
                     }}
-                    errorMssg={errors.both.net_assets}
+                    errorMssg={errors.ltd_company.net_assets}
                   />
                 <div className="space-y-4">
                   <RadioItem
@@ -679,14 +717,14 @@ const Question = () => {
                   type="number"
                   title="Total amount of money made in the year (before expenses)?"
                   placeholder="Annual turnover"
-                  value={questionData.both.turnover}
+                  value={questionData.miniBusiness.turnover}
                   minValue={1}
                   handleChange={(e) =>{
                     const value = e.target.value;
                     setQuestionData((prev) => ({
                     ...prev,
-                      both: {
-                        ...prev.both,
+                      miniBusiness: {
+                        ...prev.miniBusiness,
                         [e.target.name]:
                         e.target.value === "" ? "" : Number(e.target.value),
                       }
@@ -694,26 +732,26 @@ const Question = () => {
 
                     ValidateField(
                       value,
-                      "both",
+                      "miniBusiness",
                       "turnover",
                       setErrors
                     );
                   }}
-                  errorMssg={errors.both.turnover}
+                  errorMssg={errors.miniBusiness.turnover}
                 />
                 <InputItem
                   name="net_assets"
                   type="number"
                   title="What is left after all business expenses for the year?"
                   placeholder="Net Profit"
-                  value={questionData.both.net_assets}
+                  value={questionData.miniBusiness.net_assets}
                   minValue={1}
                   handleChange={(e) =>{
                     const value = e.target.value;
                     setQuestionData((prev) => ({
                       ...prev,
-                      both: {
-                        ...prev.both,
+                      miniBusiness: {
+                        ...prev.miniBusiness,
                         [e.target.name]:
                         e.target.value === "" ? "" : Number(e.target.value),
                       },
@@ -721,12 +759,12 @@ const Question = () => {
 
                     ValidateField(
                       value,
-                      "both",
+                      "miniBusiness",
                       "net_assets",
                       setErrors
                     );
                   }}
-                  errorMssg={errors.both.net_assets}
+                  errorMssg={errors.miniBusiness.net_assets}
                 />
 
                 <RadioItem
