@@ -2,7 +2,7 @@ from pypdf import PdfReader, PdfWriter
 from app.cacdata.mappings.mappings import BN07_FIELD_MAP, BN06_FIELD_MAP
 from app.services.helperServices import split_date_into_digits, universal_fill_pdf, split_address, format_date
 from datetime import datetime, date
-import io
+import io, traceback
 
 
 def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
@@ -152,11 +152,14 @@ def _build_bn07_data_from_stored(stored: dict, extracted: dict) -> dict:
 
 
 def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
+    stored = stored or {}
+    extracted = extracted or {}
+
     # Registered office
-    ro = stored.get("registered_office", {})
+    ro = stored.get("registered_office", {}) or {}
     # Officers
-    officers = stored.get("officers", {})
-    directors = officers.get("directors", [])
+    officers = stored.get("officers", {}) or {}
+    directors = officers.get("directors", []) or {}
     ind_sec = officers.get("individual_secretary") or {}
     corp_sec = officers.get("corporate_secretary") or {}
     # Share capital
@@ -165,9 +168,10 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
     first_class = classes[0] if len(classes) > 0 else {}
     second_class = classes[1] if len(classes) > 1 else {}
     # AGM from extracted
-    agm = extracted.get("agm_details", {})
-    agm_date = agm.get("date", "") if agm.get("held") else ""
-    agm_explanation = agm.get("explanation", "") if not agm.get("held") else ""
+    agm = extracted.get("agm_details", {}) or {}
+    agm_held = agm.get("held", False)
+    agm_date = agm.get("date", "") if agm_held else ""
+    agm_explanation = agm.get("explanation", "") if not agm_held else ""
 
     # Split AGM date into digit fields
     y_digits, m_digits, d_digits = split_date_into_digits(agm_date)
@@ -238,25 +242,25 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "ro_city": ro.get("city", ""),
         "ro_lga": ro.get("lga", ""),
         "ro_state": ro.get("state", ""),
-        "head_office_number": stored.get("head_office", {}).get("number", ""),
-        "head_office_street": stored.get("head_office", {}).get("street", ""),
-        "head_office_city": stored.get("head_office", {}).get("city", ""),
-        "head_office_lga": stored.get("head_office", {}).get("lga", ""),
-        "head_office_state": stored.get("head_office", {}).get("state", ""),
-        "register_location_number": stored.get("register_location", {}).get("number", ""),
-        "register_location_street": stored.get("register_location", {}).get("street", ""),
-        "register_location_city": stored.get("register_location", {}).get("city", ""),
-        "register_location_lga": stored.get("register_location", {}).get("lga", ""),
-        "register_location_state": stored.get("register_location", {}).get("state", ""),
+        "head_office_number": (stored.get("head_office") or {}).get("number", ""),
+        "head_office_street": (stored.get("head_office") or {}).get("street", ""),
+        "head_office_city": (stored.get("head_office") or {}).get("city", ""),
+        "head_office_lga": (stored.get("head_office") or {}).get("lga", ""),
+        "head_office_state": (stored.get("head_office") or {}).get("state", ""),
+        "register_location_number": (stored.get("register_location") or {}).get("number", ""),
+        "register_location_street": (stored.get("register_location") or {}).get("street", ""),
+        "register_location_city": (stored.get("register_location") or {}).get("city", ""),
+        "register_location_lga": (stored.get("register_location") or {}).get("lga", ""),
+        "register_location_state": (stored.get("register_location") or {}).get("state", ""),
         # Corporate secretary (B)
         "corp_sec_name": corp_sec.get("name", ""),
         "corp_sec_reg_number": corp_sec.get("registration_number", ""),
-        "corp_sec_addr_number": corp_sec.get("address", {}).get("number", ""),
-        "corp_sec_addr_street": corp_sec.get("address", {}).get("street", ""),
-        "corp_sec_addr_city": corp_sec.get("address", {}).get("city", ""),
-        "corp_sec_addr_lga": corp_sec.get("address", {}).get("lga", ""),
+        "corp_sec_addr_number": (corp_sec.get("address") or {}).get("number", ""),
+        "corp_sec_addr_street": (corp_sec.get("address") or {}).get("street", ""),
+        "corp_sec_addr_city": (corp_sec.get("address") or {}).get("city", ""),
+        "corp_sec_addr_lga": (corp_sec.get("address") or {}).get("lga", ""),
         "corp_sec_phone": corp_sec.get("phone", ""),
-        "corp_sec_state": corp_sec.get("address", {}).get("state", ""),
+        "corp_sec_state": (corp_sec.get("address") or {}).get("state", ""),
         "corp_sec_email": corp_sec.get("email", ""),
         # Individual secretary (C)
         "ind_sec_title": ind_sec.get("title", ""),
@@ -264,12 +268,12 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "ind_sec_surname": ind_sec.get("surname", ""),
         "ind_sec_former_names": ind_sec.get("former_names", ""),
         "ind_sec_nationality": ind_sec.get("nationality", ""),
-        "ind_sec_service_number": ind_sec.get("service_address", {}).get("number", ""),
-        "ind_sec_service_street": ind_sec.get("service_address", {}).get("street", ""),
-        "ind_sec_service_city": ind_sec.get("service_address", {}).get("city", ""),
-        "ind_sec_service_lga": ind_sec.get("service_address", {}).get("lga", ""),
+        "ind_sec_service_number": (ind_sec.get("service_address") or {}).get("number", ""),
+        "ind_sec_service_street": (ind_sec.get("service_address") or {}).get("street", ""),
+        "ind_sec_service_city": (ind_sec.get("service_address") or {}).get("city", ""),
+        "ind_sec_service_lga": (ind_sec.get("service_address") or {}).get("lga", ""),
         "ind_sec_phone": ind_sec.get("phone", ""),
-        "ind_sec_state": ind_sec.get("service_address", {}).get("state", ""),
+        "ind_sec_state": (ind_sec.get("service_address") or {}).get("state", ""),
         "ind_sec_email": ind_sec.get("email", ""),
         # Director 1
         "dir1_title": d1.get("title", ""),
@@ -289,11 +293,11 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "dir1_business_occupation": d1.get("business_occupation", ""),
         "dir1_phone": d1.get("phone", ""),
         "dir1_email": d1.get("email", ""),
-        "dir1_service_number": d1.get("service_address", {}).get("number", ""),
-        "dir1_service_street": d1.get("service_address", {}).get("street", ""),
-        "dir1_service_city": d1.get("service_address", {}).get("city", ""),
-        "dir1_service_lga": d1.get("service_address", {}).get("lga", ""),
-        "dir1_service_state": d1.get("service_address", {}).get("state", ""),
+        "dir1_service_number": (d1.get("service_address") or {}).get("number", ""),
+        "dir1_service_street": (d1.get("service_address") or {}).get("street", ""),
+        "dir1_service_city": (d1.get("service_address") or {}).get("city", ""),
+        "dir1_service_lga": (d1.get("service_address") or {}).get("lga", ""),
+        "dir1_service_state": (d1.get("service_address") or {}).get("state", ""),
         # Director 2
         "dir2_title": d2.get("title", ""),
         "dir2_forenames": d2.get("forenames", ""),
@@ -312,11 +316,11 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "dir2_business_occupation": d2.get("business_occupation", ""),
         "dir2_phone": d2.get("phone", ""),
         "dir2_email": d2.get("email", ""),
-        "dir2_service_number": d2.get("service_address", {}).get("number", ""),
-        "dir2_service_street": d2.get("service_address", {}).get("street", ""),
-        "dir2_service_city": d2.get("service_address", {}).get("city", ""),
-        "dir2_service_lga": d2.get("service_address", {}).get("lga", ""),
-        "dir2_service_state": d2.get("service_address", {}).get("state", ""),
+        "dir2_service_number": (d2.get("service_address") or {}).get("number", ""),
+        "dir2_service_street": (d2.get("service_address") or {}).get("street", ""),
+        "dir2_service_city": (d2.get("service_address") or {}).get("city", ""),
+        "dir2_service_lga": (d2.get("service_address") or {}).get("lga", ""),
+        "dir2_service_state": (d2.get("service_address") or {}).get("state", ""),
         # Director 3
         "dir3_title": d3.get("title", ""),
         "dir3_forenames": d3.get("forenames", ""),
@@ -335,11 +339,11 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "dir3_business_occupation": d3.get("business_occupation", ""),
         "dir3_phone": d3.get("phone", ""),
         "dir3_email": d3.get("email", ""),
-        "dir3_service_number": d3.get("service_address", {}).get("number", ""),
-        "dir3_service_street": d3.get("service_address", {}).get("street", ""),
-        "dir3_service_city": d3.get("service_address", {}).get("city", ""),
-        "dir3_service_lga": d3.get("service_address", {}).get("lga", ""),
-        "dir3_service_state": d3.get("service_address", {}).get("state", ""),
+        "dir3_service_number": (d3.get("service_address") or {}).get("number", ""),
+        "dir3_service_street": (d3.get("service_address") or {}).get("street", ""),
+        "dir3_service_city": (d3.get("service_address") or {}).get("city", ""),
+        "dir3_service_lga": (d3.get("service_address") or {}).get("lga", ""),
+        "dir3_service_state": (d3.get("service_address") or {}).get("state", ""),
         # Director 4
         "dir4_title": d4.get("title", ""),
         "dir4_forenames": d4.get("forenames", ""),
@@ -358,11 +362,11 @@ def _build_bn06_data_from_stored(stored: dict, extracted: dict) -> dict:
         "dir4_business_occupation": d4.get("business_occupation", ""),
         "dir4_phone": d4.get("phone", ""),
         "dir4_email": d4.get("email", ""),
-        "dir4_service_number": d4.get("service_address", {}).get("number", ""),
-        "dir4_service_street": d4.get("service_address", {}).get("street", ""),
-        "dir4_service_city": d4.get("service_address", {}).get("city", ""),
-        "dir4_service_lga": d4.get("service_address", {}).get("lga", ""),
-        "dir4_service_state": d4.get("service_address", {}).get("state", ""),
+        "dir4_service_number": (d4.get("service_address") or {}).get("number", ""),
+        "dir4_service_street": (d4.get("service_address") or {}).get("street", ""),
+        "dir4_service_city": (d4.get("service_address") or {}).get("city", ""),
+        "dir4_service_lga": (d4.get("service_address") or {}).get("lga", ""),
+        "dir4_service_state": (d4.get("service_address") or {}).get("state", ""),
         # Share capital
         "share1_class": first_class.get("class", ""),
         "share1_number_of_shares": str(first_class.get("number_of_shares", "")),
@@ -490,7 +494,16 @@ def fill_business_name_pdf(template_path, stored_data: dict, extracted: dict) ->
 
 def fill_ltd_company_pdf(template_path, stored_data: dict, extracted: dict) -> io.BytesIO:
     # 1. Build a complete data dictionary from stored + extracted
-    data = _build_bn06_data_from_stored(stored_data, extracted)
+    try:
+        data = _build_bn06_data_from_stored(stored_data, extracted)
+    except Exception as e:
+        print("\n" + "="*50)
+        print("❌ ERROR IN BUILDER FUNCTION:")
+        traceback.print_exc()  # This shows the line number!
+        print("="*50 + "\n")
+        return {"status": "ERROR", 
+                "message": f"Builder failed: {str(e)}",
+                "code": 500}
 
     # 2. Map data keys to PDF field names
     field_values = {}

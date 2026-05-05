@@ -1,9 +1,11 @@
 import requests
 from datetime import datetime
+import os
 
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 def continuous_ping():
-    url = "https://cacsmecompliant.onrender.com/api/v1/health"
+    url = f"{BACKEND_URL}/api/v1/health"
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:

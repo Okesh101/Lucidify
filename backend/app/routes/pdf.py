@@ -20,7 +20,7 @@ def generate_pdf(user_id):
         return jsonify({
             "status": "ERROR",
             "code": 400,
-            "message": "Missing rc_bn_number query parameter."
+            "message": "Missing regNumber query parameter."
         })
     
     if rc_bn_number.startswith("BN"):
@@ -39,7 +39,8 @@ def generate_pdf(user_id):
     if extracted_result['code'] != 200:
         return jsonify(extracted_result), extracted_result['code']
 
-    extracted = ast.literal_eval(extracted_result['jsonData'])['return_summary']
+    extracted = extracted_result['jsonData']['return_summary']
+    # print(extracted)
 
     # Load stored data for the complete picture
     STORED = {}
