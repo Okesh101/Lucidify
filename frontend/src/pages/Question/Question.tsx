@@ -325,8 +325,8 @@ const Question = () => {
                 : "ltd_company",
             answers:
               companyType === "business_name"
-                ? questionData.miniBusiness
-                : questionData.ltd_company,
+                ? (questionData.miniBusiness, questionData.both)
+                : (questionData.ltd_company, questionData.both),
             registration_number: regNumber,
           },
         }),
