@@ -13,7 +13,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, supports_credentials=True)
+    CORS(app, supports_credentials=True, origins=["https://lucidify2.netlify.app", "https://netlify.app", "http://localhost:5173"])
 
     from app.routes.health import health_bp
     from app.routes.auth import auth_bp
