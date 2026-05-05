@@ -478,7 +478,7 @@ const Review = () => {
             <div className="bg-green-700 animate-bounce w-9 h-9"></div>
           </div>
           <p className="font-[Onest] text-xl text-white mt-6">
-            Please wait, while you data is processing.
+            Please wait, while your data is processing...
           </p>
         </div>
       )}
