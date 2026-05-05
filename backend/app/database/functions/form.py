@@ -1,6 +1,7 @@
 from app.database.db import get_db_connection
 import sqlite3
 import uuid
+import ast
 
 
 def recieve_extracted_data(user_id, entity_type, data):
@@ -59,7 +60,7 @@ def retrieve_extracted_data(user_id, type):
         return {"status": "SUCCESS",
                 "code": 200,
                 "entity_type": fullData[0],
-                "jsonData": fullData[1],
+                "jsonData": ast.literal_eval(fullData[1]),
                 "message": "Fetched data successfully for review."
                 }
     except sqlite3.Error as e:

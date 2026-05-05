@@ -5,7 +5,7 @@ from app.services.ai_service.aiService import ai_extract
 from app.services.helperServices import validate_output, build_company_info
 from app.database.mockdata.helpers import loadRegistryJSON
 from app.database.functions.form import recieve_extracted_data, retrieve_extracted_data
-import ast
+
 
 form_bp = Blueprint("form_bp", __name__, url_prefix="/api/v1")
 
@@ -73,6 +73,7 @@ def extract_endpoint(user_id):
     }
 
     result = recieve_extracted_data(user_id, entity_type, finalizedData)
+    print(result)
     return jsonify(result), result['code']
 
 
@@ -94,7 +95,7 @@ def review_endpoint(user_id):
     return jsonify({
         "status": result['status'],
         "code": result['code'],
-        "data": ast.literal_eval(result['jsonData']),
+        "data": result['jsonData'],
         "entity_type": result['entity_type'],
         "message": result['message']
     })
